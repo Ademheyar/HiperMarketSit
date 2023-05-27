@@ -97,17 +97,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 try {
                     // Check if the item already exists
-                    $select_stmt = $conn->prepare("SELECT `id` FROM `products` WHERE `id` = ?");
+                    $select_stmt = $conn->prepare("SELECT * FROM `product` WHERE `id` = ?");
                     $select_stmt->bind_param('i', $id_item);
                     $select_stmt->execute();
                     $result = $select_stmt->get_result();
                     $select_stmt->close();
             
-                    //$error1 = $error1 . '\n : '.$result->num_rows. ' ';
+                    $error1 = $error1 . ' num_rows : '.$result->num_rows. ' ';
                     if ($result->num_rows > 0) {
                         try{
                             // Update the existing item
-                            $update_stmt = $conn->prepare("UPDATE `products` SET `name` = ?, `code` = ?, `type` = ?, `barcode` = ?, `at_shop` = ?, `quantity` = ?, `cost` = ?, `tax` = ?, `price` = ?, `include_tax` = ?, `price_change` = ?, `more_info` = ?, `images` = ?, `description` = ?, `service` = ?, `default_quantity` = ?, `active` = ? WHERE `id` = ?");
+                            $update_stmt = $conn->prepare("UPDATE `product` SET `name` = ?, `code` = ?, `type` = ?, `barcode` = ?, `at_shop` = ?, `quantity` = ?, `cost` = ?, `tax` = ?, `price` = ?, `include_tax` = ?, `price_change` = ?, `more_info` = ?, `images` = ?, `description` = ?, `service` = ?, `default_quantity` = ?, `active` = ? WHERE `id` = ?");
                             $update_stmt->bind_param('sssssidddiissssiii', $name, $code, "update$typ", $barcode, $at_shop, $quantity, $cost, $tax, $price, $include_tax, $price_change, $more_info, $images, $description, $service, $default_quantity, $active, $id_item);
                             $update_stmt->execute();
                             $update_stmt->close();
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     } else {
                         // Insert a new item
-                        $insert_stmt = $conn->prepare("INSERT INTO `products`(`id`, `name`, `code`, `type`, `barcode`, `at_shop`, `quantity`, `cost`, `tax`, `price`, `include_tax`, `price_change`, `more_info`, `images`, `description`, `service`, `default_quantity`, `active`)
+                        $insert_stmt = $conn->prepare("INSERT INTO `product`(`id`, `name`, `code`, `type`, `barcode`, `at_shop`, `quantity`, `cost`, `tax`, `price`, `include_tax`, `price_change`, `more_info`, `images`, `description`, `service`, `default_quantity`, `active`)
                                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                         $insert_stmt->bind_param('isssssidddiissssii', $id_item, $name, $code, $typ, $barcode, $at_shop, $quantity, $cost, $tax, $price, $include_tax, $price_change, $more_info, $images, $description, $service, $default_quantity, $active);
                         $insert_stmt->execute();
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         // Get the last inserted row
         $inserted_id = $conn->insert_id;
-        $result = $conn->query("SELECT * FROM products WHERE id = $inserted_id");
+        $result = $conn->query("SELECT * FROM product WHERE id = $inserted_id");
     
         // Check if the row exists
         if ($result->num_rows > 0) {
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $response = ['status' => 'success', 'message' => 'Data saved successfully.', 'row' => $it];
             }
         } else {
-            $error1 = $error1.'Failed to retrieve the newly added row.'.$existing_item_count;
+            #$error1 = $error1.' Failed to retrieve the newly added row. '.$existing_item_count;
             $response = ['status' => 'error', 'message' => $error1];
         }
     } catch (Exception $e) {
