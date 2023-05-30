@@ -18,7 +18,7 @@ if ($result->num_rows > 0) {
   // Display the results in an HTML table
   echo "<div id='hidendiv' style='display: none;'>";
   echo "<table>";
-  echo "<tr><th>ID</th><th>Name</th><th>Code</th><th>Type</th><th>Barcode</th><th>At_Shop</th><th>Quantity</th><th>Cost</th><th>Tax</th><th>Price</th><th>Include_Tax</th><th>Price_Change</th><th>More_Info</th><th>Images</th><th>Description</th><th>Service</th><th>Default_Quantity</th><th>Active</th></tr>";
+  echo "<tr><th>id</th><th>Name</th><th>Code</th><th>Type</th><th>Barcode</th><th>at_shop</th><th>Quantity</th><th>Cost</th><th>Tax</th><th>Price</th><th>Include_Tax</th><th>Price_Change</th><th>More_Info</th><th>Images</th><th>Description</th><th>Service</th><th>Default_Quantity</th><th>Active</th></tr>";
   while($row = $result->fetch_assoc()) {
     echo "<tr><td>" . $row["id"] . "</td><td>" . $row["name"] . "</td><td>" . $row["code"] . "</td><td>" . $row["type"] . "</td><td>" . $row["barcode"] . "</td><td>" . $row["at_shop"] . "</td><td>" . $row["quantity"] . "</td><td>" . $row["cost"] . "</td><td>" . $row["tax"] . "</td><td>" . $row["price"] . "</td><td>" . $row["include_tax"] . "</td><td>" . $row["price_change"] . "</td><td>" . $row["more_info"] . "</td><td>" . $row["images"] . "</td><td>" . $row["Description"] . "</td><td>" . $row["Service"] . "</td><td>" . $row["Default_Quantity"] . "</td><td>" . $row["Active"] . "</td></tr>";
   }
@@ -43,8 +43,8 @@ if ($result->num_rows > 0) {
 // Select the table element
 const table = document.querySelector('#product-table');
 var a = document.querySelector('body .Main');
-const data = [];
 
+	/*
 function readhtmtable(){
 	// Get a reference to the HTML table
 	const table = document.querySelector('table');
@@ -52,27 +52,82 @@ function readhtmtable(){
 
 	// Loop through each row in the table
 	for (let i = 1; i < table.rows.length; i++) {
-	// Get a reference to the current row
-	const row = table.rows[i];
-	
-	// Create an object to store the data for this row
-	const obj = {};
-	
-	// Loop through each cell in the row
-	for (let j = 0; j < row.cells.length; j++) {
-		// Get a reference to the current cell
-		const cell = row.cells[j];
+		// Get a reference to the current row
+		const row = table.rows[i];
 		
-		// Add the cell data to the object
-		obj[table.rows[0].cells[j].textContent] = cell.textContent;
+		// Create an object to store the data for this row
+		const obj = {};
+		
+		// Loop through each cell in the row
+		for (let j = 0; j < row.cells.length; j++) {
+			// Get a reference to the current cell
+			const cell = row.cells[j];
+			
+			// Add the cell data to the object
+			obj[table.rows[0].cells[j].textContent] = cell.textContent;
+		}
+		
+		// Add the object to the data array
+		
+		data.push(obj);
+		console.log(row.cells[j]);
 	}
-	
-	// Add the object to the data array
-	data.push(obj);
-}
 	// Print the resulting data array to the console
 	console.log(data);
+}*/
+const data = [];
+
+// Variables to keep track of the current offset and limit
+var offset = 0;
+var limit = 10;
+
+function sendAjaxRequest(url, method, itemsData, successCallback, errorCallback) {
+	var xhr = new XMLHttpRequest();
+	xhr.open(method, url, true);
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+		if (xhr.status === 200) {
+			successCallback(xhr.responseText);
+		} else {
+			errorCallback(xhr.status);
+		}
+		}
+	};
+	xhr.send(itemsData);
 }
+
+function readhtmtable() {
+	var url = 'get_items.php'; // The PHP script that fetches items from the database
+	var datasent = 'offset=' + offset + '&limit=' + limit;
+
+	// Store the current scroll position
+	previousScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+	// Make an AJAX request to your PHP API
+	sendAjaxRequest(url, 'POST', datasent, function(responseText) {
+		var response = JSON.parse(responseText);
+		var items = response.items;
+
+		// Process the response and add the items to the itemContainer
+		for (var i = 0; i < items.length; i++) {
+	  		data.push(items[i]);
+		}
+
+		// Restore the previous scroll position
+		//window.scrollTo(0, previousScrollTop);
+		
+		// Print the resulting data array to the console
+		console.log(data);
+		createitems();
+
+	}, function(errorStatus) {
+		// Handle error
+		console.log('Error: ' + errorStatus);
+	});
+}
+//*/
+
 
 readhtmtable();
 var createing = 0;
@@ -294,8 +349,85 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
 }
 
 disply_item("", "", "", "", "", "", "", "", "", "");
-
 function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_img, vs_path, vs_dic, vs_info) {
+  return function() {
+    document.getElementById('view-form').style.display = 'block';
+
+    var sy = scrollY;
+    var y = sy;
+    var ya = y + a.scrollTop;
+    document.getElementById('view-form').style.top = ya + 'px';
+    var images = vs_img.split('~');
+
+    document.querySelector('#view-form .p_name').value = vs_n;
+    document.querySelector('#view-form .p_name').innerText = vs_n;
+    document.querySelector('#view-form .box .sub_box .p_name').innerText = vs_n;
+
+    document.querySelector('#view-form .p_code').value = vs_price;
+
+    document.querySelector('#view-form .p_type').value = vs_price;
+
+    var list = document.querySelector('#view-form .box .img_box');
+    list.innerHTML = '';
+
+    for (var m = 0; m < images.length; m++) {
+      var img = document.createElement('img');
+	  img.onerror = function() {
+
+			this.style.width = '100%'; // Set width to match original image
+			this.style.height = '100%'; // Set height to match original image
+			this.src = 'img/error1.jpg'; // Set the error image path
+		};
+      img.src = `${vs_path}/${images[m]}`;
+      list.appendChild(img);
+
+      list.value = "0";
+      for (var z = 0; z < list.children.length; z++) {
+        var n = 100 / list.children.length;
+        if (100 / 3 >= n) n = n;
+        else n = 100 / 3;
+        if (z == 0) {
+          list.children[z].style.width = '100%';
+          list.children[z].style.height = `${100 - 100 / 4}%`;
+        } else {
+          list.children[z].style.width = `${n}%`;
+          list.children[z].style.height = `${100 / 4}%`;
+        }
+        img.setAttribute('onclick', `set_img_pos("${z}")`);
+      }
+    }
+
+    document.querySelector('#view-form .p_price').value = vs_price;
+    document.querySelector('#view-form .p_price').innerText = vs_price;
+    document.querySelector('#view-form .box .sub_box .p_price').innerText = `R${vs_price}`;
+
+    document.querySelector('#view-form .p_path').value = vs_price;
+
+    document.querySelector('#view-form .p_info').value = vs_info;
+
+    document.querySelector('#view-form .p_disc').innerText = vs_dic;
+    document.querySelector('#view-form .box .sub_box .p_disc').innerText = vs_dic;
+
+    var main_info = vs_info.split('},');
+    for (var m = 0; m < main_info.length; m++) {
+      var main_value = main_info[m].split(',[');
+      var size = main_value[0].replace('{', '');
+      var item = document.createElement('button');
+      item.setAttribute('onclick', `View_color("${main_value[1]}","${size}")`);
+      item.innerHTML = '<i class="fa fa-trash-o"></i>';
+      item.class = 'itemBttnclass';
+      item.style.width = '50px';
+      item.style.height = '20px';
+      item.style.color = 'black';
+      item.innerText = size;
+      document.getElementById('size_box_id').appendChild(item);
+    }
+
+    document.getElementById('view-form').style.top = ya + 'px';
+  }
+}
+
+/*function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_img, vs_path, vs_dic, vs_info) {
 	return function() {
 		document.getElementById('view-form').style.display='block';
 
@@ -371,163 +503,127 @@ function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_i
 		//document.getElementById('shopping-cart-form').style.display='none'; 
 		//document.getElementById('login-form').style.display='none';
 	}
+}*/
+
+function createitems() {
+  const productGrid = document.querySelector('.list_containers .box-container');
+
+  for (let i = 0; i < data.length; i++) {
+    const productItem_Box = document.createElement('div');
+    productItem_Box.classList.add('box');
+    productGrid.appendChild(productItem_Box);
+
+    const productImage_Box = document.createElement('div');
+    productItem_Box.appendChild(productImage_Box);
+    productImage_Box.classList.add('img_box');
+
+    const shop_name = data[i].at_shop.split(' ')[0];
+    const na = data[i].name.replaceAll(' ', '_');
+    const path = `img/${shop_name}/products/${data[i].type}/${na}/${data[i].code}`;
+
+    const hidden_info_name = document.createElement('input');
+    productImage_Box.appendChild(hidden_info_name);
+    hidden_info_name.classList.add('p_name');
+    hidden_info_name.name = 'product_name';
+    hidden_info_name.value = data[i].name;
+    hidden_info_name.hidden = true;
+
+    // Add other hidden input elements here
+
+    const productImage_Btn = document.createElement('button');
+    productImage_Box.appendChild(productImage_Btn);
+    productImage_Btn.classList.add('product-image');
+
+    const productImage = document.createElement('img');
+    productImage_Btn.appendChild(productImage);
+    productImage.style.height = '50px';
+	productImage.onerror = function() {
+		this.src = 'img/error1.jpg'; // Set the error image path
+		this.style.width = '100%'; // Set width to match original image
+		this.style.height = '100%'; // Set height to match original image
+	};
+    productImage.src = `${path}/${data[i].images[0]}`;
+
+    const Image_Box_Btn = document.createElement('div');
+    productImage_Box.appendChild(Image_Box_Btn);
+    Image_Box_Btn.classList.add('box_btns');
+
+    const Image_Box_likeBtn = document.createElement('input');
+    Image_Box_Btn.appendChild(Image_Box_likeBtn);
+    Image_Box_likeBtn.classList.add('lcb_1btns');
+    Image_Box_likeBtn.name = 'add_to_cart';
+    Image_Box_likeBtn.value = 'Like';
+
+    const Image_Box_addBtn = document.createElement('input');
+    Image_Box_Btn.appendChild(Image_Box_addBtn);
+    Image_Box_addBtn.classList.add('lcb_1btns');
+    Image_Box_addBtn.name = 'add_to_cart';
+    Image_Box_addBtn.value = 'Add To Cart';
+
+    const productName = document.createElement('h3');
+    productItem_Box.appendChild(productName);
+    productName.classList.add('product_name');
+    productName.name = 'product_name';
+    productName.textContent = data[i].name;
+
+    const productPrice = document.createElement('div');
+    productItem_Box.appendChild(productPrice);
+    productPrice.name = 'product_price';
+    productPrice.classList.add('price');
+    productPrice.textContent = `R${data[i].price}`;
+
+    const productCode = document.createElement('div');
+    productItem_Box.appendChild(productCode);
+    productCode.classList.add('product_image');
+    productCode.name = 'product_image';
+    productCode.textContent = data[i].Image;
+    productCode.hidden = true;
+
+    productImage_Btn.addEventListener('click', function() {
+      View_Selected(
+        data[i].id,
+        data[i].name,
+        data[i].at_shop,
+        data[i].type,
+        data[i].code,
+        data[i].price,
+        data[i].images,
+        path,
+        data[i].Description,
+        data[i].More_info
+      );
+    });
+  }
 }
 
-function createitems(i, j){
-	// Get a reference to the product grid container
-	const productGrid = document.querySelector('.list_containers .box-container');
-j = i+j;
+// Function to handle scroll event
+function handleScroll() {
+  const containerElement = document.querySelector('body .Main');
+  const targetElement = document.querySelector('.list_containers .box-container');
 
-	// Loop through each product in the data array
-	for (; i < data.length ; i++) {
-		if(i >= j) break;
-		
-		console.log('index =' + i);
-		console.log(data[i]);
-		//const productform = document.createElement('form');
-		// Add the product item element to the product grid container
-		//productGrid.appendChild(productform);
+  const containerScrollTop = containerElement.scrollTop;
+  const targetElementTop = targetElement.offsetTop;
 
-		const productItem_Box = document.createElement('div');
-		productItem_Box.classList.add('box');
-		productGrid.appendChild(productItem_Box);
-		
-		
-		const productImage_Box = document.createElement('div');
-		productItem_Box.appendChild(productImage_Box);
-		productImage_Box.classList.add('img_box');
-		
-		var shop_name = (data[i].At_Shop + " ").split(' ');
-		var na = data[i].Name.replaceAll(' ', '_');
-		
-		var path = ("img\\" + shop_name[0] + "\\products\\" + (data[i].Type).replaceAll(' ', '\\') + "\\"+ na + "\\"+ data[i].Code).replaceAll('\\\\', '\\');
-		var images = (data[i].Images + "~").split('~');
-		console.log(images[0]);
-		
-		const hidden_info_name = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_name);
-		hidden_info_name.classList.add('p_name');
-		hidden_info_name.name="product_name";
-		hidden_info_name.value=data[i].Name;
-		hidden_info_name.hidden = true;
-		const hidden_info_code = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_code);
-		hidden_info_code.classList.add('p_code');
-		hidden_info_code.name="product_code";
-		hidden_info_code.value=data[i].Code;
-		hidden_info_code.hidden = true;
-		const hidden_info_type = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_type);
-		hidden_info_type.classList.add('p_type');
-		hidden_info_type.name="product_type";
-		hidden_info_type.value=data[i].Type;
-		hidden_info_type.hidden = true;
-		const hidden_info_imge = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_imge);
-		hidden_info_imge.classList.add('p_img');
-		hidden_info_imge.name="product_image";
-		hidden_info_imge.value=data[i].Image;
-		hidden_info_imge.hidden = true;
-		const hidden_info_price = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_price);
-		hidden_info_price.classList.add('p_price');
-		hidden_info_price.name="product_price";
-		hidden_info_price.value=data[i].Price;
-		hidden_info_price.hidden = true;
-		const hidden_info_disc = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_disc);
-		hidden_info_disc.classList.add('p_disc');
-		hidden_info_disc.name="product_disc";
-		hidden_info_disc.value=data[i].Description;
-		hidden_info_disc.hidden = true;
-		const hidden_info_info = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_info);
-		hidden_info_info.classList.add('p_info');
-		hidden_info_info.name="product_info";
-		hidden_info_info.value=data[i].More_info;
-		hidden_info_info.hidden = true;
-		const hidden_info_size = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_size);
-		hidden_info_size.classList.add('p_size');
-		hidden_info_size.name="product_size";
-		hidden_info_size.value=data[i].Size;
-		hidden_info_size.hidden = true;
-		const hidden_info_color = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_color);
-		hidden_info_color.classList.add('p_color');
-		hidden_info_color.name="product_color";
-		hidden_info_color.value=data[i].Color;
-		hidden_info_color.hidden = true;
-		const hidden_info_path = document.createElement('input');
-		productImage_Box.appendChild(hidden_info_path);
-		hidden_info_path.classList.add('p_path');
-		hidden_info_path.name="product_path";
-		hidden_info_path.value= path;
-		hidden_info_path.hidden = true;
-		
-		
-		const productImage_Btn = document.createElement('button');
-		productImage_Box.appendChild(productImage_Btn);
-		createing = 1;
-		//disply_item(data[i].Id, data[i].Name, data[i].At_Shop, data[i].Type, data[i].Code, data[i].Price, data[i].Image, path, data[i].Description, data[i].More_info)
-		const productImage = document.createElement('img');
-		productImage_Btn.appendChild(productImage);
-		console.log(productImage);
-		
-		productImage.addEventListener('click', View_Selected(data[i].ID, data[i].Name, data[i].At_Shop, data[i].Type, data[i].Code, data[i].Price, data[i].Images, path, data[i].Description, data[i].More_info));
-		/*	console.log("id "+ data[i].ID);
-			//
-		});*/
-		productImage.classList.add('product-image');
-		productImage.style.height="50";
-		productImage.src = path+'\\'+images[0];
-		console.log("path ="+path);
+  if (containerScrollTop <= targetElementTop) {
+    console.log('Scroll reaching top of target element');
+  }
 
-		const Image_Box_Btn = document.createElement('div');
-		productImage_Box.appendChild(Image_Box_Btn);
-		Image_Box_Btn.classList.add('box_btns');
-		
-		const Image_Box_likeBtn = document.createElement('input');
-		Image_Box_Btn.appendChild(Image_Box_likeBtn);
-		Image_Box_likeBtn.classList.add('lcb_1btns');
-		Image_Box_likeBtn.name="add_to_cart";
-		Image_Box_likeBtn.value= "Like";
-		
-		const Image_Box_addBtn = document.createElement('input');
-		Image_Box_Btn.appendChild(Image_Box_addBtn);
-		Image_Box_addBtn.classList.add('lcb_1btns');
-		Image_Box_addBtn.name="add_to_cart";
-		Image_Box_addBtn.value= "Add To Cart";
-		
-		
-		// Create a new product item element
-		// Create the product name element and set its text content
-		const productName = document.createElement('h3');
-		productItem_Box.appendChild(productName);
-		productName.classList.add('product_name');
-		productName.name="product_name";
-		productName.textContent = data[i].Name;
-		productName.value = data[i].Name;
-		// Create the product price element and set its text content
-		const productPrice = document.createElement('div');
-		productItem_Box.appendChild(productPrice);
-		productPrice.name="product_price";
-		productPrice.classList.add('price');
-		productPrice.textContent = `R${data[i].Price}`;
-		productPrice.value = `R${data[i].Price}`;
-		// Create the product code element and set its text content
-		const productCode = document.createElement('div');
-		productItem_Box.appendChild(productCode);
-		productCode.classList.add('product_image');
-		productCode.name="product_image";
-		productCode.textContent = data[i].Image;
-		productCode.value = data[i].Image;
-		productCode.hidden = true;
-	
-	}
+  const containerHeight = containerElement.offsetHeight;
+  const targetElementHeight = targetElement.offsetHeight;
+
+  const containerBottomScrollPosition = containerScrollTop + containerHeight;
+  const targetElementBottomPosition = targetElementTop + targetElementHeight;
+
+  if (containerBottomScrollPosition >= targetElementBottomPosition) {
+    console.log('Scroll reaching bottom of target element');
+	//var offset += limit;
+	//readhtmtable();
+  }
 }
 
-createitems(0, 10);
+// Attach scroll event listener to the container element
+var a = document.querySelector('body .Main');
+a.addEventListener('scroll', handleScroll);
 
 </script>
 
@@ -677,7 +773,7 @@ createitems(0, 10);
 .list_containers .box-container .box .box_btns .lcb_1btns {
 	display: block;
 	color: black;
-	WIDTH: 30%;
+	WidTH: 30%;
 	background-color: var(--with);
 	font-size: 1rem;
 	padding: 6%;

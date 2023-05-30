@@ -6,7 +6,7 @@
       /*  //include banner area  */
       include ('Template/shopbycolection.php');
       //  //include top sale section 
-      include ('Template/_top-sale.php');
+      //include ('Template/_top-sale.php');
       //  //include top sale section 
       
       include ('Template/listproducts_2.php');
