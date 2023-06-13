@@ -3,33 +3,6 @@
 @include 'config.php';
 include 'forms\view.php'; 
 ?>
-
-<?php
-// Database connection parameters
-
-// SQL query to retrieve data from the 'products' table
-$sql = "SELECT * FROM products";
-
-// Execute the query and store the results in a variable
-$result = $conn->query($sql);
-
-// Check if any rows were returned
-if ($result->num_rows > 0) {
-  // Display the results in an HTML table
-  echo "<div id='hidendiv' style='display: none;'>";
-  echo "<table>";
-  echo "<tr><th>id</th><th>Name</th><th>Code</th><th>Type</th><th>Barcode</th><th>at_shop</th><th>Quantity</th><th>Cost</th><th>Tax</th><th>Price</th><th>Include_Tax</th><th>Price_Change</th><th>More_Info</th><th>Images</th><th>Description</th><th>Service</th><th>Default_Quantity</th><th>Active</th></tr>";
-  while($row = $result->fetch_assoc()) {
-    echo "<tr><td>" . $row["id"] . "</td><td>" . $row["name"] . "</td><td>" . $row["code"] . "</td><td>" . $row["type"] . "</td><td>" . $row["barcode"] . "</td><td>" . $row["at_shop"] . "</td><td>" . $row["quantity"] . "</td><td>" . $row["cost"] . "</td><td>" . $row["tax"] . "</td><td>" . $row["price"] . "</td><td>" . $row["include_tax"] . "</td><td>" . $row["price_change"] . "</td><td>" . $row["more_info"] . "</td><td>" . $row["images"] . "</td><td>" . $row["Description"] . "</td><td>" . $row["Service"] . "</td><td>" . $row["Default_Quantity"] . "</td><td>" . $row["Active"] . "</td></tr>";
-  }
-  echo "</table>";
-  echo "</div>";
-} else {
-  echo "No results found.";
-}
-?>
-
-
 <!-- HTML markup for the product grid -->
 
 <div class="list_containers">
@@ -41,45 +14,50 @@ if ($result->num_rows > 0) {
 
 <script>
 // Select the table element
-const table = document.querySelector('#product-table');
 var a = document.querySelector('body .Main');
 
-	/*
-function readhtmtable(){
-	// Get a reference to the HTML table
-	const table = document.querySelector('table');
-	// Create an array to store the table data
-
-	// Loop through each row in the table
-	for (let i = 1; i < table.rows.length; i++) {
-		// Get a reference to the current row
-		const row = table.rows[i];
-		
-		// Create an object to store the data for this row
-		const obj = {};
-		
-		// Loop through each cell in the row
-		for (let j = 0; j < row.cells.length; j++) {
-			// Get a reference to the current cell
-			const cell = row.cells[j];
-			
-			// Add the cell data to the object
-			obj[table.rows[0].cells[j].textContent] = cell.textContent;
-		}
-		
-		// Add the object to the data array
-		
-		data.push(obj);
-		console.log(row.cells[j]);
-	}
-	// Print the resulting data array to the console
-	console.log(data);
-}*/
 const data = [];
 
 // Variables to keep track of the current offset and limit
-var offset = 0;
+var offset = 1;
 var limit = 10;
+var itemlimit = 30;
+var firstset = 0;
+var lastset = 0;
+
+// Function to remove items from the productGrid and data array
+function removeitem(howmany, a) {
+  const productGrid = document.querySelector('.list_containers .box-container');
+	const itemCount = productGrid.childElementCount;
+
+  if (a === 0) {
+    // Remove the last 'howmany' items from the productGrid
+    const startIndex = Math.max(itemCount - howmany, 0);
+    const itemsToRemove = itemCount - startIndex;
+
+    
+		for (let i = 0; i < itemsToRemove; i++) {
+			if (productGrid.lastChild) {
+				if (itemCount > itemlimit) {
+					productGrid.removeChild(productGrid.lastChild);
+				}
+			}
+			data.pop(); // Remove the last item from the data array
+		}
+  } else if (a === 1) {
+    // Remove the first 'howmany' items from the productGrid
+    for (let i = 0; i < howmany; i++) {
+			if (productGrid.firstChild) {
+				if (itemCount > itemlimit) {
+					productGrid.removeChild(productGrid.firstChild);
+				}
+			}
+			data.shift(); // Remove the first item from the data array
+		}
+  }
+
+  console.log(data); // Verify that the data array is updated correctly
+}
 
 function sendAjaxRequest(url, method, itemsData, successCallback, errorCallback) {
 	var xhr = new XMLHttpRequest();
@@ -99,7 +77,7 @@ function sendAjaxRequest(url, method, itemsData, successCallback, errorCallback)
 
 function readhtmtable() {
 	var url = 'get_items.php'; // The PHP script that fetches items from the database
-	var datasent = 'offset=' + offset + '&limit=' + limit;
+	var datasent = 'offset=' + offset + '&limit=' + limit + '&firstset=' + firstset + '&lastset=' + lastset;
 
 	// Store the current scroll position
 	previousScrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -111,14 +89,39 @@ function readhtmtable() {
 
 		// Process the response and add the items to the itemContainer
 		for (var i = 0; i < items.length; i++) {
-	  		data.push(items[i]);
+			if (offset === 0 && firstset - 1 !== 0) {
+				data.unshift({
+					at_shop: items[i].at_shop,
+					name: items[i].name,
+					type: items[i].type,
+					code: items[i].code,
+					price: items[i].price,
+					images: items[i].images,
+					Description: items[i].Description,
+					More_info: items[i].More_info
+				});
+			} else {
+				data.push({
+					at_shop: items[i].at_shop,
+					name: items[i].name,
+					type: items[i].type,
+					code: items[i].code,
+					price: items[i].price,
+					images: items[i].images,
+					Description: items[i].Description,
+					More_info: items[i].More_info
+				});
+			}
 		}
+
+		console.log(data.length + " <> " +itemlimit);
+		if(data.length + 1 >= itemlimit) removeitem(limit/2,offset);
 
 		// Restore the previous scroll position
 		//window.scrollTo(0, previousScrollTop);
 		
 		// Print the resulting data array to the console
-		console.log(data);
+		if(offset == 0 && firstset-1 != 0) console.log(data);
 		createitems();
 
 	}, function(errorStatus) {
@@ -127,7 +130,6 @@ function readhtmtable() {
 	});
 }
 //*/
-
 
 readhtmtable();
 var createing = 0;
@@ -427,91 +429,18 @@ function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_i
   }
 }
 
-/*function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_img, vs_path, vs_dic, vs_info) {
-	return function() {
-		document.getElementById('view-form').style.display='block';
-
-		var sy = scrollY;
-		var y = sy;
-		var ya  = y+ a.scrollTop
-		document.getElementById('view-form').style.top = ya + 'px';
-		var images = (vs_img + "~").split('~');
-		//<input type="hidden" name="product_name" class="p_name" value="">
-		document.querySelector('#view-form .p_name').value = vs_n;
-		document.querySelector('#view-form .p_name').innerText = vs_n;
-		document.querySelector('#view-form .box .sub_box .p_name').innerText = vs_n;
-		//<input type="hidden" name="product_code" class="p_code" value="">
-		document.querySelector('#view-form .p_code').value = vs_price;
-		//<input type="hidden" name="product_type" class="p_type" value="">
-		document.querySelector('#view-form .p_type').value = vs_price;
-		//<input type="hidden" name="product_image" class="p_img" value="">
-		var list = document.querySelector('#view-form .box .img_box');
-		for(var z = 0; z <= list.children.length-1; z++){
-			list.children[z].remove();
-		}
-
-		for(var m = 0; images[m]; m++){
-			var img = document.createElement('img');
-			img.src =  vs_path + '\\' + images[m];
-			list.appendChild(img);
-			
-			list.value = "0";
-			for(var z = 0; z <= list.children.length-1; z++){
-				var n = 100/list.children.length;
-				if(100/3 >= n) n=n;
-				else n = 100/3;
-				if(z == 0){
-					list.children[z].style.width =String(100)+"%";
-					list.children[z].style.height =String(100-100/4)+"%";
-				}
-				else {
-					list.children[z].style.width =String(n)+"%";
-					list.children[z].style.height =String(100/4)+"%";
-				}
-				img.setAttribute('onclick', 'set_img_pos("'+ z + '")');
-			}
-		}
-		//<input type="hidden" name="product_price" class="p_price" value="">
-		document.querySelector('#view-form .p_price').value = vs_price;
-		document.querySelector('#view-form .p_price').innerText = vs_price;
-		document.querySelector('#view-form .box .sub_box .p_price').innerText = "R" + vs_price;
-		//<input type="hidden" name="product_path" class="p_path" value="">
-		document.querySelector('#view-form .p_path').value = vs_price;
-		//<input type="hidden" name="product_info" class="p_info" value="">
-		document.querySelector('#view-form .p_info').value = vs_info;
-
-		document.querySelector('#view-form .p_disc').innerText = vs_dic;
-		document.querySelector('#view-form .box .sub_box .p_disc').innerText = vs_dic;
-
-		//{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
-		var main_info = (vs_info + "}").split("},");
-		for(var m = 0; main_info[m]; m++){
-			var main_value = main_info[m].split(",[");
-			var size = main_value[0].replace("{", "");
-			var item = document.createElement('button');
-			item.setAttribute('onclick', 'View_color("' + main_value[1] + '","' + size + '")');
-			item.innerHTML = '<i class="fa fa-trash-o"></i>';
-			item.class="itemBttnclass";
-			item.style.width = '50px';
-			item.style.height = '20px';
-			item.style.color = 'black';
-			item.innerText = "" + size;
-			document.getElementById("size_box_id").appendChild(item);
-		}
-
-		document.getElementById('view-form').style.top = ya + 'px';
-		//document.getElementById('shopping-cart-form').style.display='none'; 
-		//document.getElementById('login-form').style.display='none';
-	}
-}*/
-
 function createitems() {
   const productGrid = document.querySelector('.list_containers .box-container');
+  let i = 0;
+  let itemCount = productGrid.childElementCount;
+  //
+  if(offset == 0 && firstset-1 != 0) i = firstset-1;
+  else if(offset == 1) i = lastset;
 
-  for (let i = 0; i < data.length; i++) {
+  for (; itemCount < data.length;) {
     const productItem_Box = document.createElement('div');
     productItem_Box.classList.add('box');
-    productGrid.appendChild(productItem_Box);
+    
 
     const productImage_Box = document.createElement('div');
     productItem_Box.appendChild(productImage_Box);
@@ -525,7 +454,7 @@ function createitems() {
     productImage_Box.appendChild(hidden_info_name);
     hidden_info_name.classList.add('p_name');
     hidden_info_name.name = 'product_name';
-    hidden_info_name.value = data[i].name;
+    hidden_info_name.value = i+": "+data[i].name;
     hidden_info_name.hidden = true;
 
     // Add other hidden input elements here
@@ -593,19 +522,47 @@ function createitems() {
         data[i].More_info
       );
     });
+
+	
+	if(offset == 0 && firstset-1 != 0){
+		// Get the first child of the parent element
+		var firstChild = productGrid.firstChild;
+
+		// Insert the new child element before the first child
+		productGrid.insertBefore(productItem_Box, firstChild);
+		firstset -= 1;
+		if(i == 0) break;
+		else i--;
+	}
+	else if(offset == 1)
+	{
+		lastset += limit;
+		productGrid.appendChild(productItem_Box);
+		i++;
+	} 
+	
+	itemCount = productGrid.childElementCount;
   }
 }
 
 // Function to handle scroll event
 function handleScroll() {
-  const containerElement = document.querySelector('body .Main');
+	const containerElement = document.querySelector('body .Main');
   const targetElement = document.querySelector('.list_containers .box-container');
 
   const containerScrollTop = containerElement.scrollTop;
   const targetElementTop = targetElement.offsetTop;
-
-  if (containerScrollTop <= targetElementTop) {
-    console.log('Scroll reaching top of target element');
+  
+  
+  // Set the threshold distance from the top and bottom positions
+  const threshold = 190;
+  
+  // Check if the scroll position is within the threshold distance from the top
+  if (containerScrollTop <= targetElementTop + threshold) {
+	
+	//	var firstset = 0;
+	var offset = 0;
+	readhtmtable();
   }
 
   const containerHeight = containerElement.offsetHeight;
@@ -614,10 +571,12 @@ function handleScroll() {
   const containerBottomScrollPosition = containerScrollTop + containerHeight;
   const targetElementBottomPosition = targetElementTop + targetElementHeight;
 
-  if (containerBottomScrollPosition >= targetElementBottomPosition) {
-    console.log('Scroll reaching bottom of target element');
-	//var offset += limit;
-	//readhtmtable();
+  // Check if the scroll position is within the threshold distance from the bottom
+  if (containerBottomScrollPosition >= targetElementBottomPosition - threshold) {
+	//console. log(">>", targetElementBottomPosition);
+    //console.log('Scroll about to reach bottom of target element');
+	var offset = 1;
+	readhtmtable();
   }
 }
 
@@ -740,22 +699,6 @@ a.addEventListener('scroll', handleScroll);
 	transform: scale(1.5);
 }
  
-@media (max-width:1200px){
-	
-}
- 
-@media (max-width:991px){
- 
-
-}
-
-@media (max-width:768px){
-
-}
-
-@media (max-width:450px){
-	
-}
 
 .list_containers .box-container .box .img_box{
     position: relative;
