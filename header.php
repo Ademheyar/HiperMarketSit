@@ -1,35 +1,38 @@
 <div id='MenuItems'>
    <a href="Home.php" class="Home_mainu">
-      <img src="img/home.png" class="Home_icon"alt="">
+      <img src="img/home.png" class="Home_icon" alt="">
       <b href="Home.php" class="Home_text">Home</b>
    </a>   
+
    <?php 
+   // Check if the user is logged in and has user type 2
    if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
       <a href="view_products.php" class="Home_mainu">
-         <img src="img/home.png" class="Home_icon"alt="">
-         <b href="view_products.php" class="Home_text">view products</b>
+         <img src="img/home.png" class="Home_icon" alt="">
+         <b href="view_products.php" class="Home_text">View Products</b>
       </a>
 
       <a href="products.php" class="Home_mainu">
-         <img src="img/home.png" class="Home_icon"alt="">
-         <b href="products.php" class="Home_text">products</b>
+         <img src="img/home.png" class="Home_icon" alt="">
+         <b href="products.php" class="Home_text">Products</b>
       </a>
       
-      <a onclick="chart_start();" class="Home_mainu">cart<span><?php echo $_SESSION['car_length']; ?></span></a>    
+      <a onclick="chart_start();" class="Home_mainu">Cart<span><?php echo $_SESSION['car_length']; ?></span></a>    
 
       <a href="Logout.php" class="Home_mainu">
-         <img src="img/home.png" class="Home_icon"alt="">
+         <img src="img/home.png" class="Home_icon" alt="">
          <b href="Logout.php" class="Home_text">Log out<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
       </a>
-   <?php } else { if(session_id() == "") session_start(); ?>  
+   <?php } else { 
+      // If the user is not logged in or has a different user type
+      if(session_id() == "") session_start(); ?>  
       <a onclick="chart_start();" class="Home_mainu">
-         <img src="img/cart.png" class="Home_icon"alt="">
-         
-         <b onclick="chart_start();" class="Home_text">cart<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
+         <img src="img/cart.png" class="Home_icon" alt="">
+         <b onclick="chart_start();" class="Home_text">Cart<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
       </a>    
+      
       <button onclick="log_in_out();" style="width:auto;" class='loginbtn' class="Home_mainu">
-         <!--<img src="img/home.png" class="Home_icon"alt="">-->
-         <b   class="Home_text">Log in</b>
+         <b class="Home_text">Log in</b>
       </button> 
    <?php } ?>         
 </div>
@@ -39,20 +42,35 @@
    <a href="#" class="logo">
       <img src="img/logo.jpg" alt="">
    </a>
-   <input type='text'class='search_box'placeholder='Search'name="search_box">
+   <input type='text' class='search_box' placeholder='Search' name="search_box">
+
    <?php 
    $select_rows = mysqli_query($conn, "SELECT * FROM `cart`") or die('query failed');
    $row_count = mysqli_num_rows($select_rows);
+
    if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
-      <li><a onclick="chart_start();" class="cart">cart <span><?php echo $_SESSION['car_length']; ?></span> </a></li>
-      <li><a href="Logout.php" class="cart"><?php echo $_SESSION['loged_user_name']; ?><span>X</span> </a></li>
-   <?php } else { if(session_id() == "") session_start(); ?>      
-      <li><a onclick="chart_start();" class="cart">cart <span><?php echo $_SESSION['car_length']; ?></span> </a></li>
-      <li><button class='loginbtn' onclick="log_in_out();" style="width:auto;">Log in</button></li>
-   <?php } ?>  
+      <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
+      <li><a href="Logout.php" class="cart"><?php echo $_SESSION['loged_user_name']; ?><span>X</span></a></li>
+   <?php } else { 
+      // If the user is not logged in or has a different user type
+      if(session_id() == "") session_start(); ?>      
+      <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
+      <li><button class='loginbtn' onclick="log_in_out();">Log in</button></li>
+   <?php } ?>   
 </div>
 
 <style>
+
+
+
+
+
+/* Header Styles */
+
+
+
+/* Responsive Styles */
+
 
 body .Main{
    overflow: auto;
@@ -186,11 +204,40 @@ nav {
     font-size: 2.5rem;
  }
 
- .header .search_box{
-   margin-right: auto;
-    width: 50%;
-    font-size: 2.5rem;
- }
+
+ /* 
+   this will make search look good
+*/
+.search_box {
+  width: 50%;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search_box::placeholder {
+  color: #999;
+}
+
+/* 
+   this will make loging nice
+*/
+.loginbtn {
+  font-size: 16px;
+  color: #fff;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.loginbtn:hover {
+  color: aqua;
+}
+
 
  body .flex .navbar a{
     margin-left: 2rem;

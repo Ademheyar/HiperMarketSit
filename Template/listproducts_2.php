@@ -17,45 +17,45 @@ include 'forms\view.php';
 var a = document.querySelector('body .Main');
 
 const data = [];
+var data_leght = 0
 
 // Variables to keep track of the current offset and limit
-var offset = 1;
+var offset = 0;
 var limit = 10;
-var itemlimit = 30;
+var itemlimit = 50;
 var firstset = 0;
 var lastset = 0;
 
 // Function to remove items from the productGrid and data array
 function removeitem(howmany, a) {
   const productGrid = document.querySelector('.list_containers .box-container');
-	const itemCount = productGrid.childElementCount;
-
-  if (a === 0) {
-    // Remove the last 'howmany' items from the productGrid
-    const startIndex = Math.max(itemCount - howmany, 0);
-    const itemsToRemove = itemCount - startIndex;
-
-    
-		for (let i = 0; i < itemsToRemove; i++) {
-			if (productGrid.lastChild) {
-				if (itemCount > itemlimit) {
-					productGrid.removeChild(productGrid.lastChild);
-				}
-			}
-			data.pop(); // Remove the last item from the data array
+  const itemCount = productGrid.childElementCount;
+	console.log("going to remove items in container" + a);
+	for (let i = 0; i <= howmany; i++) {
+		if(data.length >= itemlimit){
+			if (data.length >= itemlimit) howmany+=1;
+			if (a == 0 && firstset <= data.length-1) data.pop(); // Remove the last item from the data array
+			else if (a == 1 && lastset >= 1) data.shift(); // Remove the first item from the data array
 		}
-  } else if (a === 1) {
-    // Remove the first 'howmany' items from the productGrid
-    for (let i = 0; i < howmany; i++) {
-			if (productGrid.firstChild) {
-				if (itemCount > itemlimit) {
-					productGrid.removeChild(productGrid.firstChild);
-				}
+		if(itemCount >= itemlimit){
+			if (itemCount >= itemlimit) howmany+=1;
+			if (a == 0 && firstset <= data.length-1) {
+				console.log("from bottom " + i);
+				productGrid.removeChild(productGrid.lastChild);
+				console.log("from bottom 1 " + i);
+				const itemCount = productGrid.childElementCount;
+				console.log("temCount> " +itemlimit);
+				console.log("from bottom 2 " + i);
+				console.log(data.length + " <data.length")
 			}
-			data.shift(); // Remove the first item from the data array
+			else if (a == 1 && lastset >= 1) {
+				console.log("from top");
+				productGrid.removeChild(productGrid.firstChild);
+				console.log("from bottom 2 " + i);
+				console.log(data.length + " <data.length")
+			}
 		}
-  }
-
+	}
   console.log(data); // Verify that the data array is updated correctly
 }
 
@@ -77,6 +77,8 @@ function sendAjaxRequest(url, method, itemsData, successCallback, errorCallback)
 
 function readhtmtable() {
 	var url = 'get_items.php'; // The PHP script that fetches items from the database
+
+	console.log('offset=' + offset + '  &limit=' + limit + '  &firstset=' + firstset + '  &lastset=' + lastset);
 	var datasent = 'offset=' + offset + '&limit=' + limit + '&firstset=' + firstset + '&lastset=' + lastset;
 
 	// Store the current scroll position
@@ -85,45 +87,29 @@ function readhtmtable() {
 	// Make an AJAX request to your PHP API
 	sendAjaxRequest(url, 'POST', datasent, function(responseText) {
 		var response = JSON.parse(responseText);
-		var items = response.items;
-
+		items = response.items;
+		firstset = response.firstset;
+		lastset = response.lastset;
+		
+		console.log(items.length + '<< items.length');
+		data.splice(0, data.length);
 		// Process the response and add the items to the itemContainer
 		for (var i = 0; i < items.length; i++) {
-			if (offset === 0 && firstset - 1 !== 0) {
-				data.unshift({
-					at_shop: items[i].at_shop,
-					name: items[i].name,
-					type: items[i].type,
-					code: items[i].code,
-					price: items[i].price,
-					images: items[i].images,
-					Description: items[i].Description,
-					More_info: items[i].More_info
-				});
-			} else {
-				data.push({
-					at_shop: items[i].at_shop,
-					name: items[i].name,
-					type: items[i].type,
-					code: items[i].code,
-					price: items[i].price,
-					images: items[i].images,
-					Description: items[i].Description,
-					More_info: items[i].More_info
-				});
-			}
+			data.push({
+				id: items[i].id,
+				at_shop: items[i].at_shop,
+				name: items[i].name,
+				type: items[i].type,
+				code: items[i].code,
+				price: items[i].price,
+				images: items[i].images,
+				Description: items[i].Description,
+				More_info: items[i].More_info
+			}); 
 		}
-
-		console.log(data.length + " <> " +itemlimit);
-		if(data.length + 1 >= itemlimit) removeitem(limit/2,offset);
-
-		// Restore the previous scroll position
-		//window.scrollTo(0, previousScrollTop);
-		
-		// Print the resulting data array to the console
-		if(offset == 0 && firstset-1 != 0) console.log(data);
-		createitems();
-
+		console.log(data_leght + '<< value : ' + data.length + ">=" + itemlimit+ '-' + limit);
+		createItems();
+		removeitem(data.length-itemlimit/2,offset);	
 	}, function(errorStatus) {
 		// Handle error
 		console.log('Error: ' + errorStatus);
@@ -429,26 +415,41 @@ function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_i
   }
 }
 
-function createitems() {
+function createItems() {
   const productGrid = document.querySelector('.list_containers .box-container');
-  let i = 0;
   let itemCount = productGrid.childElementCount;
-  //
-  if(offset == 0 && firstset-1 != 0) i = firstset-1;
-  else if(offset == 1) i = lastset;
 
-  for (; itemCount < data.length;) {
+  for (var i = 0; i < data.length; i++) {
+	  console.log(itemCount+"<<itemCount<data.length>>"+data.length);
+	  console.log(i+"<<i");
+	  console.log("id>>"+data[i].id);
+	  console.log(data);
+	  
+    const shop_name = data[i].at_shop.split(' ')[0];
+    const na = data[i].name.replaceAll(' ', '_');
+    const path = `img/${shop_name}/products/${data[i].type}/${na}/${data[i].code}`;
+
+    // Check if the item already exists by searching for a specific attribute/value combination
+    const existingItem = productGrid.querySelector(`[data-item="${data[i].id}"]`);
+    if (existingItem) {
+      // If the item exists, skip creating a new one and update the counter variables
+      if (offset === 0) {
+        if (i === 0) break;
+        else i--;
+      } else {
+        i++;
+      }
+      continue;
+    }
+
+    // Create the new item element
     const productItem_Box = document.createElement('div');
     productItem_Box.classList.add('box');
-    
+    productItem_Box.setAttribute('data-item', data[i].id); // Set a data attribute to identify the item
 
     const productImage_Box = document.createElement('div');
     productItem_Box.appendChild(productImage_Box);
     productImage_Box.classList.add('img_box');
-
-    const shop_name = data[i].at_shop.split(' ')[0];
-    const na = data[i].name.replaceAll(' ', '_');
-    const path = `img/${shop_name}/products/${data[i].type}/${na}/${data[i].code}`;
 
     const hidden_info_name = document.createElement('input');
     productImage_Box.appendChild(hidden_info_name);
@@ -524,21 +525,17 @@ function createitems() {
     });
 
 	
-	if(offset == 0 && firstset-1 != 0){
+	if(offset === 0){
 		// Get the first child of the parent element
 		var firstChild = productGrid.firstChild;
-
+		console.log(">> addin on top");
 		// Insert the new child element before the first child
 		productGrid.insertBefore(productItem_Box, firstChild);
-		firstset -= 1;
-		if(i == 0) break;
-		else i--;
 	}
-	else if(offset == 1)
+	else if(offset === 1) 
 	{
-		lastset += limit;
+		console.log(">> adding on last");
 		productGrid.appendChild(productItem_Box);
-		i++;
 	} 
 	
 	itemCount = productGrid.childElementCount;
@@ -559,10 +556,8 @@ function handleScroll() {
   
   // Check if the scroll position is within the threshold distance from the top
   if (containerScrollTop <= targetElementTop + threshold) {
-	
-	//	var firstset = 0;
-	var offset = 0;
-	readhtmtable();
+		offset = 0;
+		readhtmtable();
   }
 
   const containerHeight = containerElement.offsetHeight;
@@ -573,10 +568,10 @@ function handleScroll() {
 
   // Check if the scroll position is within the threshold distance from the bottom
   if (containerBottomScrollPosition >= targetElementBottomPosition - threshold) {
-	//console. log(">>", targetElementBottomPosition);
-    //console.log('Scroll about to reach bottom of target element');
-	var offset = 1;
-	readhtmtable();
+		//console. log(">>", targetElementBottomPosition);
+			//console.log('Scroll about to reach bottom of target element');
+		offset = 1;
+		readhtmtable();
   }
 }
 
