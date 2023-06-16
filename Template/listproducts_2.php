@@ -337,82 +337,79 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
 }
 
 disply_item("", "", "", "", "", "", "", "", "", "");
-function View_Selected(vs_id, vs_n, vs_at_shop, vs_type, vs_code, vs_price, vs_img, vs_path, vs_dic, vs_info) {
-  return function() {
-    document.getElementById('view-form').style.display = 'block';
 
-    var sy = scrollY;
-    var y = sy;
-    var ya = y + a.scrollTop;
-    document.getElementById('view-form').style.top = ya + 'px';
-    var images = vs_img.split('~');
+function View_Selected(vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, vs_info) {
+   document.getElementById('view-form').style.display='block'; 
+   var sy = scrollY;
+   var y = sy;
+   
+   //<input type="hidden" name="product_name" class="p_name" value="">
+   document.querySelector('#view-form .p_name').value = vs_n;
+   document.querySelector('#view-form .p_name').innerText = vs_n;
+   document.querySelector('#view-form .box .sub_box .p_name').innerText = vs_n;
+   //<input type="hidden" name="product_code" class="p_code" value="">
+   document.querySelector('#view-form .p_code').value = vs_price;
+   //<input type="hidden" name="product_type" class="p_type" value="">
+   document.querySelector('#view-form .p_type').value = vs_price;
+   //<input type="hidden" name="product_image" class="p_img" value="">
+   var list = document.querySelector('#view-form .box .img_box');
+   for(var z = 0; z <= list.children.length-1; z++){
+      list.children[z].remove();
+   }
 
-    document.querySelector('#view-form .p_name').value = vs_n;
-    document.querySelector('#view-form .p_name').innerText = vs_n;
-    document.querySelector('#view-form .box .sub_box .p_name').innerText = vs_n;
-
-    document.querySelector('#view-form .p_code').value = vs_price;
-
-    document.querySelector('#view-form .p_type').value = vs_price;
-
-    var list = document.querySelector('#view-form .box .img_box');
-    list.innerHTML = '';
-
-    for (var m = 0; m < images.length; m++) {
+   for(var m = 0; vs_img.split("~")[m]; m++){
       var img = document.createElement('img');
-	  img.onerror = function() {
-
-			this.style.width = '100%'; // Set width to match original image
-			this.style.height = '100%'; // Set height to match original image
-			this.src = 'img/error1.jpg'; // Set the error image path
-		};
-      img.src = `${vs_path}/${images[m]}`;
+      alert("image "+  vs_path + "/" + vs_img.split("~")[m]);
+      img.src =  vs_path + "/" + vs_img.split("~")[m];
       list.appendChild(img);
-
+      
       list.value = "0";
-      for (var z = 0; z < list.children.length; z++) {
-        var n = 100 / list.children.length;
-        if (100 / 3 >= n) n = n;
-        else n = 100 / 3;
-        if (z == 0) {
-          list.children[z].style.width = '100%';
-          list.children[z].style.height = `${100 - 100 / 4}%`;
-        } else {
-          list.children[z].style.width = `${n}%`;
-          list.children[z].style.height = `${100 / 4}%`;
-        }
-        img.setAttribute('onclick', `set_img_pos("${z}")`);
+      for(var z = 0; z <= list.children.length-1; z++){
+         var n = 100/list.children.length;
+         if(100/3 >= n) n=n;
+         else n = 100/3;
+         if(z == 0){
+            list.children[z].style.width =String(100)+"%";
+            list.children[z].style.height =String(100-100/4)+"%";
+         }
+         else {
+            list.children[z].style.width =String(n)+"%";
+            list.children[z].style.height =String(100/4)+"%";
+         }
+         img.setAttribute('onclick', 'set_img_pos("'+ z + '")');
       }
-    }
+   }
+   //<input type="hidden" name="product_price" class="p_price" value="">
+   document.querySelector('#view-form .p_price').value = vs_price;
+   document.querySelector('#view-form .p_price').innerText = vs_price;
+   document.querySelector('#view-form .box .sub_box .p_price').innerText = "R" + vs_price;
+   //<input type="hidden" name="product_path" class="p_path" value="">
+   document.querySelector('#view-form .p_path').value = vs_price;
+   //<input type="hidden" name="product_info" class="p_info" value="">
+   document.querySelector('#view-form .p_info').value = vs_info;
 
-    document.querySelector('#view-form .p_price').value = vs_price;
-    document.querySelector('#view-form .p_price').innerText = vs_price;
-    document.querySelector('#view-form .box .sub_box .p_price').innerText = `R${vs_price}`;
+   document.querySelector('#view-form .p_disc').innerText = vs_dic;
+   document.querySelector('#view-form .box .sub_box .p_disc').innerText = vs_dic;
 
-    document.querySelector('#view-form .p_path').value = vs_price;
+   //{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
+   var main_info = vs_info.split("},");
+   for(var m = 0; main_info[m]; m++){
+       var main_value = main_info[m].split(",[");
+       var size = main_value[0].replace("{", "");
+       var item = document.createElement('button');
+       item.setAttribute('onclick', 'View_color("' + main_value[1] + '","' + size + '")');
+       item.innerHTML = '<i class="fa fa-trash-o"></i>';
+       item.class="itemBttnclass";
+       item.style.width = '50px';
+       item.style.height = '20px';
+       item.style.color = 'black';
+       item.innerText = "" + size;
+       document.getElementById("size_box_id").appendChild(item);
+   }
 
-    document.querySelector('#view-form .p_info').value = vs_info;
-
-    document.querySelector('#view-form .p_disc').innerText = vs_dic;
-    document.querySelector('#view-form .box .sub_box .p_disc').innerText = vs_dic;
-
-    var main_info = vs_info.split('},');
-    for (var m = 0; m < main_info.length; m++) {
-      var main_value = main_info[m].split(',[');
-      var size = main_value[0].replace('{', '');
-      var item = document.createElement('button');
-      item.setAttribute('onclick', `View_color("${main_value[1]}","${size}")`);
-      item.innerHTML = '<i class="fa fa-trash-o"></i>';
-      item.class = 'itemBttnclass';
-      item.style.width = '50px';
-      item.style.height = '20px';
-      item.style.color = 'black';
-      item.innerText = size;
-      document.getElementById('size_box_id').appendChild(item);
-    }
-
-    document.getElementById('view-form').style.top = ya + 'px';
-  }
+   document.querySelector('#view-form').style.top = y + 'px';
+   document.getElementById('shopping-cart-form').style.display='none'; 
+   document.getElementById('login-form').style.display='none';
 }
 
 function createItems() {
@@ -508,21 +505,24 @@ function createItems() {
     productCode.name = 'product_image';
     productCode.textContent = data[i].Image;
     productCode.hidden = true;
+	productImage_Btn.addEventListener('click', function() {
+	// Create a closure to capture the current state of the data
+	(function(data) {
+		View_Selected(
+		data.id,
+		data.name,
+		data.at_shop,
+		data.type,
+		data.code,
+		data.price,
+		data.images,
+		path,
+		data.Description,
+		data.More_info
+		);
+	})(data);
+	});
 
-    productImage_Btn.addEventListener('click', function() {
-      View_Selected(
-        data[i].id,
-        data[i].name,
-        data[i].at_shop,
-        data[i].type,
-        data[i].code,
-        data[i].price,
-        data[i].images,
-        path,
-        data[i].Description,
-        data[i].More_info
-      );
-    });
 
 	
 	if(offset === 0){
