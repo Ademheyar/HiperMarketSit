@@ -86,10 +86,15 @@ function readhtmtable() {
 
 	// Make an AJAX request to your PHP API
 	sendAjaxRequest(url, 'POST', datasent, function(responseText) {
+		console.log(responseText + '<< responseText');
 		var response = JSON.parse(responseText);
 		items = response.items;
 		firstset = response.firstset;
 		lastset = response.lastset;
+		a = response.a;
+		
+		console.log(a);
+		console.log(a + '<< a');
 		
 		console.log(items.length + '<< items.length');
 		data.splice(0, data.length);
@@ -318,6 +323,9 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
    }
 
    //{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
+   /*console.log("disply_item vs_info>>"+vs_info);
+   
+   read_item("{FLAG_SQUARE,(<FRUATE,[|2X10, , 23, -6.0, , |]>)},", document.getElementById("size_box_id"))
    var main_info = (vs_info + "}").split("},");
    for(var m = 0; main_info[m]; m++){
        var main_value = main_info[m].split(",[");
@@ -331,12 +339,441 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
        item.style.color = 'black';
        item.innerText = "" + size;
        size_info_id.appendChild(item);
-   }
+   }*/
 	var ya  = y+ a.scrollTop
 	view_Box.style.top = ya + 'px';
 }
 
 disply_item("", "", "", "", "", "", "", "", "", "");
+
+function read_item(list, parent){
+	var currentForm = 0;
+	var selectedShop = "";
+	var selectedColor = "";
+	var selectedSize = null;
+	var selectedQty = 0;
+	var selectedItems = [];
+	var isChangeQty;
+	var givenQty;
+	var itemList;
+	var formFrame = null;
+
+	function read_code(vs_info, shop_s, color_s, size_s) {
+		let a_u_list = [];
+		let shops = [];
+		let colors = [];
+		let sizes = [];
+
+		let t = vs_info.replace("\"", "") + ",";
+		let main_info = t.split("},");
+
+		for (let m = 0; m < main_info.length - 1; m++) {
+			let main_value = main_info[m].split(",(");
+			let shop_name = main_value[0].replace("{", "").trim();
+
+			if (shop_s === "" || shop_s === shop_name) {
+				shops.push(shop_name);
+			}
+
+			let shop = [shop_name];
+			let shop_node = [];
+
+			t = main_value[1].replace(")", "") + ",";
+			let f_info = t.split(">,");
+
+			for (let c = 0; c < f_info.length - 1; c++) {
+				let f_value = f_info[c].split(",[");
+				let color_txt = f_value[0].replace("<", "").trim();
+
+				if ((shop_s !== "" && shop_s === shop_name) &&
+					(color_s === "" || color_s === color_txt)) {
+					colors.push(color_txt);
+				}
+
+				let color = [color_txt];
+				let color_node = [];
+
+				t = f_value[1].replace("]", "") + ",";
+				let s_info = t.split("|,");
+
+				for (let s = 0; s < s_info.length - 1; s++) {
+					let s_value = s_info[s].split(", ");
+
+					if (s_value.length <= 1) {
+						s_value = s_info[s].split(",");
+					}
+
+					let s_n = [];
+					for (let si = 0; si < s_value.length - 1; si++) {
+						if ((shop_s !== "" && shop_s === shop_name) &&
+							(color_s !== "" && color_s === color_txt) &&
+							(size_s === "" || size_s === s_value[si].replace("|", "").trim())) {
+							if (si === 0) {
+								sizes.push(s_value[si].replace("|", "").trim());
+							}
+						}
+
+						s_n.push(s_value[si].replace("|", "").trim());
+					}
+
+					color_node.push(s_n);
+				}
+
+				color.push(color_node);
+				shop_node.push(color);
+			}
+
+			shop.push(shop_node);
+			a_u_list.push(shop);
+		}
+
+		return [shops, colors, sizes, a_u_list];
+	}
+
+	function star() {
+		formFrame = null;
+		currentForm = 0;
+		nextForm();
+	}
+
+	function createFormFrame() {
+		formFrame = document.createElement("div");
+		parent.appendChild(formFrame);
+	}
+
+	function nextForm() {
+		if (formFrame !== null) {
+			parent.removeChild(formFrame);
+		}
+
+		createFormFrame();
+
+		if (currentForm === 0) {
+			displayShopButtons();
+		} else if (currentForm === 1) {
+			displayColorButtons();
+		} else if (currentForm === 2) {
+			displaySizeButtons();
+		} else if (currentForm === 3) {
+			displayQuantityEntry();
+		} else if (currentForm === 4) {
+			showSelectedItems();
+		}
+	}
+
+	function prevForm() {
+		currentForm--;
+		nextForm();
+	}
+
+	function displayShopButtons() {
+		itemList.forEach(function (shop) {
+			var button = document.createElement("button");
+			button.innerHTML = shop[0];
+			button.addEventListener("click", function () {
+				selectShop(shop[0]);
+			});
+			formFrame.appendChild(button);
+		});
+
+		var backButton = document.createElement("button");
+		backButton.innerHTML = "Back";
+		backButton.addEventListener("click", function () {
+			prevForm();
+		});
+		formFrame.appendChild(backButton);
+	}
+
+	function displayColorButtons() {
+		var colors = getColors();
+
+		colors.forEach(function (color) {
+			var button = document.createElement("button");
+			button.innerHTML = color;
+			button.addEventListener("click", function () {
+				selectColor(color);
+			});
+			formFrame.appendChild(button);
+		});
+
+		var backButton = document.createElement("button");
+		backButton.innerHTML = "Back";
+		backButton.addEventListener("click", function () {
+			prevForm();
+		});
+		formFrame.appendChild(backButton);
+	}
+	
+	function displaySizeButtons() {
+		selected_size = null;
+		selectedQty = 0;
+		let out = null;
+		let sizeCount = getSizes().length;
+		let sizeLabel = document.createElement("label");
+		sizeLabel.textContent = "Size: " + sizeCount;
+		formFrame.appendChild(sizeLabel);
+		
+		let qtyLabel = document.createElement("label");
+		qtyLabel.textContent = "Quantity: " + getQtys();
+		formFrame.appendChild(qtyLabel);
+		
+		let selectSizeLabel = document.createElement("label");
+		selectSizeLabel.textContent = "Select Size:";
+		formFrame.appendChild(selectSizeLabel);
+		
+		for (let size of getSizes()) {
+			let txt = size[0] + "(" + size[3] + ")";
+			out = size;
+			let sizeButton = document.createElement("button");
+			sizeButton.textContent = txt;
+			sizeButton.addEventListener("click", () => {
+			selectSize(size);
+			});
+			formFrame.appendChild(sizeButton);
+		}
+		
+		var backButton = document.createElement("button");
+		backButton.innerHTML = "Back";
+		backButton.addEventListener("click", function () {
+			prevForm();
+		});
+		formFrame.appendChild(backButton);
+		
+		let buttonCount = Array.from(formFrame.children).filter(child => child.tagName === "BUTTON").length;
+		if (buttonCount === 2 && out) {
+			selectSize(out);
+		}
+	}
+
+	function displayQuantityEntry() {
+		selectedQty = 0;
+		
+		var qtyLabel = document.createElement("label");
+		qtyLabel.textContent = "Quantity: " + String(getQtys());
+		formFrame.appendChild(qtyLabel);
+		
+		var enterQtyLabel = document.createElement("label");
+		enterQtyLabel.textContent = "Enter Quantity:";
+		formFrame.appendChild(enterQtyLabel);
+		
+		qty_entry = document.createElement("input");
+		selectedQty = 0;
+		qty_entry.value = "1";
+		formFrame.appendChild(qty_entry);
+		
+		var backButton = document.createElement("button");
+		backButton.innerHTML = "Back";
+		backButton.addEventListener("click", function () {
+			prevForm();
+		});
+		formFrame.appendChild(backButton);
+		
+		var addToCartButton = document.createElement("button");
+		addToCartButton.innerHTML = "Back";
+		addToCartButton.addEventListener("click", function () {
+			add_to_cart(qty_entry.value);
+		});
+		formFrame.appendChild(addToCartButton);
+		
+	}
+
+	function add_to_cart(value) {
+		console.log("add_to_cart :" + value);
+		
+		if (selectedShop && selectedColor && selectedSize) {
+			console.log("add_to_cart :");
+			
+			if (selectedQty === 0) {
+				selectedQty = value;
+			}
+			
+			var item = [selectedShop, selectedColor, selectedSize, selectedQty];
+			selectedItems.push(item);
+			console.log("true :" + String(selectedItems));
+			
+			show_selected_items();
+		} else {
+			tk.messagebox.showerror("Error", "Please complete the selection.");
+		}
+	}
+
+
+
+	function selectShop(shop) {
+		selectedShop = shop;
+		currentForm++;
+		nextForm();
+	}
+
+	function selectColor(color) {
+		selectedColor = color;
+		currentForm++;
+		nextForm();
+	}
+
+	function selectSize(size) {
+		selectedSize = size;
+		currentForm++;
+		nextForm();
+	}
+
+	function addCartItem(qty) {
+		selectedQty = qty;
+		currentForm++;
+		selectedItems.push([selectedShop, selectedColor, selectedSize, selectedQty]);
+		nextForm();
+	}
+
+	function changeQuantity() {
+		selectedQty = givenQty;
+		currentForm++;
+		nextForm();
+	}
+
+	function showSelectedItems() {
+		var list = document.createElement("ul");
+
+		selectedItems.forEach(function (item) {
+			var listItem = document.createElement("li");
+			listItem.innerHTML = item[0] + " - " + item[1] + " - " + item[2] + " - " + item[3];
+			list.appendChild(listItem);
+		});
+
+		formFrame.appendChild(list);
+	}
+
+	function getColors() {
+		let colors = [];
+		for (let shop of itemList) {
+			if (shop[0] === selectedShop) {
+			return shop[1].map(color => color[0]);
+			}
+			for (let color of shop[1]) {
+			if (!colors.includes(color[0])) {
+				colors.push(color[0]);
+			}
+			}
+		}
+		return colors;
+	}
+
+	function getSizes() {
+		var sizes = [];
+		for (var shop of itemList) {
+			if (shop[0] === selectedShop) {
+			for (var color of shop[1]) {
+				if (color[0] === selectedColor) {
+				return color[1];
+				}
+			}
+			for (var color of shop[1]) {
+				for (var size of color[1]) {
+				if (!sizes.includes(size[0])) {
+					sizes.push(size[0]);
+				}
+				}
+			}
+			break;
+			}
+		}
+		if (sizes.length === 0) {
+			for (var shop of itemList) {
+			for (var color of shop[1]) {
+				for (var size of color[1]) {
+				if (!sizes.includes(size[0])) {
+					sizes.push(size[0]);
+				}
+				}
+			}
+			}
+		}
+		return sizes;
+	}
+
+	function getQtys() {
+		var q = 0;
+		for (var shop of itemList) {
+			if (shop[0] === selectedShop) {
+			for (var color of shop[1]) {
+				if (color[0] === selectedColor) {
+				for (var size of color[1]) {
+					if (selectedSize === size) {
+					return size[3];
+					}
+				}
+				for (var size of color[1]) {
+					if (size && parseFloat(size[3]) > 0) {
+					console.log("qty1 : " + size + " | " + size[3] + "+" + q + "=" + (q + parseFloat(size[3])));
+					q += parseFloat(size[3]);
+					}
+				}
+				break;
+				}
+			}
+			if (q === 0) {
+				for (var color of shop[1]) {
+				for (var size of color[1]) {
+					if (size && parseFloat(size[3]) > 0) {
+					console.log("qty2 : " + size + " | " + size[3] + "+" + q + "=" + (q + parseFloat(size[3])));
+					q += parseFloat(size[3]);
+					}
+				}
+				}
+			}
+			break;
+			}
+		}
+		if (q === 0) {
+			for (var shop of itemList) {
+			for (var color of shop[1]) {
+				for (var size of color[1]) {
+				if (size && parseFloat(size[3]) > 0) {
+					console.log("qty3 : " + size + " | " + size[3] + "+" + q + "=" + (q + parseFloat(size[3])));
+					q += parseFloat(size[3]);
+				}
+				}
+			}
+			}
+		}
+		return q;
+	}
+
+	function show_selected_items() {
+		var result_frame = document.createElement("div");
+		formFrame.appendChild(result_frame);
+		var label = document.createElement("label");
+		label.textContent = "Selected Items:";
+		result_frame.appendChild(label);
+		for (var item of selectedItems) {
+			var itemLabel = document.createElement("label");
+			itemLabel.textContent = item;
+			result_frame.appendChild(itemLabel);
+		}
+		var addButton = document.createElement("button");
+		addButton.textContent = "Add";
+		addButton.addEventListener("click", () => add());
+		formFrame.appendChild(addButton);
+		var doneButton = document.createElement("button");
+		doneButton.textContent = "Done";
+		doneButton.addEventListener("click", () => cancel_selection());
+		formFrame.appendChild(doneButton);
+	}
+	
+	isChangeQty = "";
+	givenQty = "";
+	
+	if(list){
+		let [, , , nested_list] = read_code(list, "", "", "");
+		itemList = nested_list;
+		console.log(itemList);
+		selectedShop = "";
+		selectedColor = "";
+		selectedSize = null;
+		selectedQty = 0;
+		selectedItems = [];
+		star();
+	}
+}
 
 function View_Selected(vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, vs_info) {
    document.getElementById('view-form').style.display='block'; 
@@ -356,29 +793,31 @@ function View_Selected(vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, vs_info) 
    for(var z = 0; z <= list.children.length-1; z++){
       list.children[z].remove();
    }
-
-   for(var m = 0; vs_img.split("~")[m]; m++){
-      var img = document.createElement('img');
-      alert("image "+  vs_path + "/" + vs_img.split("~")[m]);
-      img.src =  vs_path + "/" + vs_img.split("~")[m];
-      list.appendChild(img);
-      
-      list.value = "0";
-      for(var z = 0; z <= list.children.length-1; z++){
-         var n = 100/list.children.length;
-         if(100/3 >= n) n=n;
-         else n = 100/3;
-         if(z == 0){
-            list.children[z].style.width =String(100)+"%";
-            list.children[z].style.height =String(100-100/4)+"%";
-         }
-         else {
-            list.children[z].style.width =String(n)+"%";
-            list.children[z].style.height =String(100/4)+"%";
-         }
-         img.setAttribute('onclick', 'set_img_pos("'+ z + '")');
-      }
+   if(vs_img){
+		for(var m = 0; vs_img.split("~")[m]; m++){
+		var img = document.createElement('img');
+		alert("image "+  vs_path + "/" + vs_img.split("~")[m]);
+		img.src =  vs_path + "/" + vs_img.split("~")[m];
+		list.appendChild(img);
+		
+		list.value = "0";
+		for(var z = 0; z <= list.children.length-1; z++){
+			var n = 100/list.children.length;
+			if(100/3 >= n) n=n;
+			else n = 100/3;
+			if(z == 0){
+				list.children[z].style.width =String(100)+"%";
+				list.children[z].style.height =String(100-100/4)+"%";
+			}
+			else {
+				list.children[z].style.width =String(n)+"%";
+				list.children[z].style.height =String(100/4)+"%";
+			}
+			img.setAttribute('onclick', 'set_img_pos("'+ z + '")');
+		}
+	}
    }
+   
    //<input type="hidden" name="product_price" class="p_price" value="">
    document.querySelector('#view-form .p_price').value = vs_price;
    document.querySelector('#view-form .p_price').innerText = vs_price;
@@ -392,20 +831,10 @@ function View_Selected(vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, vs_info) 
    document.querySelector('#view-form .box .sub_box .p_disc').innerText = vs_dic;
 
    //{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
-   var main_info = vs_info.split("},");
-   for(var m = 0; main_info[m]; m++){
-       var main_value = main_info[m].split(",[");
-       var size = main_value[0].replace("{", "");
-       var item = document.createElement('button');
-       item.setAttribute('onclick', 'View_color("' + main_value[1] + '","' + size + '")');
-       item.innerHTML = '<i class="fa fa-trash-o"></i>';
-       item.class="itemBttnclass";
-       item.style.width = '50px';
-       item.style.height = '20px';
-       item.style.color = 'black';
-       item.innerText = "" + size;
-       document.getElementById("size_box_id").appendChild(item);
-   }
+   console.log("vs_info>>"+vs_info);
+   
+   read_item("{FLAG_SQUARE,(<FRUATE,[|2X10, , 23, -6.0, , |]>)},", document.getElementById("size_box_id"))
+   
 
    document.querySelector('#view-form').style.top = y + 'px';
    document.getElementById('shopping-cart-form').style.display='none'; 
@@ -417,7 +846,7 @@ function createItems() {
   let itemCount = productGrid.childElementCount;
 
   for (var i = 0; i < data.length; i++) {
-	  console.log(itemCount+"<<itemCount<data.length>>"+data.length);
+	console.log(itemCount+"<<itemCount<data.length>>"+data.length);
 	  console.log(i+"<<i");
 	  console.log("id>>"+data[i].id);
 	  console.log(data);
@@ -505,9 +934,12 @@ function createItems() {
     productCode.name = 'product_image';
     productCode.textContent = data[i].Image;
     productCode.hidden = true;
+	console.log("selected item info >>" + data.More_info);
 	productImage_Btn.addEventListener('click', function() {
 	// Create a closure to capture the current state of the data
 	(function(data) {
+		
+		console.log("selected item info >>" + data.More_info);
 		View_Selected(
 		data.id,
 		data.name,
