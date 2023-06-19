@@ -42,7 +42,31 @@ $a = "";
 if ($result->num_rows > 0) {
   while ($row = $result->fetch_assoc()) {
     // Access and process each item's values
-    $items[] = $row;
+    $values = ['id', 'name', 'code', 'type', 'barcode', 'at_shop', 'quantity', 'cost', 'tax', 'price', 'include_tax', 'price_change', 'more_info', 'images', 'description', 'service', 'default_quantity', 'active'];
+    
+    $isInvalid = false;
+    $item = array();
+    
+    foreach ($values as $value) {
+      if(!isset($row['id']) && !isset($row['name']) && !isset($row['code'])) {
+        
+        $isInvalid = true;
+        break;
+      }
+      else if (empty($row[$value])){
+        $item[$value] = "";
+      }
+      else $item[$value] = $row[$value];
+    }
+
+    if ($isInvalid) {
+      // Handle the error, log it, or take appropriate action
+      // For example, you can skip this row by using the `continue` statement
+      continue;
+    }
+
+    // Add the item to the items array
+    $items[] = $item;
   }
 }
 // Create the response array

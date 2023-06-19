@@ -1,5 +1,5 @@
 <div id='MenuItems'>
-   <a href="Home.php" class="Home_mainu">
+   <a href="Home.php" class="MenuItemBtn Home_mainu">
       <img src="img/home.png" class="Home_icon" alt="">
       <b href="Home.php" class="Home_text">Home</b>
    </a>   
@@ -7,31 +7,31 @@
    <?php 
    // Check if the user is logged in and has user type 2
    if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
-      <a href="view_products.php" class="Home_mainu">
+      <a href="view_products.php" class="MenuItemBtn Home_mainu">
          <img src="img/home.png" class="Home_icon" alt="">
          <b href="view_products.php" class="Home_text">View Products</b>
       </a>
 
-      <a href="products.php" class="Home_mainu">
+      <a href="products.php" class="MenuItemBtn Home_mainu">
          <img src="img/home.png" class="Home_icon" alt="">
          <b href="products.php" class="Home_text">Products</b>
       </a>
       
-      <a onclick="chart_start();" class="Home_mainu">Cart<span><?php echo $_SESSION['car_length']; ?></span></a>    
+      <a onclick="chart_start();" class="MenuItemBtn Home_mainu">Cart<span><?php echo $_SESSION['car_length']; ?></span></a>    
 
-      <a href="Logout.php" class="Home_mainu">
+      <a href="Logout.php" class="MenuItemBtn Home_mainu">
          <img src="img/home.png" class="Home_icon" alt="">
          <b href="Logout.php" class="Home_text">Log out<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
       </a>
    <?php } else { 
       // If the user is not logged in or has a different user type
       if(session_id() == "") session_start(); ?>  
-      <a onclick="chart_start();" class="Home_mainu">
+      <a onclick="chart_start();" class="MenuItemBtn Home_mainu">
          <img src="img/cart.png" class="Home_icon" alt="">
          <b onclick="chart_start();" class="Home_text">Cart<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
       </a>    
       
-      <button onclick="log_in_out();" style="width:auto;" class='loginbtn' class="Home_mainu">
+      <button onclick="log_in_out();" style="width:auto;" class="MenuItemBtn loginbtn">
          <b class="Home_text">Log in</b>
       </button> 
    <?php } ?>         
@@ -62,6 +62,118 @@
 <style>
 
 
+/* MenuItems */
+
+#MenuItems {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  position: absolute;
+  width: 15%;
+  height: 100%; /* Adjusted to be 75% of the parent height */
+  top: 20%; /* Added to push it 25% down from the parent */
+  background: var(--bg);
+}
+
+#MenuItems li {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  list-style: none;
+}
+
+#MenuItems li a,
+#MenuItems li button {
+  padding: 2rem;
+  border: var(--border);
+  border-radius: 0.5rem;
+}
+
+#MenuItems .MenuItemBtn {
+   position: relative;
+   width: 100%;
+   margin-bottom: 10px;
+   border: var(--border);
+   border-radius: 0.5rem;
+   top: 10%;
+}
+
+#MenuItems .Home_mainu {
+  text-align: left;
+  border: var(--border);
+  border-radius: 0.5rem;
+  display: block;
+  background: #010103;
+}
+
+#MenuItems .Home_mainu:hover {
+  background: #eee;
+}
+
+#MenuItems .Home_mainu .Home_text {
+  color: palevioletred;
+  font-size: 19px;
+}
+
+#MenuItems .Home_mainu .Home_icon {
+  width: 25px;
+  height: 25px;
+}
+
+/* media queries */
+
+@media (max-width: 768px) {
+  #MenuItems {
+   overflow: auto;
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   justify-content: flex-start;
+   align-items: flex-start;
+   position: absolute;
+   width: 15%;
+   height: 100%;
+   top: 15%;
+   background: var(--bg);
+  }
+
+  #MenuItems .MenuItemBtn{
+   position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+    border: var(--border);
+    border-radius: 0.5rem;
+  } 
+
+  #MenuItems .Home_mainu .Home_text {
+    text-indent: -999px;
+    background-repeat: no-repeat;
+    font-size: 15px;
+  }
+
+}
+
+@media (max-width: 450px) {
+
+  #MenuItems .MenuItemBtn{
+   position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+    border: var(--border);
+    border-radius: 0.5rem;
+  } 
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -84,45 +196,6 @@ body .Main{
    background: #f8f8ff;
 }
  
-#MenuItems{
-   display: inline-grid;
-    top: 21%;
-    align-items: center;
-    position: absolute;
-    width: 15%;
-    height: 100%;
-    background: var(--bg);
- }
-#MenuItems li a , #MenuItems li button{
-   list-style: 70px;
-   padding: 2rem;
-   border: var(--border);
-   border-radius: 0.5rem;
-   position: absolute;
-}
-
-#MenuItems .Home_mainu {
-   text-align: left;
-    list-style: 70px;
-    border: var(--border);
-    border-radius: 0.5rem;
-    background: #010103;;
-}
-
-#MenuItems .Home_mainu:hover {
-   background: #eee;
-}
-
-#MenuItems .Home_mainu .Home_text {
-   color: palevioletred;
-    font-size: 19px;
-}
-
-#MenuItems .Home_mainu .Home_icon {
-   width: 25px;
-   height: 25px;
-}
-
 nav {
    flex: 1;
    text-align: right;
@@ -396,22 +469,10 @@ nav {
    }
  }
  
- @media (max-width:768px){
-   #MenuItems{
-      display: inline-grid;
-      top: 22%;
-      align-items: center;
-      position: absolute;
-      width: 15%;
-      height: 100%;
-      background: var(--bg);
-   }
 
-   #MenuItems .Home_mainu .Home_text {
-      text-indent:-999px;
-      background-repeat: no-repeat;
-      font-size: 15px;
-   }
+
+ 
+ @media (max-width:768px){
    /*body .flex .navbar{
        top:99%; left:0; right:0;
        background-color: var(--blue);
