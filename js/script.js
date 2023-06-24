@@ -55,7 +55,7 @@ var a_u_list = [];
 
 var a = document.querySelector('body .Main');
 window.onscroll = () => {
-   var mainy = 150;
+   var mainy = 200;
    var sy = scrollY; 
    var y = mainy + sy;
 	var ya  = y/2 + a.scrollTop -10;
@@ -67,7 +67,7 @@ window.onscroll = () => {
 };
 
 a.onscroll = () => {
-   var mainy = 150;
+   var mainy = 200;
    var sy = scrollY; 
    var y = mainy + sy;
 	var ya  = y/2+ a.scrollTop -10;

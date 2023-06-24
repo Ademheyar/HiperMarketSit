@@ -95,7 +95,7 @@ elseif(isset($_POST['register_btn'])){
 	{
 		x.style.left='-400px';
 		y.style.left='50px';
-		z.style.left='110px';
+		z.style.left='210px';
 		modal.style.height= '350px';
 	}
 
@@ -103,7 +103,7 @@ elseif(isset($_POST['register_btn'])){
 	{
 		x.style.left='50px';
 		y.style.left='450px';
-		z.style.left='0px';
+		z.style.left='41px';
 		modal.style.height= '200px';
 	}
 
@@ -118,11 +118,11 @@ elseif(isset($_POST['register_btn'])){
 
 	function log_in_out()
 	{
-		var mainy = 150;
+		var mainy = 22;
 		var sy = scrollY;
-        var y = sy;
+        var y = sy + mainy;
         var l = document.querySelector('#login-form');
-   		if(l) l.style.top = y + 'px';
+   		l.style.top = y + 'rem';
         document.getElementById('login-form').style.display='block';
         document.getElementById('shopping-cart-form').style.display='none'; 
         document.getElementById('view-form').style.display='none'; 
@@ -130,15 +130,15 @@ elseif(isset($_POST['register_btn'])){
 
   
 	window.onscroll = () => {
-        var mainy = 150;
+        var mainy = 200;
         var sy = scrollY; 
-   var sy = scrollY; 
-   var y = mainy + sy;
-   var a = document.querySelector('body .Main');
-	var ya  = y+ a.scrollTop
-	document.getElementById('view-form').style.top = ya + 'px';
+   		var sy = scrollY; 
+   		var y = mainy + sy;
+   		var a = document.querySelector('body .Main');
+		var ya  = y + a.scrollTop + 200
+		document.getElementById('view-form').style.top = ya + 'px';
         var l = document.querySelector('#login-form');
-   		if(l) l.style.top = y + 'px';
+   		l.style.top = ya + 'rem';
         document.querySelector('#shopping-cart-form').style.top = y + 'px';
         menu.classList.remove('fa-times');
         navbar.classList.remove('active');
@@ -159,7 +159,7 @@ elseif(isset($_POST['register_btn'])){
  }
  
  .form-box .toggle-btn {
-    padding: 10px 30px;
+    padding: 7px 63px;
     cursor: pointer;
     background: transparent;
     border: 0;
@@ -168,7 +168,7 @@ elseif(isset($_POST['register_btn'])){
  }
  
  #btn {
-    top: 0; left: 0;
+    top: 0; left: 41px;
     position: absolute;
     width: 110px;
     height: 50px;
@@ -183,37 +183,7 @@ elseif(isset($_POST['register_btn'])){
     bottom: 68px;
     position: absolute;
  }
- /*
  
- .form-box .button-box {
-    width: 220px;
-    margin: 2px auto;
-    position: relative;
-    box-shadow: 0 0 20px 9px#ff61241f;
-    border-radius: 10px;
- }
- 
- 
- 
- 
- .form-box .input-field {
-	 width: 100%;
-	 padding: 10px 0;
-    margin: 5px 0;
-    border-left: 0;
-    border-right: 0;
-    border-top: 0;
-    border-bottom: 0;
-    outline: none;
-    background: transparent;
- }
- 
- 
- .form-box .check-box {
-    margin: 30px 10px 34px 0;
- }
- 
- */
  
  .input-group-login ,
  .input-group-register{
@@ -251,5 +221,6 @@ elseif(isset($_POST['register_btn'])){
     outline: none;
     border-radius: 30px;
  }
+
 
 </style>

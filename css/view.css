@@ -1,0 +1,240 @@
+/*view-form */
+
+#view-form {
+   width: 100%;
+   height: auto;
+   position: absolute;
+   background: rgba(0,0,0,.3);
+   padding: 18px;
+   overflow: hidden;
+   display: none;
+}
+
+/* info box css */
+#view-form .info_Box {
+    width: 100%;
+    height: auto;
+    background: rgba(0,0,0,.3);
+    padding: 3px;
+    display: inline-flex;
+    position: relative;
+    color: aliceblue;
+}
+
+#view-form .info_Box .img_box {
+    width: 50%;
+    height: 330px;
+    background: rgba(0,0,0,.3);
+    padding: 6px;
+    display: list-item;
+}
+
+#view-form .sub_info_Box {
+
+}
+
+#view-form .sub_info_Box .size_box {
+    width: 100%;
+    padding: 6px;
+}
+
+#view-form .sub_info_Box .color_box {
+    width: 100%;
+    padding: 6px;
+}
+
+/* btn box form css */
+
+#view-form .view_btn_form {
+    display: line;
+}
+
+#view-form .view_btn_form .btns {
+    width: 33%;
+    text-align: center;
+    background-color: var(--blue);
+    color: var(--white);
+    padding: 1.2rem 3rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+
+
+@media (max-width:600px){ 
+	/*view-form */
+	/* info box css */
+	#view-form .info_Box {
+		width: 100%;
+		height: auto;
+		background: rgba(0,0,0,.3);
+		padding: 3px;
+		display: flow-root;
+		position: relative;
+		color: aliceblue;
+	}
+
+	#view-form .info_Box .img_box {
+		width: 100%;
+    	height: 283px;
+    	background: rgba(0,0,0,.3);
+    	padding: 6px;
+	}
+
+	
+	#view-form .view_btn_form .btns {
+		width: 50%;
+		text-align: center;
+		background-color: var(--blue);
+		color: var(--white);
+		padding: 1.2rem 3rem;
+		border-radius: 0.5rem;
+		margin-top: 1rem;
+	}
+}
+
+
+@media (max-width:400px){ 
+	/*view-form */
+	/* info box css */
+	#view-form .info_Box {
+		width: 100%;
+		height: auto;
+		background: rgba(0,0,0,.3);
+		padding: 3px;
+		/*display: inline-flex;*/
+		position: relative;
+		color: aliceblue;
+	}
+
+	#view-form .info_Box .img_box {
+		width: 100%;
+    	height: 260px;
+    	background: rgba(0,0,0,.3);
+    	padding: 6px;
+	}
+		
+	#view-form .view_btn_form {
+		display: line;
+	}
+
+	#view-form .view_btn_form .btns {
+		width: 100%;
+		text-align: center;
+		background-color: var(--blue);
+		color: var(--white);
+		padding: 1.2rem 3rem;
+		border-radius: 0.5rem;
+		margin-top: 1rem;
+	}
+}
+/*  end of view-form */
+
+
+
+
+
+
+
+
+.list_containers .box-container{
+	display: grid;
+	grid-template-columns: repeat(auto-fit, 35rem);
+	gap: 1.5rem;
+	justify-content: center;
+	overflow: hidden;
+	/* line-height: 100%; */
+	margin-right: auto;
+	text-align: center;
+	padding: 2rem;
+	box-shadow: var(--box-shadow);
+	border: var(--border);
+	border-radius: 1.5rem;
+	align-items: center;
+	align-content: space-between;
+	flex-wrap: wrap;	
+ }
+
+ .list_containers .box-container .box{
+    text-align: center;
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    border:var(--border);
+    border-radius: .5rem;
+ }
+
+ @media (max-width:600px){
+ 
+	.list_containers .box-container .box{
+		width: 90%;
+		border-radius: .5rem;
+	}
+	
+	.list_containers .box-container{
+		display: grid;
+		grid-template-columns: repeat(auto-fit, 35rem);
+		gap: 1.5rem;
+		justify-content: center;
+		overflow: hidden;
+		/* line-height: 100%; */
+		margin-right: auto;
+		text-align: center;
+		padding: 2rem;
+		box-shadow: var(--box-shadow);
+		border: var(--border);
+		border-radius: 1.5rem;
+		align-items: center;
+		align-content: space-between;
+		flex-wrap: wrap;	
+ 	}
+}
+
+.list_containers .box-container .box:hover {
+	transform: scale(1.5);
+}
+ 
+
+.list_containers .box-container .box .img_box{
+    position: relative;
+ }
+
+.list_containers .box-container .box .img_box .box_btns{
+	width: 100%;
+	display: -webkit-inline-box;
+	position: absolute;
+	padding: 16px;
+	bottom: -13px;
+	left: 5%;
+ }
+
+.list_containers .box-container .box .box_btns .lcb_1btns {
+	display: block;
+	color: black;
+	WidTH: 30%;
+	background-color: var(--with);
+	font-size: 1rem;
+	padding: 6%;
+	border-radius: 0.2rem;
+	cursor: pointer;
+	margin-top: 1rem;
+ }
+ 
+ .list_containers .box-container .box .box_btns .lcb_1btns:hover {
+  background-color: black;
+	color: white;
+ }
+ 
+ .list_containers .box-container .box img{
+    height: 25rem;
+ }
+ 
+ .list_containers .box-container .box h3{
+    margin:1rem 0;
+    font-size: 2.5rem;
+    color:var(--black);
+ }
+ 
+ .list_containers .box-container .box .price{
+    font-size: 2.5rem;
+    color:var(--black);
+ }

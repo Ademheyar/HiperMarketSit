@@ -30,6 +30,7 @@ if(isset($_POST['add_to_cart'])){
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="css/style.css">
+   <link rel="stylesheet" href="css/view.css">
 </head>
 <body>
    
@@ -45,15 +46,29 @@ if(isset($message)){
 
 <?php
    include('header.php');
-   
+   if(session_id() == "") session_start();
+   if ($_SESSION['on'] == 0){
+      /*  include banner area  */
+      include ('Main.php');
+   }
+   else if ($_SESSION['on'] == 1){
+      /*  include banner area  */
+      include ('View_Profile.php');
+   }
+    
    /*  include banner area  */
-    include ('Main.php');
+   
+   include ('footer.php');
+    
 ?>
 </section>
 
 </div>
 <!-- !start #footer -->
 <script src="js/script.js"> </script>
+<script src="js/view.js"></script>
+<!-- 
+-->
 <!-- custom js file link  -->
 </body>
 </html>

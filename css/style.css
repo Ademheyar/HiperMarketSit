@@ -499,31 +499,7 @@ button, button:focus {
  
  
  
- 
- 
- 
- 
- 
- /* media queries  */
- 
- @media (max-width:1200px){
-    .shopping-cart{
-       overflow-x: scroll;
-    }
- 
-    .shopping-cart table{
-       width: 120rem;
-    }
- 
-    .shopping-cart .heading{
-       text-align: left;
-    }
- 
-    .shopping-cart .checkout-btn{
-       text-align: left;
-    }
- 
- }
+
  
  @media (max-width:991px){
  

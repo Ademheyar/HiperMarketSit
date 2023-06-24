@@ -1,6 +1,7 @@
 <?php
    if(session_id() == "") {
       session_start();
+      $_SESSION['on_view'] = 0;
       $_SESSION['car_length'] = 0;
       $_SESSION['car'] = array(array());
       

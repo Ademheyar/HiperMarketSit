@@ -1,91 +1,193 @@
 
-<?php
-
-@include 'config.php';
-
-if(isset($_POST['update_update_btn'])){
-   $update_value = $_POST['update_quantity'];
-   $update_id = $_POST['update_quantity_id'];
-   $update_quantity_query = mysqli_query($conn, "UPDATE `cart` SET quantity = '$update_value' WHERE id = '$update_id'");
-   if($update_quantity_query){
-      header('location:cart.php');
-   };
-};
-
-if(isset($_GET['remove'])){
-   $remove_id = $_GET['remove'];
-   mysqli_query($conn, "DELETE FROM `cart` WHERE id = '$remove_id'");
-   header('location:cart.php');
-};
-
-if(isset($_GET['delete_all'])){
-   mysqli_query($conn, "DELETE FROM `cart`");
-   header('location:cart.php');
-}
-
-?>
-
-<!-- creating the form-box -->
-<div id='shopping-cart-form' class='shopping-cart'>
-   <h1 class="heading">cart lists</h1>
+<!-- Creating the form-box -->
+<div id="shopping-cart-form" class="shopping-cart">
+   <h1 class="heading">Cart Lists</h1>
    <table>
-      <tbody>
-         <?php 
-         if(session_id() == "") session_start();
-         $grand_total = 0;
-         //array($_POST['product_name'], $_POST['product_price'], $_POST['product_image']);
-         $car_id = 0;
-         foreach($_SESSION['car'] as $i=>$data1){
-            if(count($data1) == 0) break;
-         ?>
-
-         <tr>
-            <td><img src=<?php echo "img/products/".str_replace(' ', '/', $data1[2])."/".str_replace(' ', '_', $data1[0])."/".$data1[1] ."/".$data1[3]; ?> height="100" alt=""></td>
-            <?php if(count($data1[6]) > 0){
-                  if(count($data1[6][count($data1[6])-1]) > 0){?>
-                  <td><?php echo $data1[6][count($data1[6])-1][0]; ?></td>
-                  <td><?php echo $data1[6][count($data1[6])-1][1]; ?></td>
-            <?php }}?>
-            <?php $sub_price = number_format($data1[4]) * count($data1[6]); ?>
-            <td>$<?php echo number_format($data1[4]); ?>x</td>
-            <form action="" method="post">
-               <td>
-                  <input type="hidden" name="update_quantity_id"  value="<?php echo $car_id; ?>" >
-                  <input type="number" name="update_quantity" class="update_quantity" onchange="quantity_changed();" min="1"  value="<?php echo  count($data1[6]); ?>" >
-               </td>
-               <td>
-                  <select name="cp_size_list" id="chart_combox1" value="<?php echo $data1[6][count($data1[6])-1][0]; ?>" class="chart_combox1 chart_box cp_size_list" onclick="list_size_info();">product sizes</select>
-                  <select name="cp_color_list" id="chart_combox1" value="<?php echo $data1[6][count($data1[6])-1][1]; ?>" class="chart_combox1 chart_box cp_color_list" onclick="list_color_info();">product colors</select>
-               </td> 
-               <input type="hidden" name="p_info" class="p_info" value="<?php echo $data1[5]; ?>" >
-               <td> 
-                  <input type="submit" value="update" name="update_update_btn">
-                  <a href="cart.php?remove=<?php echo $car_id; ?>" onclick="return confirm('remove item from cart?')" class="delete-btn"> <i class="fas fa-trash"></i> remove</a>
-               </td> 
-            </form>
-         </tr>
-         <?php $sub_total = number_format($data1[4]) * count($data1[6]); ?>
-         <?php
-         $grand_total += $sub_total;  
-         $car_id++;
-            };
-         ?>
-         <tr class="table-bottom">
-            <td><?php echo "grand total R".$grand_total; ?></td>
-            <td><a href="cart.php?delete_all" onclick="return confirm('are you sure you want to delete all?');" class="delete-btn"> <i class="fas fa-trash"></i> delete all </a></td>
-         </tr>
-
+      <thead>
+            <tr>
+               <th>Product</th>
+               <th>Size</th>
+               <th>Color</th>
+               <th>Quantity</th>
+               <th>Price</th>
+               <th>Total</th>
+               <th>Remove</th>
+            </tr>
+      </thead>
+      <tbody id="cart-items">
+            <!-- Cart items will be dynamically added here -->
       </tbody>
-
    </table>
+   <!-- Total price display -->
+   <div class="total-price">Total Price: $<span id="grand-total"></span></div>
 
-   <div class="checkout-btn">
-      <a href="checkout.php" class="btn <?= ($grand_total > 1)?'':'disabled'; ?>">procced to checkout</a>
-   </div>
+   <!-- Clean All button to delete all items -->
+   <button type="button" onclick="deleteAllItems();" class="clean-btn">Clean All</button>
 
-</div>   
+   <!-- Pay button for payment process -->
+   <button type="button" onclick="pay();" class="pay-btn">Pay</button>
+
+   <!-- Cancel button to close the form -->
+   <button type="button" onclick="cancelForm();" class="cancel-btn">Cancel</button>
+</div>
+
+<!-- Add Item form -->
+<div id="add-item-form" class="add-item-form">
+   <h2 class="heading">Add Item</h2>
+   <form onsubmit="addNewItem(event)">
+      <label for="product-name">Product:</label>
+      <input type="text" id="product-name" required><br>
+
+      <label for="product-size">Size:</label>
+      <input type="text" id="product-size" required><br>
+
+      <label for="product-color">Color:</label>
+      <input type="text" id="product-color" required><br>
+
+      <label for="product-quantity">Quantity:</label>
+      <input type="number" id="product-quantity" min="1" required><br>
+
+      <label for="product-price">Price:</label>
+      <input type="number" id="product-price" min="0" step="0.01" required><br>
+
+      <button type="submit">Add</button>
+   </form>
+   <button type="button" onclick="cancelForm()">Cancel</button>
+</div>
+
 <script>
-   var a_u_list = [];
+   // Function to get the cart data from cookies
+   function getCartData() {
+      var cartData = localStorage.getItem('cartData');
+      return cartData ? JSON.parse(cartData) : [];
+   }
+
+   // Function to update the cart data in cookies
+   function updateCartData(cartData) {
+      localStorage.setItem('cartData', JSON.stringify(cartData));
+   }
+
+   // Function to initialize the cart data and display it
+   function initializeCartData() {
+      var cartData = getCartData();
+      updateCartDisplay(cartData);
+   }
+
+   // Function to update the cart display
+   function updateCartDisplay(cartData) {
+      var cartItemsContainer = document.getElementById('cart-items');
+      var grandTotalElement = document.getElementById('grand-total');
+      cartItemsContainer.innerHTML = '';
+      var grandTotal = 0;
+
+      for (var i = 0; i < cartData.length; i++) {
+            var item = cartData[i];
+            var total = item.quantity * item.price;
+            grandTotal += total;
+
+            var row = document.createElement('tr');
+            row.innerHTML = `
+               <td>${item.product}</td>
+               <td>${item.size}</td>
+               <td>${item.color}</td>
+               <td>${item.quantity}</td>
+               <td>${item.price}</td>
+               <td>${total}</td>
+               <td><button type="button" onclick="removeItem(${i})">Remove</button></td>
+            `;
+
+            cartItemsContainer.appendChild(row);
+      }
+
+      grandTotalElement.textContent = grandTotal.toFixed(2);
+   }
+
+   // Function to add a new item to the cart
+   function addNewItem(event) {
+      event.preventDefault();
+
+      var productName = document.getElementById('product-name').value;
+      var productSize = document.getElementById('product-size').value;
+      var productColor = document.getElementById('product-color').value;
+      var productQuantity = parseInt(document.getElementById('product-quantity').value);
+      var productPrice = parseFloat(document.getElementById('product-price').value);
+
+      var newItem = {
+            product: productName,
+            size: productSize,
+            color: productColor,
+            quantity: productQuantity,
+            price: productPrice
+      };
+
+      var cartData = getCartData();
+      cartData.push(newItem);
+      updateCartData(cartData);
+      updateCartDisplay(cartData);
+
+      cancelForm();
+   }
+
+   // Function to remove an item from the cart
+   function removeItem(index) {
+      var cartData = getCartData();
+      cartData.splice(index, 1);
+      updateCartData(cartData);
+      updateCartDisplay(cartData);
+   }
+
+   // Function to delete all items from the cart
+   function deleteAllItems() {
+      var cartData = [];
+      updateCartData(cartData);
+      updateCartDisplay(cartData);
+   }
+
+   // Function to simulate payment process
+   function pay() {
+      var cartData = getCartData();
+      // Perform payment process here
+      alert('Payment Successful!');
+      deleteAllItems();
+   }
+
+   // Function to cancel the form
+   function cancelForm() {
+      document.getElementById('add-item-form').style.display = 'none';
+   }
+
+   // Function to show the add item form
+   function showAddItemForm() {
+      document.getElementById('add-item-form').style.display = 'block';
+   }
+
+   // Initialize the cart data and display
+   initializeCartData();
+
+    // Function to remove a cart item
+    function removeCartItem(cartId) {
+        // Remove only selected item
+    }
+
+    // Function to delete all items
+    function deleteAllItems() {
+        if (confirm('Are you sure you want to delete all items?')) {
+         // Remove all items
+        }
+    }
+
+    // Function for payment process
+    function pay() {
+        // Add your payment process logic here
+        alert('Payment process initiated!');
+    }
+
+    // Function to cancel the form and close it
+    function cancelForm() {
+        document.getElementById('shopping-cart-form').style.display = 'none';
+    }
+
+    var a_u_list = [];
    function quantity_changed(){
 
    }
@@ -239,124 +341,8 @@ if(isset($_GET['delete_all'])){
       
       chang_to_text();
    }
-
-</script>
-
-<style>
-.shopping-cart {
-   width: auto;
-   height: auto;
-   position: absolute;
-   margin: 3%;
-   left: 15%;
-   background: rgba(0,0,0,.3);
-   padding: 10px;
-   overflow: hidden;
-   display: none;
- }
- /*
- 
-.button-box {
-    width: 220px;
-    margin: 2px auto;
-    position: relative;
-    box-shadow: 0 0 20px 9px#ff61241f;
-    border-radius: 10px;
- }
- .toggle-btn {
-    padding: 10px 30px;
-    cursor: pointer;
-    background: transparent;
-    border: 0;
-    outline: none;
-    position: relative;
- }
- 
- #btn {
-    top: 0; left: 0;
-    position: absolute;
-    width: 110px;
-    height: 100%;
-    background: #f3c693;
-    border-radius: 30px;
-    transition: .5s;
- }
- */
-.shopping-cart table{
-    text-align: center;
-    width: 100%;
- }
- 
-
- .shopping-cart table thead th{
-    padding:1.5rem;
-    font-size: 2rem;
-    color:var(--white);
-    background-color: var(--black);
- }
- 
- .shopping-cart table tr td{
-    border-bottom: var(--border);
-    font-size: 2rem;
-    color:var(--black);
- }
- 
- .shopping-cart table input[type="number"]{
-    border: var(--border);
-    padding:1rem 2rem;
-    font-size: 2rem;
-    color:var(--black);
-    width: 10rem;
- }
-
- .shopping-cart table select{
-    border: var(--border);
-    padding:1rem 2rem;
-    font-size: 2rem;
-    color:var(--black);
-    width: 10rem;
- }
- 
- .shopping-cart table input[type="submit"]{
-    padding:.5rem 1.5rem;
-    cursor: pointer;
-    font-size: 2rem;
-    background-color: var(--orange);
-    color:var(--white);
- }
- 
- .shopping-cart table input[type="submit"]:hover{
-    background-color: var(--black);
- }
- 
- .shopping-cart table .table-bottom{
-    background-color: var(--bg-color);
- }
- 
- .shopping-cart .checkout-btn{
-    text-align: center;
-    margin-top: 1rem;
- }
- 
- .shopping-cart .checkout-btn a{
-    display: inline-block;
-    width: auto;
- }
- 
- .shopping-cart .checkout-btn a.disabled{
-    pointer-events: none;
-    opacity: .5;
-    user-select: none;
-    background-color: var(--red);
- }
- 
-
-</style>
-<!-- the first script code is for login and registration form to move correctly-->
-<script>
-	  
-     window.onscroll = () => {
-        var mainy = 150;
+   window.onscroll = () => {
+        var mainy = 200;
         
    var sy = scrollY; 
    var y = mainy + sy;
@@ -371,7 +357,7 @@ if(isset($_GET['delete_all'])){
 
 	function chart_start()
 	{
-		var mainy = 150;
+		var mainy = 200;
 		var sy = scrollY;
       var y = sy;
       document.querySelector('#shopping-cart-form').style.top = mainy+ y + 'px';
@@ -389,4 +375,353 @@ if(isset($_GET['delete_all'])){
 		   modal.style.display = "none";
 		}
 	}
+
 </script>
+
+<style>
+   
+
+.shopping-cart table {
+  text-align: center;
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: scroll;
+    margin: auto;
+    padding: 1%;
+    width: 82rem;
+    /* display: inline-table; */
+    /* overflow-x: scroll; */
+    grid-template-columns: repeat(auto-fit, 20rem);
+    gap: 11.5rem;
+    justify-content: center;
+    line-height: 100%;
+    margin-right: 19px;
+    text-align: center;
+    padding: 18rem;
+    box-shadow: var(--box-shadow);
+    border: var(--border);
+    border-radius: 12.5rem;
+    align-items: center;
+    align-content: space-between;
+}
+
+.shopping-cart table thead th {
+  padding: 1.5rem;
+  font-size: 2rem;
+  color: var(--white);
+  background-color: var(--black);
+}
+
+.shopping-cart table tbody td {
+      font-size: 2rem;
+    gap: 10rem;
+    font-family: cursive;
+    color: #f5f5f5;
+    border-bottom: var(--border);
+}
+
+.shopping-cart table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.shopping-cart table input[type="number"] {
+  border: var(--border);
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  color: var(--black);
+  width: 10rem;
+}
+
+.shopping-cart table select {
+  border: var(--border);
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  color: var(--black);
+  width: 10rem;
+}
+
+.shopping-cart table input[type="submit"] {
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  font-size: 2rem;
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.shopping-cart table input[type="submit"]:hover {
+  background-color: var(--black);
+}
+
+.shopping-cart table .table-bottom {
+  background-color: var(--bg-color);
+}
+
+.shopping-cart .total-price {
+  margin-top: 2rem;
+  font-size: 2rem;
+  color: var(--white);
+}
+
+.shopping-cart .no-items {
+  margin-top: 2rem;
+  font-size: 2rem;
+  color: var(--white);
+}
+
+.shopping-cart .checkout-btn {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.shopping-cart .checkout-btn a {
+  display: inline-block;
+width: 100%;
+}
+
+.shopping-cart .checkout-btn a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  user-select: none;
+  background-color: var(--red);
+}
+
+.shopping-cart {
+width: 100%;
+  height: auto;
+  position: absolute;
+  margin: 3%;
+  left: 15%;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  overflow: hidden;
+  display: none;
+}
+
+.shopping-cart table th,
+.shopping-cart table td {
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.shopping-cart table th {
+  background-color: #333;
+  color: #fff;
+}
+
+.shopping-cart table td input[type="number"] {
+  width: 60px;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.shopping-cart table .remove-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #ff0000;
+  border: none;
+  cursor: pointer;
+}
+
+.shopping-cart table .remove-btn:hover {
+  background-color: #cc0000;
+}
+
+.shopping-cart .total-price {
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.shopping-cart button {
+  margin-right: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #ff8800;
+  border: none;
+  cursor: pointer;
+}
+
+.shopping-cart button:hover {
+  background-color: #e67700;
+}
+
+.shopping-cart .clean-btn {
+  background-color: #ff0000;
+}
+
+.shopping-cart .pay-btn {
+  background-color: #4caf50;
+}
+
+.shopping-cart .cancel-btn {
+  background-color: #333;
+}
+
+
+
+/* Styles for the buttons */
+.shopping-cart button {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.8rem;
+  color: var(--white);
+  background-color: var(--orange);
+  border: none;
+  cursor: pointer;
+}
+
+.shopping-cart button:hover {
+  background-color: var(--black);
+}
+
+.shopping-cart button.cancel-btn {
+  background-color: var(--red);
+}
+
+.shopping-cart button.cancel-btn:hover {
+  background-color: var(--dark-red);
+}
+
+
+
+ 
+ 
+ /* media queries  */
+ 
+ @media (max-width:1500px){
+   .shopping-cart{
+      width: 80%;
+      height: auto;
+      position: absolute;
+      margin: 3%;
+      left: 15rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      overflow: hidden;
+      display: none;
+       overflow-x: scroll;
+    }
+ 
+    .shopping-cart table{
+       width: 120rem;
+    }
+ 
+    .shopping-cart .heading{
+       text-align: left;
+    }
+ 
+    .shopping-cart .checkout-btn{
+       text-align: left;
+    }
+    
+    .shopping-cart{
+       overflow-x: scroll;
+    }
+ 
+ }
+ 
+ @media (max-width:991px){
+   .shopping-cart{
+      width: 100%;
+      height: auto;
+      position: absolute;
+      margin: 3%;
+      left: 0;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      overflow: hidden;
+      display: none;
+       overflow-x: scroll;
+    }
+ 
+    .shopping-cart table{
+       width: 120rem;
+    }
+ 
+    .shopping-cart .heading{
+       text-align: left;
+    }
+ 
+    .shopping-cart .checkout-btn{
+       text-align: left;
+    }
+    
+    .shopping-cart{
+       overflow-x: scroll;
+    }
+ 
+ }
+ 
+
+
+ 
+ @media (max-width:768px){
+   .shopping-cart{
+      width: 100%;
+      height: auto;
+      position: absolute;
+      margin: 3%;
+      left: 0;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      overflow: hidden;
+      display: none;
+       overflow-x: scroll;
+    }
+ 
+    .shopping-cart table{
+       width: 120rem;
+    }
+ 
+    .shopping-cart .heading{
+       text-align: left;
+    }
+ 
+    .shopping-cart .checkout-btn{
+       text-align: left;
+    }
+    
+    .shopping-cart{
+       overflow-x: scroll;
+    }
+ 
+ }
+ 
+ @media (max-width:450px){
+   .shopping-cart{
+      width: 100%;
+      height: auto;
+      position: absolute;
+      margin: 3%;
+      left: 0;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      overflow: hidden;
+      display: none;
+       overflow-x: scroll;
+    }
+ 
+    .shopping-cart table{
+       width: 120rem;
+    }
+ 
+    .shopping-cart .heading{
+       text-align: left;
+    }
+ 
+    .shopping-cart .checkout-btn{
+       text-align: left;
+    }
+    
+    .shopping-cart{
+       overflow-x: scroll;
+    }
+ 
+ }
+
+
+</style>

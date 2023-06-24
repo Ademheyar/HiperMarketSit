@@ -1,41 +1,4 @@
-<div id='MenuItems'>
-   <a href="Home.php" class="MenuItemBtn Home_mainu">
-      <img src="img/home.png" class="Home_icon" alt="">
-      <b href="Home.php" class="Home_text">Home</b>
-   </a>   
 
-   <?php 
-   // Check if the user is logged in and has user type 2
-   if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
-      <a href="view_products.php" class="MenuItemBtn Home_mainu">
-         <img src="img/home.png" class="Home_icon" alt="">
-         <b href="view_products.php" class="Home_text">View Products</b>
-      </a>
-
-      <a href="products.php" class="MenuItemBtn Home_mainu">
-         <img src="img/home.png" class="Home_icon" alt="">
-         <b href="products.php" class="Home_text">Products</b>
-      </a>
-      
-      <a onclick="chart_start();" class="MenuItemBtn Home_mainu">Cart<span><?php echo $_SESSION['car_length']; ?></span></a>    
-
-      <a href="Logout.php" class="MenuItemBtn Home_mainu">
-         <img src="img/home.png" class="Home_icon" alt="">
-         <b href="Logout.php" class="Home_text">Log out<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
-      </a>
-   <?php } else { 
-      // If the user is not logged in or has a different user type
-      if(session_id() == "") session_start(); ?>  
-      <a onclick="chart_start();" class="MenuItemBtn Home_mainu">
-         <img src="img/cart.png" class="Home_icon" alt="">
-         <b onclick="chart_start();" class="Home_text">Cart<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
-      </a>    
-      
-      <button onclick="log_in_out();" style="width:auto;" class="MenuItemBtn loginbtn">
-         <b class="Home_text">Log in</b>
-      </button> 
-   <?php } ?>         
-</div>
 
 <div class="header">
    <?php if(session_id() == "") session_start();  ?>
@@ -43,158 +6,353 @@
       <img src="img/logo.jpg" alt="">
    </a>
    <input type='text' class='search_box' placeholder='Search' name="search_box">
+   <div class="header_btns">
+      <?php 
+      $select_rows = mysqli_query($conn, "SELECT * FROM `cart`") or die('query failed');
+      $row_count = mysqli_num_rows($select_rows);
 
-   <?php 
-   $select_rows = mysqli_query($conn, "SELECT * FROM `cart`") or die('query failed');
-   $row_count = mysqli_num_rows($select_rows);
-
-   if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
-      <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
-      <li><a href="Logout.php" class="cart"><?php echo $_SESSION['loged_user_name']; ?><span>X</span></a></li>
-   <?php } else { 
-      // If the user is not logged in or has a different user type
-      if(session_id() == "") session_start(); ?>      
-      <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
-      <li><button class='loginbtn' onclick="log_in_out();">Log in</button></li>
-   <?php } ?>   
+      if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
+         <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
+         <li><a href="Logout.php" class="cart"><?php echo $_SESSION['loged_user_name']; ?><span>X</span></a></li>
+      <?php } else { 
+         // If the user is not logged in or has a different user type
+         if(session_id() == "") session_start(); ?>      
+         <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
+         <li><button class='loginbtn' onclick="log_in_out();">Log in</button></li>
+      <?php } ?>   
+   </div>
 </div>
 
 <style>
 
 
-/* MenuItems */
-
-#MenuItems {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  position: absolute;
-  width: 15%;
-  height: 100%; /* Adjusted to be 75% of the parent height */
-  top: 20%; /* Added to push it 25% down from the parent */
-  background: var(--bg);
-}
-
-#MenuItems li {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  list-style: none;
-}
-
-#MenuItems li a,
-#MenuItems li button {
-  padding: 2rem;
-  border: var(--border);
-  border-radius: 0.5rem;
-}
-
-#MenuItems .MenuItemBtn {
-   position: relative;
-   width: 100%;
-   margin-bottom: 10px;
-   border: var(--border);
-   border-radius: 0.5rem;
-   top: 10%;
-}
-
-#MenuItems .Home_mainu {
-  text-align: left;
-  border: var(--border);
-  border-radius: 0.5rem;
-  display: block;
-  background: #010103;
-}
-
-#MenuItems .Home_mainu:hover {
-  background: #eee;
-}
-
-#MenuItems .Home_mainu .Home_text {
-  color: palevioletred;
-  font-size: 19px;
-}
-
-#MenuItems .Home_mainu .Home_icon {
-  width: 25px;
-  height: 25px;
-}
-
-/* media queries */
-
-@media (max-width: 768px) {
-  #MenuItems {
-   overflow: auto;
-   position: relative;
-   display: flex;
-   flex-direction: column;
-   justify-content: flex-start;
-   align-items: flex-start;
-   position: absolute;
-   width: 15%;
-   height: 100%;
-   top: 15%;
-   background: var(--bg);
-  }
-
-  #MenuItems .MenuItemBtn{
-   position: relative;
-    width: 100%;
-    margin-bottom: 10px;
-    border: var(--border);
-    border-radius: 0.5rem;
-  } 
-
-  #MenuItems .Home_mainu .Home_text {
-    text-indent: -999px;
-    background-repeat: no-repeat;
-    font-size: 15px;
-  }
-
-}
-
-@media (max-width: 450px) {
-
-  #MenuItems .MenuItemBtn{
-   position: relative;
-    width: 100%;
-    margin-bottom: 10px;
-    border: var(--border);
-    border-radius: 0.5rem;
-  } 
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Header Styles */
+
+/* about header */
+ 
+.header{
+   background: var(--bg);
+   display: flex;
+   gap: 1.5rem;
+   align-items: center;
+   justify-content: space-between;
+   /*padding: 1.5rem 7%;*/
+   border-bottom: var(--border);
+   position: sticky;
+   top: 0; left: 0; right: 0;
+   padding: 6rem;
+ }
+
+ /* about logo on header*/
+  
+ .header .logo {
+   margin-right: auto;
+   position: fixed;
+   font-size: 2.5rem;
+ }
+
+ /* about logo image */
+ .header .logo img{
+   height: 10rem;
+ }
+ 
+
+ /* 
+   this will make search look good
+*/
+
+.search-container {
+  display: flex;
+}
+
+.search_box {
+   width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  font-size: 16px;
+  outline: none;
+   margin-right: auto;
+   /*font-size: 2.5rem;*/
+
+}
+.search-box {
+   /*width: 60%;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid gray;
+  padding: 10px 20px;*/
+}
+
+.search-btn {
+  width: 40px;
+  height: 40px;
+  background-color: blue;
+  color: white;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+
+.search_box::placeholder {
+  color: #999;
+}
+.header .search-form{
+   position: absolute;
+   top: 115%; right: 7%;
+   background: #fff;
+   width: 50rem;
+   height: 5rem;
+   display: flex;
+   align-items: center;
+   transform: scaleY(0);
+   transform-origin: top;
+ }
+ 
+ .header .search-form input{
+   height: 100%;
+   width: 100%;
+   font-size: 1.6rem;
+   color: var(--black);
+   padding: 1rem;
+   text-transform: none;
+ }
+ 
+ .header .search-form label{
+   cursor: pointer;
+   font-size: 2.2rem;
+   margin-right: 1.5rem;
+   color: var(--black);
+ }
+ 
+ 
+ .header .search-form label:hover{
+   color: var(--main-color);
+ }
+
+
+/* media queries  */
+ 
+@media (max-width:1500px){
+   /* Header Styles */
+   .header{
+      background: var(--bg);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      /*padding: 1.5rem 7%;*/
+      border-bottom: var(--border);
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      z-index: 1000; 
+      padding: 4%;
+   }
+
+   /* about logo on header*/
+  
+   .header .logo {
+      
+    position: initial;
+    right: 85%;
+    padding: 4px;
+    padding-right: 7px;
+   }
+
+   /* about logo image */
+   .header .logo img{
+      height: 10rem;
+   }
+   
+
+   .header .search_box{
+      margin-right: auto;
+      width: 100%;
+      font-size: 2.5rem;
+   }
+}
+ 
+@media (max-width:991px){
+   /* Header Styles */
+   .header{
+      background: var(--bg);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      /*padding: 1.5rem 7%;*/
+      border-bottom: var(--border);
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      z-index: 1000; 
+      padding: 3rem;
+   }
+
+   /* about logo on header*/
+  
+   .header .logo {
+      position: initial;
+      right: 85%;
+      padding: 4px;
+      padding-right: 7px;
+   }
+  
+   /* about logo image */
+   .header .logo img{
+      height: 10rem;
+   }
+   
+   .header .search_box{
+      margin-right: auto;
+      width: 50%;
+      font-size: 2.5rem;
+   }
+}
+ 
+@media (max-width:768px){
+   /* Header Styles */
+    .header{
+      background: var(--bg);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      /*padding: 1.5rem 7%;*/
+      border-bottom: var(--border);
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      z-index: 1000; 
+      padding: 3rem;
+   }
+
+   /* about logo on header*/
+  
+   .header .logo{
+      left: 10px;
+      top: 50px;
+      bottom: 50%;
+      font-size: 2.5rem;
+   }
+  
+   /* about logo image */
+   .header .logo img{
+      height: 10rem;
+   }
+
+   .header .search_box{
+      margin-right: auto;
+      width: 50%;
+      font-size: 2.5rem;
+   }
+}
+ 
+@media (max-width: 600px) {
+   /* Header Styles */
+   .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem;
+   }
+ 
+   /* about logo on header*/
+  
+   .header .logo {
+      /*position: initial;
+      right: 85%;
+      padding: 4px;
+      padding-right: 7px;*/
+   }
+  
+   /* about logo image */
+   .header .logo img{
+      height: 10rem;
+   }
+
+   /* about search */
+   .search-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+   }
+
+   .search-box {
+      width: 80%;
+      margin-bottom: 20px;
+   }
+}
+
+@media (max-width:450px){
+   /* Header Styles */
+    .header{
+      background: var(--bg);
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      /*padding: 1.5rem 7%;*/
+      border-bottom: var(--border);
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      z-index: 1000; 
+      padding: 3rem;
+   }
+ 
+   
+   /* about logo on header*/
+  
+   .header .logo {
+      
+      position: initial;
+      right: 85%;
+      padding: 4px;
+      padding-right: 7px;
+     }
+  
+     /* about logo image */
+     .header .logo img{
+        height: 10rem;
+     }
+}
+
+
+
+
+ 
+
+
+
+.logo {
+  font-size: 24px;
+}
+
+
+.links {
+  display: flex;
+}
+
+.link {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
 /* Responsive Styles */
 
 
-body .Main{
-   overflow: auto;
-   position: relative;
-   top: 22%;
-   left: 15%;
-   align-items: flex-start;
-   position: absolute;
-   width: 84%;
-   height: 100%;
-   background: #f8f8ff;
-}
  
 nav {
    flex: 1;
@@ -245,22 +403,6 @@ nav {
     color: aqua;
  }
  
-
- /* about header */
- 
- .header{
-   background: var(--bg);
-   display: flex;
-   gap: 1.5rem;
-   align-items: center;
-   justify-content: space-between;
-   /*padding: 1.5rem 7%;*/
-   border-bottom: var(--border);
-   position: sticky;
-   top: 0; left: 0; right: 0;
-   z-index: 1000; 
- }
- 
  .navbar {
     align-items: center;
     padding: 0px;
@@ -269,31 +411,8 @@ nav {
     /* this is for setting the dimensions of navigation bar */
  }
 
- 
- .header .logo{
-   margin-right: auto;
-    position: fixed;
-    right: 50%;
-    font-size: 2.5rem;
- }
 
 
- /* 
-   this will make search look good
-*/
-.search_box {
-  width: 50%;
-  height: 40px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  padding: 10px 20px;
-  font-size: 16px;
-  outline: none;
-}
-
-.search_box::placeholder {
-  color: #999;
-}
 
 /* 
    this will make loging nice
@@ -350,11 +469,6 @@ nav {
  }
  
  
- /* about logo */
- .header .logo img{
-   height: 10rem;
- }
- 
  .header .navbar a{
    margin: 0 1rem;
    font-size: 1.6rem;
@@ -378,76 +492,6 @@ nav {
    color: var(--main-color);
  }
  
- .header .search-form{
-   position: absolute;
-   top: 115%; right: 7%;
-   background: #fff;
-   width: 50rem;
-   height: 5rem;
-   display: flex;
-   align-items: center;
-   transform: scaleY(0);
-   transform-origin: top;
- }
- 
- .header .search-form input{
-   height: 100%;
-   width: 100%;
-   font-size: 1.6rem;
-   color: var(--black);
-   padding: 1rem;
-   text-transform: none;
- }
- 
- .header .search-form label{
-   cursor: pointer;
-   font-size: 2.2rem;
-   margin-right: 1.5rem;
-   color: var(--black);
- }
- 
- 
- .header .search-form label:hover{
-   color: var(--main-color);
- }
- 
- /* media queries  */
- 
- @media (max-width:1500px){
-   #menu-btn{
-      display: none;
-      transition: .2s linear;
-   }
-   
-   .header .search_box{
-      margin-right: auto;
-      width: 50%;
-      font-size: 2.5rem;
-   }
-   .header .logo {
-      
-    position: initial;
-    right: 85%;
-    padding: 4px;
-    padding-right: 7px;
-   }
-    .shopping-cart{
-       overflow-x: scroll;
-    }
- 
-    .shopping-cart table{
-       width: 120rem;
-    }
- 
-    .shopping-cart .heading{
-       text-align: left;
-    }
- 
-    .shopping-cart .checkout-btn{
-       text-align: left;
-    }
- 
- }
  
  @media (max-width:991px){
  
@@ -455,18 +499,8 @@ nav {
       display: none;
       transition: .2s linear;
    }
-   .header .logo {
-      
-    position: initial;
-    right: 85%;
-    padding: 4px;
-    padding-right: 7px;
-   }
-   .header .search_box{
-      margin-right: auto;
-      width: 50%;
-      font-size: 2.5rem;
-   }
+   
+   
  }
  
 
@@ -502,17 +536,6 @@ nav {
        transition: .2s linear;*/
     }
     
-   .header .logo{
-      left: 10px;
-      top: 50px;
-      bottom: 50%;
-      font-size: 2.5rem;
-   }
-   .header .search_box{
-      margin-right: auto;
-      width: 100%;
-      font-size: 2.5rem;
-   }
     #menu-btn.fa-times{
        transform: rotate(180deg);
     }
@@ -527,38 +550,11 @@ nav {
 
 
 
- .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-}
 
 .logo {
   font-size: 24px;
 }
 
-.search-container {
-  display: flex;
-}
-
-.search-box {
-  width: 60%;
-  height: 40px;
-  border-radius: 20px;
-  border: 1px solid gray;
-  padding: 10px 20px;
-}
-
-.search-btn {
-  width: 40px;
-  height: 40px;
-  background-color: blue;
-  color: white;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-}
 
 .links {
   display: flex;
@@ -570,23 +566,6 @@ nav {
 }
 
 @media (max-width: 600px) {
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-  }
-
-  .search-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .search-box {
-    width: 80%;
-    margin-bottom: 20px;
-  }
 
   .links {
     width: 100%;
