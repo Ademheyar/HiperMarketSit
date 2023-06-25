@@ -31,6 +31,8 @@ if(isset($_POST['add_to_cart'])){
    <!-- custom css file link  -->
    <link rel="stylesheet" href="css/style.css">
    <link rel="stylesheet" href="css/view.css">
+   <link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list0.css">
+   <link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list1.css">
 </head>
 <body>
    

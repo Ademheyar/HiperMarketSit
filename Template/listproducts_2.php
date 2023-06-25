@@ -3,15 +3,16 @@ include 'config.php';
 #include 'view.php';
 ?>
 <!-- HTML markup for the product grid -->
-
-<div class="list_containers">
+<div id="product_items_list_containers0" class="product_items_list_containers0">
 	<h1 class="heading">latest products</h1>
-	<div class="box-container">
-  		<!-- The product items will be added dynamically using JavaScript -->
+	<div class="product_items_list_box0">
+		<!-- The product items will be added dynamically using JavaScript -->
 	</div>
 </div>
 
-<script>
+<script src="js/Prodoct_item/Creat_Items_list0.js"></script>
+
+<!--<script>
 // Select the table element
 var a = document.querySelector('body .Main');
 
@@ -27,7 +28,7 @@ var lastset = 0;
 
 // Function to remove items from the productGrid and data array
 function removeitem(howmany, a) {
-  const productGrid = document.querySelector('.list_containers .box-container');
+  const productGrid = document.querySelector('.product_items_list_containers .product_items_list_box');
   const itemCount = productGrid.childElementCount;
 	console.log("going to remove items in container" + a);
 	for (let i = 0; i <= howmany; i++) {
@@ -138,7 +139,7 @@ readhtmtable();
 var createing = 0;
 
 function createItems() {
-  const productGrid = document.querySelector('.list_containers .box-container');
+  const productGrid = document.querySelector('.product_items_list_containers .product_items_list_box');
   let itemCount = productGrid.childElementCount;
 
   for (var i = 0; i < data.length; i++) {
@@ -273,7 +274,7 @@ function createItems() {
 // Function to handle scroll event
 function handleScroll() {
 	const containerElement = document.querySelector('body .Main');
-  const targetElement = document.querySelector('.list_containers .box-container');
+  const targetElement = document.querySelector('.product_items_list_containers .product_items_list_box');
 
   const containerScrollTop = containerElement.scrollTop;
   const targetElementTop = targetElement.offsetTop;
@@ -308,112 +309,4 @@ var a = document.querySelector('body .Main');
 a.addEventListener('scroll', handleScroll);
 
 </script>
-
-<style>
-/*  end of view-form */
-
-
-.list_containers .box-container{
-	display: grid;
-	grid-template-columns: repeat(auto-fit, 35rem);
-	gap: 1.5rem;
-	justify-content: center;
-	overflow: hidden;
-	/* line-height: 100%; */
-	margin-right: auto;
-	text-align: center;
-	padding: 2rem;
-	box-shadow: var(--box-shadow);
-	border: var(--border);
-	border-radius: 1.5rem;
-	align-items: center;
-	align-content: space-between;
-	flex-wrap: wrap;	
- }
-
- .list_containers .box-container .box{
-    text-align: center;
-    padding: 2rem;
-    box-shadow: var(--box-shadow);
-    border:var(--border);
-    border-radius: .5rem;
- }
-
- @media (max-width:600px){
- 
-	.list_containers .box-container .box{
-		width: 90%;
-		border-radius: .5rem;
-	}
-	
-	.list_containers .box-container{
-		display: grid;
-		grid-template-columns: repeat(auto-fit, 35rem);
-		gap: 1.5rem;
-		justify-content: center;
-		overflow: hidden;
-		/* line-height: 100%; */
-		margin-right: auto;
-		text-align: center;
-		padding: 2rem;
-		box-shadow: var(--box-shadow);
-		border: var(--border);
-		border-radius: 1.5rem;
-		align-items: center;
-		align-content: space-between;
-		flex-wrap: wrap;	
- 	}
-}
-
-.list_containers .box-container .box:hover {
-	transform: scale(1.5);
-}
- 
-
-.list_containers .box-container .box .img_box{
-    position: relative;
- }
-
-.list_containers .box-container .box .img_box .box_btns{
-	width: 100%;
-	display: -webkit-inline-box;
-	position: absolute;
-	padding: 16px;
-	bottom: -13px;
-	left: 5%;
- }
-
-.list_containers .box-container .box .box_btns .lcb_1btns {
-	display: block;
-	color: black;
-	WidTH: 30%;
-	background-color: var(--with);
-	font-size: 1rem;
-	padding: 6%;
-	border-radius: 0.2rem;
-	cursor: pointer;
-	margin-top: 1rem;
- }
- 
- .list_containers .box-container .box .box_btns .lcb_1btns:hover {
-  background-color: black;
-	color: white;
- }
- 
- .list_containers .box-container .box img{
-    height: 25rem;
- }
- 
- .list_containers .box-container .box h3{
-    margin:1rem 0;
-    font-size: 2.5rem;
-    color:var(--black);
- }
- 
- .list_containers .box-container .box .price{
-    font-size: 2.5rem;
-    color:var(--black);
- }
- 
-
-</style>	
+	-->
