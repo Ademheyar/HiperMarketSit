@@ -679,10 +679,10 @@ box-shadow: 2px 2px 5px grey;
  }
  
  span {
-    color: #777;
-    font-size: 12px;
-    bottom: 68px;
-    position: absolute;
+   color: #f5f5f5;
+   font-size: 25px;
+   bottom: 69px;
+   position: absolute;
  }
 
  #step1form .checkbox:checked,#step2form .checkbox:checked + .toggle::after {

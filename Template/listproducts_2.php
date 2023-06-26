@@ -230,25 +230,26 @@ function createItems() {
     productCode.name = 'product_image';
     productCode.textContent = data[i].Image;
     productCode.hidden = true;
-	console.log("selected item info >>" + data[i].more_info);
-	let b0 = data[i].id;
-	let b1 = data[i].name;
-	let b2 = data[i].at_shop;
-	let b3 = data[i].type;
-	let b4 = data[i].code;
-	let b5 = data[i].price;
-	let b6 = data[i].images;
-	let b7 = data[i].description;
-	let b8 = data[i].more_info;
-	let b9 = data[i].more_info;
+	console.log("selected item info >>" + data[i].price);
+	var b0 = data[i].id;
+	var b1 = data[i].name;
+	var b2 = data[i].price;
+	var b3 = data[i].images;
+	var b4 = data[i].description;
+	var b5 = data[i].at_shop;
+	var b6 = data[i].type;
+	var b7 = data[i].code;
+	var b8 = data[i].more_info;
+	var b9 = data[i].more_info;
 	productImage_Btn.addEventListener('click', function() {
 		// Check if the required values are set before passing them
 		// Create a closure to capture the current state of the data
 		(function(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) {
 			// Pass the captured values to the View_Selected function
+			// vs_info, vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, vs_info1
 			console.log("selected item info >>" + [a1, a2, a3, a4, a5, a6, a7, a8, a9, a0]);
 			View_Selected(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
-		})(b9, b0, b1, b2, b3, b4, b5, b6, path, b7, b8);
+		})(b9, b0, b1, b2, b3, path, b4, b5, b6, b7, b8);
 	});
 
 

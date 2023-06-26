@@ -11,9 +11,9 @@
          <?php } ?>
 
         <?php if ($_SESSION['on'] != 1){ ?>
-            <a href="View_Profile.php" class="MenuItemBtn Home_mainu">
+            <a href="Template/profile/View_Profile.php" class="MenuItemBtn Home_mainu">
                <img src="img/home.png" class="Home_icon" alt="">
-               <b href="View_Profile.php" class="View_Profile_text">View Profile</b>
+               <b href="Template/profile/View_Profile.php" class="View_Profile_text">View Profile</b>
             </a>   
          <?php } ?>
 

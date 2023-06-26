@@ -2,17 +2,22 @@
    if(session_id() == "") session_start();
    if ($_SESSION['on'] != 1){
       $_SESSION['on'] = 1;
-      header("Location: Home.php");
+      header("Location: /Adot/Home.php");
       exit; // Make sure to include exit after the header redirect
    }
 ?>
 <div class="view_profile">
-   
+<?php 
+      include ('Template/profile/profile_banner-area.php');
+?>
+<div class="About_disc">
+  <h2>About</h2>
+</div>
 <main>
     <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'productInfoTab')">Product Information</button>
       <button class="tablinks" onclick="openTab(event, 'shopStockTab')">Shop Stock</button>
       <button class="tablinks" onclick="openTab(event, 'customerInfoTab')">Customer Information</button>
-      <button class="tablinks" onclick="openTab(event, 'productInfoTab')">Product Information</button>
     </div>
 
     <div id="shopStockTab" class="tabcontent">
@@ -78,7 +83,7 @@
    ];
 
    // Open the default tab
-   document.getElementById("shopStockTab").style.display = "block";
+   document.getElementById("productInfoTab").style.display = "block";
 
    // Handle tab switching
    function openTab(evt, tabName) {
@@ -134,7 +139,7 @@
 body .view_profile{
    overflow: auto;
    position: relative;
-   top: 24rem;
+   top: 18rem;
    left: 15%;
    align-items: flex-start;
    position: absolute;
@@ -143,6 +148,12 @@ body .view_profile{
    background: #f8f8ff;
 }
 
+body .view_profile .About_disc {
+    align-items: flex-start;
+    width: 100%;
+    height: 14%;
+    background: #eee;
+}
 
 h1, h2 {
   margin-top: 0;
@@ -151,6 +162,8 @@ h1, h2 {
 .tab {
   overflow: hidden;
   margin-bottom: 20px;
+  display: inline-flex;
+  gap: 10px;
 }
 
 .tab button {
@@ -223,7 +236,7 @@ table th, table td {
    body .view_profile{
       overflow: auto;
       position: relative;
-      top: 24rem;
+      top: 18rem;
       left: 15%;
       align-items: flex-start;
       position: absolute;
@@ -239,7 +252,7 @@ table th, table td {
    body .view_profile{
       overflow: auto;
       position: relative;
-      top: 24rem;
+      top: 18rem;
       left: 15%;
       align-items: flex-start;
       position: absolute;
@@ -255,7 +268,7 @@ table th, table td {
    body .view_profile{
       overflow: auto;
       position: relative;
-      top: 24rem;
+      top: 18rem;
       left: 15%;
       align-items: flex-start;
       position: absolute;
@@ -271,7 +284,7 @@ table th, table td {
    body .view_profile{
         overflow: auto;
         position: relative;
-        top: 24rem;
+        top: 18rem;
         left: 0;
         align-items: flex-start;
         position: absolute;
@@ -287,7 +300,7 @@ table th, table td {
    body .view_profile{
         overflow: auto;
         position: relative;
-        top: 24rem;
+        top: 18rem;
         left: 0;
         align-items: flex-start;
         position: absolute;

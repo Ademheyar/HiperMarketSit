@@ -53,7 +53,7 @@ if(isset($message)){
    }
    else if ($_SESSION['on'] == 1){
       /*  include banner area  */
-      include ('View_Profile.php');
+      include ('Template/profile/View_Profile.php');
    }
     
    /*  include banner area  */

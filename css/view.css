@@ -29,19 +29,43 @@
     display: list-item;
 }
 
-#view-form .sub_info_Box {
-
-}
-
-#view-form .sub_info_Box .size_box {
+#view-form .sub_info_Box .selection_box {
     width: 100%;
-    padding: 6px;
+    size: auto;
 }
 
-#view-form .sub_info_Box .color_box {
-    width: 100%;
-    padding: 6px;
+#view-form .sub_info_Box .selection_box button {
+    width: auto;
+    display: inline-flex;
+    gap: 10px;
+    padding: revert;
+    border: outset;
+    size: auto;
 }
+
+label {
+    font-size: x-small;
+}
+
+#view-form .sub_info_Box .selection_box .selected_items_box {
+    width: 100%;
+    height: 30%;
+    display: inline-grid;
+    gap: 10px;
+    overflow-y: scroll;
+    padding: revert;
+    border: outset;
+    size: auto;
+}
+
+
+#view-form .sub_info_Box .selection_box .selected_items_box .selected_items {
+    width: auto;
+    background-color: gray;
+    border: 23px;
+}
+
+
 
 /* btn box form css */
 

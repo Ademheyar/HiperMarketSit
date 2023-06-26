@@ -31,33 +31,10 @@
    <button type="button" onclick="cancelForm();" class="cancel-btn">Cancel</button>
 </div>
 
-<!-- Add Item form -->
-<div id="add-item-form" class="add-item-form">
-   <h2 class="heading">Add Item</h2>
-   <form onsubmit="addNewItem(event)">
-      <label for="product-name">Product:</label>
-      <input type="text" id="product-name" required><br>
-
-      <label for="product-size">Size:</label>
-      <input type="text" id="product-size" required><br>
-
-      <label for="product-color">Color:</label>
-      <input type="text" id="product-color" required><br>
-
-      <label for="product-quantity">Quantity:</label>
-      <input type="number" id="product-quantity" min="1" required><br>
-
-      <label for="product-price">Price:</label>
-      <input type="number" id="product-price" min="0" step="0.01" required><br>
-
-      <button type="submit">Add</button>
-   </form>
-   <button type="button" onclick="cancelForm()">Cancel</button>
-</div>
-
 <script>
    // Function to get the cart data from cookies
    function getCartData() {
+      console.log("geting chart list :");
       var cartData = localStorage.getItem('cartData');
       return cartData ? JSON.parse(cartData) : [];
    }
@@ -70,64 +47,44 @@
    // Function to initialize the cart data and display it
    function initializeCartData() {
       var cartData = getCartData();
+      console.log("got cart list :");
       updateCartDisplay(cartData);
    }
 
    // Function to update the cart display
    function updateCartDisplay(cartData) {
+      console.log("cart list displaying:");
       var cartItemsContainer = document.getElementById('cart-items');
       var grandTotalElement = document.getElementById('grand-total');
       cartItemsContainer.innerHTML = '';
       var grandTotal = 0;
-
+      // [[], []  ]
+      
+      console.log("_cart :", cartData);
       for (var i = 0; i < cartData.length; i++) {
-            var item = cartData[i];
-            var total = item.quantity * item.price;
-            grandTotal += total;
+            for (var j = 0; j < cartData[i].length; j++) {
+               var item = cartData[i][j];
+               var total = item.quantity * item.price;
+               grandTotal += total;
 
-            var row = document.createElement('tr');
-            row.innerHTML = `
-               <td>${item.product}</td>
-               <td>${item.size}</td>
-               <td>${item.color}</td>
-               <td>${item.quantity}</td>
-               <td>${item.price}</td>
-               <td>${total}</td>
-               <td><button type="button" onclick="removeItem(${i})">Remove</button></td>
-            `;
-
-            cartItemsContainer.appendChild(row);
+               var row = document.createElement('tr');
+               row.innerHTML = `
+                  <td>${item.name}</td>
+                  <td>${item.size}</td>
+                  <td>${item.color}</td>
+                  <td>${item.quantity}</td>
+                  <td>${item.price}</td>
+                  <td>${total}</td>
+                  <td><button type="button" onclick="removeItem(${j})">Remove</button></td>
+               `;
+               cartItemsContainer.appendChild(row);
+            }
       }
 
       grandTotalElement.textContent = grandTotal.toFixed(2);
    }
 
-   // Function to add a new item to the cart
-   function addNewItem(event) {
-      event.preventDefault();
-
-      var productName = document.getElementById('product-name').value;
-      var productSize = document.getElementById('product-size').value;
-      var productColor = document.getElementById('product-color').value;
-      var productQuantity = parseInt(document.getElementById('product-quantity').value);
-      var productPrice = parseFloat(document.getElementById('product-price').value);
-
-      var newItem = {
-            product: productName,
-            size: productSize,
-            color: productColor,
-            quantity: productQuantity,
-            price: productPrice
-      };
-
-      var cartData = getCartData();
-      cartData.push(newItem);
-      updateCartData(cartData);
-      updateCartDisplay(cartData);
-
-      cancelForm();
-   }
-
+   
    // Function to remove an item from the cart
    function removeItem(index) {
       var cartData = getCartData();
@@ -138,9 +95,12 @@
 
    // Function to delete all items from the cart
    function deleteAllItems() {
-      var cartData = [];
-      updateCartData(cartData);
-      updateCartDisplay(cartData);
+      if (confirm('Are you sure you want to delete all items?')) {
+         // Remove all items
+         var cartData = [];
+         updateCartData(cartData);
+         updateCartDisplay(cartData);
+      }
    }
 
    // Function to simulate payment process
@@ -158,6 +118,7 @@
 
    // Function to show the add item form
    function showAddItemForm() {
+      // Initialize the cart data and display
       document.getElementById('add-item-form').style.display = 'block';
    }
 
@@ -169,12 +130,6 @@
         // Remove only selected item
     }
 
-    // Function to delete all items
-    function deleteAllItems() {
-        if (confirm('Are you sure you want to delete all items?')) {
-         // Remove all items
-        }
-    }
 
     // Function for payment process
     function pay() {
@@ -364,6 +319,7 @@
       document.getElementById('shopping-cart-form').style.display='block'; 
       document.getElementById('login-form').style.display='none';
       document.getElementById('view-form').style.display='none'; 
+      initializeCartData();
 	} 
 
 	// this is for the when you click out the login or registration page the form -box disappears 

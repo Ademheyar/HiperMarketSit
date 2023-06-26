@@ -178,9 +178,9 @@ elseif(isset($_POST['register_btn'])){
  }
  
  span {
-    color: #777;
-    font-size: 12px;
-    bottom: 68px;
+    color: #f5f5f5;
+    font-size: 25px;
+    bottom: 69px;
     position: absolute;
  }
  

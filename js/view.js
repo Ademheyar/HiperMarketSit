@@ -1,21 +1,32 @@
 var selectedItems = [];
+var selecteditem_info = [];
 
 // Function to add a new item to the cart
-function addNewItem(ls) {
+function addNewItem(info, selected) {
     
-    console.log("add_to_cart :", [ls]);
-    var newItem = {
-          id: ls[0],
-          product: ls,
-          size: ls[3][2][0],
-          color: ls[3][1],
-          quantity: ls[3][3],
-          price: ls[2]
-    };
+    console.log("add_to_cart info:", info);
+    console.log("add_to_cart selected:", selected);
+    items = [];
+    for(let i = 0; i < selected.length; i++){
+        var newItem = {
+            id: info[0],
+            name: info[1],
+            price: info[2],
+  
+  
+            color: selected[i][1],
+            size: selected[i][2][0],
+            quantity: selected[i][3]
+        };
+
+        items.push(newItem);
+    }
+    console.log("add_to_cart :", items);
+    
 
     var cartData = localStorage.getItem('cartData');
     cartData = cartData ? JSON.parse(cartData) : [];
-    cartData.push(newItem);
+    cartData.push(items);
     localStorage.setItem('cartData', JSON.stringify(cartData));
  }
 
@@ -251,7 +262,7 @@ function read_item(list, parent){
         formFrame.appendChild(backButton);
         
         var addToCartButton = document.createElement("button");
-        addToCartButton.innerHTML = "Back";
+        addToCartButton.innerHTML = "Save";
         addToCartButton.addEventListener("click", function () {
             add_to_cart(qty_entry.value);
         });
@@ -423,12 +434,14 @@ function read_item(list, parent){
     function show_selected_items() {
         //clear();
         var result_frame = document.createElement("div");
+        result_frame.classList.add('selected_items_box');
         formFrame.appendChild(result_frame);
         var label = document.createElement("label");
         label.textContent = "Selected Items:";
         result_frame.appendChild(label);
         for (var item of selectedItems) {
             var itemLabel = document.createElement("label");
+            itemLabel.classList.add('selected_items');
             itemLabel.textContent = item;
             result_frame.appendChild(itemLabel);
         }
@@ -461,6 +474,7 @@ function read_item(list, parent){
 
 function View_Selected(vs_info, vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, vs_info1) {
     selectedItems = [];
+    selecteditem_info = [];
     document.getElementById('view-form').style.display='block'; 
     var sy = scrollY;
     var y = sy;
@@ -468,9 +482,9 @@ function View_Selected(vs_info, vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, 
     //<input type="hidden" name="product_name" class="p_name" value="">
     document.querySelector('#view-form .p_name').value = vs_n;
     document.querySelector('#view-form .p_name').innerText = vs_n;
-    selectedItems.push(vs_id);
-    selectedItems.push(vs_n);
-    selectedItems.push(vs_price); 
+    selecteditem_info.push(vs_id);
+    selecteditem_info.push(vs_n);
+    selecteditem_info.push(vs_price); 
     document.querySelector('#view-form .info_Box .sub_info_Box .p_name').innerText = vs_n;
     //<input type="hidden" name="product_code" class="p_code" value="">
     //document.querySelector('#view-form .p_code').value = vs_price;
@@ -522,7 +536,7 @@ function View_Selected(vs_info, vs_id, vs_n, vs_price, vs_img, vs_path, vs_dic, 
     //{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
     console.log("vs_info>>"+vs_info);
 
-    read_item(vs_info, document.getElementById("size_box_id"))
+    read_item(vs_info, document.getElementById("selection_box_id"))
 
 
     document.querySelector('#view-form').style.top = y + 'px';
@@ -550,6 +564,7 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     view_Boxclose_btn.style.right ="0%";
     view_Boxclose_btn.addEventListener('click', ()=>{
         selectedItems = [];
+        selecteditem_info = [];
         document.querySelector('#view-form').style.display = 'none';
     });
     
@@ -587,28 +602,24 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     p_name_title.innerText = vs_n;
     otherinfo_Box.appendChild(p_name_title);
     
-    const size_info = document.createElement('div');
-    otherinfo_Box.appendChild(size_info);
-    size_info.classList.add('size_box');
-
-    const size_info_id = document.createElement('div');
-    otherinfo_Box.appendChild(size_info_id);
-    size_info_id.id = "size_box_id";
-    size_info_id.value = "View";
-    size_info_id.classList.add('color_box');
-
-    const p_disc_info = document.createElement('h1');
-    p_disc_info.classList.add('p_disc');
-    p_disc_info.value = "color_box_id";
-    p_disc_info.innerText = vs_dic;
-    otherinfo_Box.appendChild(p_disc_info);
-    
     const p_price_info = document.createElement('h1');
     p_price_info.classList.add('p_price');
     p_price_info.value = "R" + vs_price;
     p_price_info.innerText = "R" + vs_price;
     otherinfo_Box.appendChild(p_price_info);
 
+    const p_disc_info = document.createElement('h1');
+    p_disc_info.classList.add('p_disc');
+    p_disc_info.value = "color_box_id";
+    p_disc_info.innerText = vs_dic;
+    otherinfo_Box.appendChild(p_disc_info);
+
+    const size_info_id = document.createElement('div');
+    otherinfo_Box.appendChild(size_info_id);
+    size_info_id.id = "selection_box_id";
+    size_info_id.value = "View";
+    size_info_id.classList.add('selection_box');
+    
     for(var z = 0; z <= Images_Box.children.length-1; z++){
         Images_Box.children[z].remove();
     }
@@ -639,7 +650,7 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
 
     // Add the product item element to the product grid container	
     // this form is for buttons 
-    const view_form = document.createElement('form');
+    const view_form = document.createElement('div');
     view_Box.appendChild(view_form);
             
         const hidden_info_name = document.createElement('input');
@@ -741,7 +752,7 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     do_cart_btn.value= "Add to cart";
     do_cart_btn.innerText= "Add to cart";
     do_cart_btn.addEventListener('click', function() {
-		addNewItem(selectedItems);
+		addNewItem(selecteditem_info, selectedItems);
 	});
     
 //{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
