@@ -25,6 +25,17 @@
     border-radius: .5rem;
  }
 
+
+ #product_items_list_containers0 .product_items_list_box0 .box .img_box .profile-image {
+    text-align: center;
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    border:var(--border);
+    border-radius: .5rem;
+	display: contents;
+    position: absolute;
+ }
+
  @media (max-width:600px){
  
 	#product_items_list_containers0 .product_items_list_box0 .box{

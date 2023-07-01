@@ -35,20 +35,27 @@ if(isset($_POST['add_to_cart'])){
    <link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list1.css">
 </head>
 <body>
+<?php
+   if(session_id() == "") session_start(); // Start the session
+
+   if (isset($_POST['Shop_name'])) {
+      // Update the session variable value
+      $_SESSION['Shop_name'] = $_POST['Shop_name'];
+      echo "The new value of Shop_name is: " . $_SESSION['Shop_name'];
+   }
    
-<?php
+   if (isset($_POST['on'])) {
+      // Update the session variable value
+      $_SESSION['on'] = $_POST['on'];
+      echo "The new value of on is: " . $_SESSION['on'];
+   }
 
-if(isset($message)){
-   foreach($message as $message){
-      echo '<div class="message"><span>'.$message.'</span> <i class="fas fa-times" onclick="this.parentElement.style.display = `none`;"></i> </div>';
+   if(isset($message)){
+      foreach($message as $message){
+         echo '<div class="message"><span>'.$message.'</span> <i class="fas fa-times" onclick="this.parentElement.style.display = `none`;"></i> </div>';
+      };
    };
-};
-
-?>
-
-<?php
    include('header.php');
-   if(session_id() == "") session_start();
    if ($_SESSION['on'] == 0){
       /*  include banner area  */
       include ('Main.php');
@@ -56,6 +63,10 @@ if(isset($message)){
    else if ($_SESSION['on'] == 1){
       /*  include banner area  */
       include ('Template/profile/View_Profile.php');
+   }
+   else if ($_SESSION['on'] == 2){
+      /*  include banner area  */
+      include ('Template/shop/View_shop_Profile.php');
    }
     
    /*  include banner area  */
@@ -68,7 +79,7 @@ if(isset($message)){
 </div>
 <!-- !start #footer -->
 <script src="js/script.js"> </script>
-<script src="js/view.js"></script>
+<script src="js/view/view_item.js"></script>
 <!-- 
 -->
 <!-- custom js file link  -->

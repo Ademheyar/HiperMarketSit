@@ -176,6 +176,31 @@ function createItems() {
 	const product_profile_Btn = document.createElement('button');
     productImage_Box.appendChild(product_profile_Btn);
     product_profile_Btn.classList.add('profile-image');
+    product_profile_Btn.innerText = data[i].id+": "+data[i].at_shop;
+	var g = data[i].at_shop;
+	product_profile_Btn.addEventListener('click', function() {
+		// Check if the required values are set before passing them
+		// Create a closure to capture the current state of the data
+		(function(shop_n) {
+			// Create a form element
+			var form = document.createElement('form');
+			form.action = '/Adot/Template/shop/View_shop_Profile.php';
+			form.method = 'post';
+	
+			// Create an input field for var1
+			var var1Input = document.createElement('input');
+			var1Input.type = 'hidden';
+			var1Input.name = 'Shop_name';
+			var1Input.value = shop_n;
+			form.appendChild(var1Input);
+	
+			// Append the form to the document body
+			document.body.appendChild(form);
+	
+			// Submit the form
+			form.submit();
+		})(g);
+	});
 
     const product_profile_Img = document.createElement('img');
     product_profile_Btn.appendChild(product_profile_Img);
@@ -188,6 +213,7 @@ function createItems() {
 		
 		this.src = 'img/error1.jpg'; // Set the error image path
 	};
+
     product_profile_Img.src = `${path}/${data[i].images[0]}`;
 
     const productImage_Btn = document.createElement('button');

@@ -2,7 +2,7 @@
    if(session_id() == "") {
       session_start();
       $_SESSION['on_view'] = 0; // this is for page which page to load
-      $_SESSION['Shop_name'] = 0; // this is for page holding selected shop
+      $_SESSION['Shop_name'] = "aa"; // this is for page holding selected shop
 
 
       $_SESSION['car_length'] = 0;
