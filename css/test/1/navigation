@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bar Chart Example</title>
+    <style>
+        /* Add any necessary CSS styles for the chart container */
+        *
+        {
+            margin:0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'popins', sans-serif;
+
+        }
+        :root
+        {
+            --clr: #222327;
+
+        }
+        
+        body{
+            display: flex;
+            justify-content: center;
+            align-items:center;
+            min-height: 100vh;
+            /*background: var(--clr);*/
+            background: linear-gradient(45deg, #8460ed, #eff1252);
+        }
+        
+        .navigation
+        {
+            position: relative;
+            justify-content: center;
+            align-items:center;
+            display: flex;
+
+            width: 200px;
+            height: 200px;
+            /*background: #0f0;*/
+        }
+
+        .navigation li
+        {
+            list-style:none;
+
+            /*position: relative;
+            width: 70px;
+            height: 70px;
+            z-index: 1;*/
+
+            position: absolute;
+            transform-origin: 100px;
+            left: 0;
+            transition: 0.5s;
+            transition-delay: calc(0.1s *  var(--i));
+            transform: rotate(0deg) translateX(100px);
+        }
+
+        .navigation.active li
+        {
+            transform: rotate(calc(360deg / 6 * var(--i)));
+        }
+
+        .navigation li a
+        {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
+            transform: rotate(calc(360deg / -6 * var(--i)));
+            box-shadow: 0 3px 4px rgb(0,0,0,0.15);
+            color: #111;
+            transition: 0.5s;
+        }
+
+        .navigation li a:hover
+        {
+            color: #ff1252;
+        }
+
+        .toggle
+        {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0px 4px rgba(0,0,0,0.15);
+            font-size: 2em;
+            transition: transform 1.25s;
+            transform: rotate(0deg) translateX(-50px) translateY(-28px);
+        }
+
+        .toggle img
+        {
+            z-index: 10000;
+        }
+
+        .navigation.active .taggle
+        {
+            transform: rotate(315deg);
+        }
+        
+        @media (max-width:450px){
+            *
+            {
+                margin:0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'popins', sans-serif;
+
+            }
+            :root
+            {
+                --clr: #222327;
+
+            }
+
+            body{
+                display: flex;
+                justify-content: center;
+                align-items:center;
+                min-height: 100vh;
+                background: var(--clr);
+
+            }
+            .navigation
+            {
+                position: relative;
+                width: 400px;
+                height: 70px;
+                background: #fff;
+                display: flex;
+                justify-content: center;
+                align-items:center;
+                border-radius:10px;
+            }
+            .navigation ul
+            {
+                display:flex;
+                width:350px;
+            }
+            .navigation ul li
+            {
+                transform: none;
+
+                
+                position: relative;
+                list-style:none;
+                width: 70px;
+                height: 70px;
+                z-index: 1;
+            }
+            .navigation ul li a
+            {
+                box-shadow: none;
+                transform: none;
+                background: none;
+                height: auto;
+
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items:center;
+                flex-direction:column;
+                width: 100%;
+                text-align:center;
+                font-weight:500;
+            }
+            .navigation ul li a .icon
+            {
+                position: relative;
+                display: block;
+                line-height: 75px;
+                font-size: 1.5em;
+                text-align: center;
+                transition: 0.5s;
+                color: var(--clr);
+            }
+
+            .navigation ul li.active a .icon
+            {
+                transform: translateY(-32px)
+            }
+            .navigation ul li a .icon img
+            {
+                width: 50%;
+                height: 50%;
+            }
+
+            .navigation ul li a .text
+            {
+                position: absolute;
+                color: var(--clr);
+                display: block;
+                font-weight: 400;
+                font-size: 0.75em;
+                letter-spacing: 0.05em;
+                transition: 0.5s;
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            .navigation ul li.active a .text
+            {
+                opacity: 1;
+            }
+
+            .toggle
+            {   
+                position: absolute;
+                top: -50%;
+                width: 70px;
+                height: 70px;
+                background: #29fd53;
+                border-radius: 50%;
+                border: 6px solid var(--clr);
+                transition: 0.5s;
+
+            }
+
+            .toggle::before
+            {
+                content:'';
+                position: absolute;
+                top: 50%;
+                left: -23px;
+                width: 20px;
+                height: 20px;
+                background: transparent;
+                border-top-right-radius: 20px;
+                box-shadow: 0px -10px 0 0 var(--clr);
+                transition: 0.5s;
+
+            }
+
+            .toggle::after
+            {
+                content:'';
+                position: absolute;
+                top: 50%;
+                left: -22px;
+                width: 20px;
+                height: 20px;
+                background: transparent;
+                border-top-left-radius: 20px;
+                box-shadow: 1px -10px 0 0 var(--clr);
+                transition: 0.5s;
+
+            }
+            .toggle img
+            {
+                display: none;
+            }
+
+            .navigation ul li:nth-child(1).active ~ .toggle
+            {
+                transform: translateX(calc(70px*0))
+            }
+            .navigation ul li:nth-child(2).active ~ .toggle
+            {
+                transform: translateX(calc(70px*1))
+            }
+            .navigation ul li:nth-child(3).active ~ .toggle
+            {
+                transform: translateX(calc(70px*2))
+            }
+            .navigation ul li:nth-child(4).active ~ .toggle
+            {
+                transform: translateX(calc(70px*3))
+            }
+            .navigation ul li:nth-child(5).active ~ .toggle
+            {
+                transform: translateX(calc(70px*4))
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- navigation = navigation toggle = toggle -->
+    <div class="navigation">
+        <ul>
+            <li class="list active" style="--i:0;">
+                <a href="#">
+                    <span class="icon">
+                        <img src="img/home-outline.svg" class="Home-outline" alt="">
+                    </span>
+                    <span class="text">Home</span>
+                </a>
+            </li>
+            <li class="list" style="--i:1;">
+                <a href="#">
+                    <span class="icon">
+                        <img src="img/person-outline.svg" class="person-outline" alt="">
+                    </span>
+                    <span class="text">Profile</span>
+                </a>
+            </li>
+            <li class="list" style="--i:2;">
+                <a href="#">
+                    <span class="icon">
+                        <img src="img/chatbubble-outline.svg" class="chatbubble-outline" alt="">    
+                    </span>
+                    <span class="text">Message</span>
+                </a>
+            </li>
+            <li class="list" style="--i:3;">
+                <a href="#">
+                    <span class="icon">
+                        <img src="img/camera-outline.svg" class="camera-outline" alt="">
+                    </span>
+                    <span class="text">Photos</span>
+                </a>
+            </li>
+            <li class="list" style="--i:4;">
+                <a href="#">
+                    <span class="icon">
+                        <img src="img/settings-outline.svg" class="settings-outline" alt="">
+                    </span>
+                    <span class="text">Settings</span>
+                </a>
+            </li>
+
+            <div class="toggle">
+                <img src="img/add-outline.svg" class="Home-outline" alt="">
+            </div>
+        </ul>
+    </div>
+    <script>
+        const list = document.querySelectorAll('.list');
+        function activeLink(){
+            list.forEach((item) => 
+            item.classList.remove('active'));
+            this.classList.add('active');
+        }
+        list.forEach((item) => 
+        item.addEventListener('click', activeLink))
+
+        let toggle = document.querySelector('.toggle img');
+        let navigation = document.querySelector('.navigation');
+        toggle.onclick = function() {
+            navigation.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

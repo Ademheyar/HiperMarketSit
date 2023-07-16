@@ -1,6 +1,8 @@
 var selectedItems = [];
 var selecteditem_info = [];
 
+// Select the table element
+
 // Function to add a new item to the cart
 function addNewItem(info, selected) {
     
@@ -566,6 +568,8 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
         selecteditem_info = [];
         document.querySelector('#view-form').style.display = 'none';
     });
+
+    //sec_shop_name
     
     
     var shop_name = (vs_At_Shop + " ").split(' ');
@@ -581,9 +585,53 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     view_Box.appendChild(viewbox_title);
     
     /// other info box that will hold all info about item
+    const tabbtn_Box = document.createElement('div');
+    view_Box.appendChild(tabbtn_Box);
+    tabbtn_Box.classList.add('tabbtn_Box');
+
+    
+    const select_tab_btn = document.createElement('button');
+    tabbtn_Box.appendChild(select_tab_btn);
+    select_tab_btn.classList.add('btns');
+    select_tab_btn.name="select_tab_btn";
+    select_tab_btn.innerText= "Select";
+    select_tab_btn.value= "Select";
+    select_tab_btn.addEventListener('click', ()=>{
+        document.querySelector('#info_Box-panal').style.display = 'inline-flex';
+        document.querySelector('#viewfome_panal').style.display = 'block';
+        document.querySelector('#history_Box-panal').style.display = 'none';
+    });
+
+    
+    const history_tab_btn = document.createElement('button');
+    tabbtn_Box.appendChild(history_tab_btn);
+    history_tab_btn.classList.add('btns');
+    history_tab_btn.name="history_tab_btn";
+    history_tab_btn.innerText= "History";
+    history_tab_btn.value= "History";
+    history_tab_btn.addEventListener('click', ()=>{
+        document.querySelector('#info_Box-panal').style.display = 'none';
+        document.querySelector('#viewfome_panal').style.display = 'none';
+        document.querySelector('#history_Box-panal').style.display = 'block';
+    });
+
+    const about_tab_btn = document.createElement('button');
+    tabbtn_Box.appendChild(about_tab_btn);
+    about_tab_btn.classList.add('btns');
+    about_tab_btn.name="about_tab_btn";
+    about_tab_btn.innerText= "About";
+    about_tab_btn.value= "About";
+    about_tab_btn.addEventListener('click', ()=>{
+        document.querySelector('#info_Box-panal').style.display = 'none';
+        document.querySelector('#viewfome_panal').style.display = 'none';
+    });
+
+
+    /// other info box that will hold all info about item
     const info_Box = document.createElement('div');
     view_Box.appendChild(info_Box);
     info_Box.classList.add('info_Box');
+    info_Box.id = 'info_Box-panal';
     
     // image box that will be created image 
     const Images_Box = document.createElement('div');
@@ -650,14 +698,15 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     // Add the product item element to the product grid container	
     // this form is for buttons 
     const view_form = document.createElement('div');
+    view_form.id = 'viewfome_panal';
     view_Box.appendChild(view_form);
             
-        const hidden_info_name = document.createElement('input');
-        view_form.appendChild(hidden_info_name);
-        hidden_info_name.classList.add('p_name');
-        hidden_info_name.name="product_name";
-        //<input type="hidden" name="product_name" class="p_name" value="">
-        hidden_info_name.value = vs_n;
+    const hidden_info_name = document.createElement('input');
+    view_form.appendChild(hidden_info_name);
+    hidden_info_name.classList.add('p_name');
+    hidden_info_name.name="product_name";
+    //<input type="hidden" name="product_name" class="p_name" value="">
+    hidden_info_name.value = vs_n;
     hidden_info_name.innerText = vs_n;
 
     hidden_info_name.hidden = true;
@@ -754,6 +803,57 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
 		addNewItem(selecteditem_info, selectedItems);
 	});
     
+
+
+
+
+    /// other info box that will hold all info about item
+    const history_Box = document.createElement('div');
+    view_Box.appendChild(history_Box);
+    history_Box.classList.add('history_Box');
+    history_Box.id = 'history_Box-panal';
+    history_Box.style.display = 'none';
+    
+    function readhtmtable() {
+        var url = 'Template/Get/Get_doc.php'; // The PHP script that fetches items from the database
+
+        console.log('by=date()');
+        var datasent = 'by=date()';
+
+        // Make an AJAX request to your PHP API
+        sendAjaxRequest(url, 'POST', datasent, function(responseText) {
+        console.log(responseText + '<< found doc');
+        var response = JSON.parse(responseText);
+        doc = response.doc;
+        console.log(doc);
+        console.log(doc.length + '<< doc.length');
+        
+        // Sample data for the charts
+        const salesData = [];
+
+        // Process the response and add the items to the itemContainer
+        for (var i = 0; i < doc.length; i++) {
+            salesData.push({
+                text: doc[i].doc_barcode,
+                date: doc[i].doc_updated_date,
+                value: doc[i].price,
+                qty: doc[i].qty,
+                type: doc[i].user_id
+            }); 
+        }
+        
+        console.log(salesData.length + '<< viewchartlist.length');
+        console.log(salesData);
+
+        drawBarChart('history_Box-panal', salesData);
+        }, function(errorStatus) {
+            // Handle error
+            console.log('Error: ' + errorStatus);
+        });
+    }
+    readhtmtable();
+    
+    
 //{l,[|black,2|,|green,3|,|white,5|,]},{xl,[|white,5|,|black,2|,|green,6|,]},
 /*console.log("disply_item vs_info>>"+vs_info);
 
@@ -787,6 +887,6 @@ var a = document.querySelector('body .Main');
 var ya  = y+ a.scrollTop
 document.getElementById('view-form').style.top = ya + 'px';
     document.querySelector('#shopping-cart-form').style.top = y + 'px';
-    menu.classList.remove('fa-times');
-    navbar.classList.remove('active');
+    //menu.classList.remove('fa-times');
+    //navbar.classList.remove('active');
 };

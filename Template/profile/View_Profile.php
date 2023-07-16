@@ -1,109 +1,148 @@
 <?php 
-   if(session_id() == "") session_start();
-   if ($_SESSION['on'] != 1){
-      $_SESSION['on'] = 1;
-      header("Location: /Adot/Home.php");
-      exit; // Make sure to include exit after the header redirect
-   }
+  if(session_id() == "") session_start();
+  if (isset($_POST['Shop_name'])) {
+    // Update the session variable value
+    $_SESSION['Shop_name'] = $_POST['Shop_name'];
+    echo "The new value of Shop_name is: " . $_SESSION['Shop_name'];
+  }
+
+  if ($_SESSION['on'] != 1){
+    $_SESSION['on'] = 1;
+    header("Location: /Adot/Home.php");
+    exit; // Make sure to include exit after the header redirect
+  }
+  //$_SESSION['on'] = 0;
+  @include 'config.php';
+  $items = array(); // Create an empty array to hold the items
+  if (isset($_SESSION['Shop_name'])){
+    $shopName = $_SESSION['Shop_name'];
+    $sql = "SELECT * FROM Shops WHERE shop_name=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $shopName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+      //echo var_dump($row);
+      // Set values in the $items array using a foreach loop
+      foreach ($row as $key => $value) {
+        $items[$key] = $value;
+      }
+      // Echo the array values
+      /*foreach ($items as $key => $value) {
+        echo $key . ": " . $value . "<br>";
+      }*/
+    }
+  }
 ?>
-<div class="view_profile">
-<?php 
-      include ('Template/profile/profile_banner-area.php');
-?>
-<div class="About_disc">
-  <h2>About</h2>
-</div>
-<main>
-    <div class="tab">
-      <button class="tablinks" onclick="openTab(event, 'product_items_list_containers1')">Products</button>
-      <button class="tablinks" onclick="openTab(event, 'shopStockTab')">Shop Stock</button>
-      <button class="tablinks" onclick="openTab(event, 'customerInfoTab')">Customer Information</button>
-    </div>
-
-    <div id="shopStockTab" class="tabcontent">
-      <h2>Shop Stock</h2>
-      <table id="shopStockTable">
-        <thead>
-          <tr>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Availability</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Populate table rows dynamically using JavaScript -->
-        </tbody>
-      </table>
-    </div>
-
-    <div id="customerInfoTab" class="tabcontent">
-      <h2>Customer Information</h2>
-      <table id="customerInfoTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Populate table rows dynamically using JavaScript -->
-        </tbody>
-      </table>
-    </div>
-
-    <div id="product_items_list_containers1" class="product_items_list_containers1 tabcontent">
-      <div class="product_items_list_box1">
-          <!-- The product items will be added dynamically using JavaScript -->
+<div class="Main">
+  <?php 
+    include ('Template/profile/profile_banner-area.php');
+  ?>
+  <div class="About_disc">
+  <?php if (!empty($items)) {?>
+      <h2>About</h2>
+      <?php echo $items["about"]; 
+      }?>
+  </div>
+  <main>
+      <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'product_items_list_containers1')">Products</button>
+        <button class="tablinks" onclick="openTab(event, 'HistoryTab')">History</button>
+        <button class="tablinks" onclick="openTab(event, 'ReportTab')">Report</button>
+        <button class="tablinks" onclick="openTab(event, 'shopStockTab')">Shop Stock</button>
+        <button class="tablinks" onclick="openTab(event, 'customerInfoTab')">Customer Information</button>
       </div>
-    </div>
+      
+      <div id="HistoryTab" class="tabcontent">
+        <h2>History</h2>
+        
+      </div>
+
+      <div id="ReportTab" class="tabcontent">
+        <h2>Report</h2>
+        
+      </div>
+
+      <div id="shopStockTab" class="tabcontent">
+        <h2>Shop Stock</h2>
+        <table id="shopStockTable">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>Availability</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populate table rows dynamically using JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="customerInfoTab" class="tabcontent">
+        <h2>Customer Information</h2>
+        <table id="customerInfoTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populate table rows dynamically using JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="product_items_list_containers1" class="product_items_list_containers1 tabcontent">
+        <div class="product_items_list_box1">
+            <!-- The product items will be added dynamically using JavaScript -->
+        </div>
+      </div>
   </main>
 </div>
 <?php include 'login.php'; ?>
 <?php include 'cart.php'; ?>
 
+<script src="js/Get/sendajax.js"></script>
 <script src="js/Prodoct_item/Creat_Items_list1.js"></script>
+<script src="js/Chart/char.js"></script>
 
 <script>
-    // Sample data for demonstration
+    // Sample datad for demonstration
    const shopStock = [
    { name: "Product 1", price: "$10", availability: "In Stock" },
    { name: "Product 2", price: "$20", availability: "Out of Stock" },
    { name: "Product 3", price: "$15", availability: "In Stock" },
    ];
 
+    // Sample data for demonstration
    const customerInfo = [
    { name: "John Doe", email: "john@example.com", phone: "123-456-7890" },
    { name: "Jane Smith", email: "jane@example.com", phone: "987-654-3210" },
    ];
 
-   const productInfo = [
-   { name: "Product 1", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", image: "product1.jpg" },
-   { name: "Product 2", description: "Nulla eget quam nec mi imperdiet cursus.", image: "product2.jpg" },
-   { name: "Product 3", description: "Sed ullamcorper mi et nunc pulvinar iaculis.", image: "product3.jpg" },
-   ];
-
-   // Open the default tab
-   document.getElementById("product_items_list_containers1").style.display = "block";
-
    // Handle tab switching
    function openTab(evt, tabName) {
-    // Get all tab content elements and hide them
-    const tabContent = document.getElementsByClassName("tabcontent");
-    for (let i = 0; i < tabContent.length; i++) {
-        tabContent[i].style.display = "none";
-    }
+      // Get all tab content elements and hide them
+      const tabContent = document.getElementsByClassName("tabcontent");
+      for (let i = 0; i < tabContent.length; i++) {
+          tabContent[i].style.display = "none";
+      }
 
-    // Remove 'active' class from all tablinks
-    const tabLinks = document.getElementsByClassName("tablinks");
-    for (let i = 0; i < tabLinks.length; i++) {
-        tabLinks[i].classList.remove("active");
-    }
+      // Remove 'active' class from all tablinks
+      const tabLinks = document.getElementsByClassName("tablinks");
+      for (let i = 0; i < tabLinks.length; i++) {
+          tabLinks[i].classList.remove("active");
+      }
 
-    // Show the selected tab and mark the corresponding tablink as active
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.classList.add("active");
+      // Show the selected tab and mark the corresponding tablink as active
+      document.getElementById(tabName).style.display = "block";
+      document.getElementById(tabName).classList.add("active");
    }
+   openTab("", 'product_items_list_containers1');
 
    // Populate shop stock table
    const stockTable = document.getElementById("shopStockTable").getElementsByTagName("tbody")[0];
@@ -118,26 +157,62 @@
    const row = customerTable.insertRow();
    row.innerHTML = `<td>${customer.name}</td><td>${customer.email}</td><td>${customer.phone}</td>`;
    });
+  
+  function readhtmtable() {
+    var url = 'Template/Get/Get_doc.php'; // The PHP script that fetches items from the database
 
-   // Populate product details
-   const productDetailsContainer = document.getElementById("productDetails");
-   productInfo.forEach(product => {
-   const card = document.createElement("div");
-   card.classList.add("productCard");
-   card.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
-      <h3>${product.name}</h3>
-      <p>${product.description}</p>
-   `;
-   productDetailsContainer.appendChild(card);
-   });
+    console.log('by=date()');
+    var datasent = 'by=date()';
 
+    // Store the current scroll position
+    previousScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Make an AJAX request to your PHP API
+    sendAjaxRequest(url, 'POST', datasent, function(responseText) {
+      console.log(responseText + '<< found doc');
+      var response = JSON.parse(responseText);
+      doc = response.doc;
+      console.log(doc);
+      console.log(doc.length + '<< doc.length');
+      
+      // Sample data for the charts
+      const salesData = [];
+
+      // Process the response and add the items to the itemContainer
+      for (var i = 0; i < doc.length; i++) {
+        salesData.push({
+            text: doc[i].doc_barcode,
+            date: doc[i].doc_updated_date,
+            value: doc[i].price,
+            qty: doc[i].qty,
+            type: doc[i].user_id
+        }); 
+      }
+      
+      console.log(salesData.length + '<< ikkkk.length');
+      console.log(salesData);
+
+
+      // Example usage
+      const datad = [10, 20, 30, 40, 50];
+      const chartType = 'bar';
+      const startDate = '2023-07-01';
+      const endDate = '2023-07-05';
+
+      drawBarChart('HistoryTab', salesData);
+    }, function(errorStatus) {
+      // Handle error
+      console.log('Error: ' + errorStatus);
+    });
+  }
+  readhtmtable();
   </script>
 <style>
 
-/* view_profile Styles */
 
-body .view_profile{
+/* Main Styles */
+
+body .Main{
    overflow: auto;
    position: relative;
    top: 18rem;
@@ -149,7 +224,7 @@ body .view_profile{
    background: #f8f8ff;
 }
 
-body .view_profile .About_disc {
+body .Main .About_disc {
     align-items: flex-start;
     width: 100%;
     height: 14%;
@@ -223,8 +298,8 @@ table th, table td {
  
 @media (max-width:1500px){
    
-   /* view_profile Styles */
-   body .view_profile{
+   /* Main Styles */
+   body .Main{
       overflow: auto;
       position: relative;
       top: 18rem;
@@ -239,8 +314,8 @@ table th, table td {
  
 @media (max-width:991px){
    
-   /* view_profile Styles */
-   body .view_profile{
+   /* Main Styles */
+   body .Main{
       overflow: auto;
       position: relative;
       top: 18rem;
@@ -255,8 +330,8 @@ table th, table td {
  
 @media (max-width:768px){
    
-   /* view_profile Styles */
-   body .view_profile{
+   /* Main Styles */
+   body .Main{
       overflow: auto;
       position: relative;
       top: 18rem;
@@ -271,8 +346,8 @@ table th, table td {
  
 @media (max-width: 600px) {
 
-   /* view_profile Styles */
-   body .view_profile{
+   /* Main Styles */
+   body .Main{
         overflow: auto;
         position: relative;
         top: 18rem;
@@ -287,8 +362,8 @@ table th, table td {
 
 @media (max-width:450px){
 
-   /* view_profile Styles */
-   body .view_profile{
+   /* Main Styles */
+   body .Main{
         overflow: auto;
         position: relative;
         top: 18rem;
@@ -486,6 +561,4 @@ nav {
     margin-right: 0;
   }
 }
-
-
 </style>

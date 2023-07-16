@@ -33,7 +33,7 @@
             <a onclick="chart_start();" class="MenuItemBtn Home_mainu">Cart<span><?php echo $_SESSION['car_length']; ?></span></a>    
 
             <a href="Logout.php" class="MenuItemBtn Home_mainu">
-                <img src="img/home.png" class="Home_icon" alt="">
+                <img src="img/no_Profile_image.jpg" class="user_icon" alt="">
                 <b href="Logout.php" class="Home_text">Log out<span><?php echo $_SESSION['loged_user_name']; ?></span></b>
             </a>
         <?php } else { 
@@ -115,22 +115,17 @@
  
 
  #footer .MenuItems {
-    display: inline-flex;
-    margin: auto;
-    padding: 1%;
-    width: 15%;
-    display: flex;
+   margin: auto;
+    width: 90%;
+    display: inline-table;
     overflow-x: scroll;
-    grid-template-columns: repeat(auto-fit, 20rem);
-    gap: 11.5rem;
     justify-content: center;
     line-height: 100%;
-    margin-right: 12px;
     text-align: center;
-    padding: 3rem;
+    height: 100%;
     box-shadow: var(--box-shadow);
     border: var(--border);
-    border-radius: 1.5rem;
+    border-radius: 3.5rem;
     align-items: center;
     align-content: space-between;
 }
@@ -160,7 +155,7 @@
 #footer .MenuItemBtn {
    position: relative;
    width: 100%;
-   margin-bottom: 10px;
+   height: 10%;
    border: var(--border);
    border-radius: 0.5rem;
    top: 10%;
@@ -179,13 +174,20 @@
 }
 
 #footer .Home_mainu .Home_text {
-  color: palevioletred;
-  font-size: 19px;
+   color: palevioletred;
+   font-size: 19px;
+   position: absolute;
+   display: block;
 }
 
 #footer .Home_mainu .Home_icon {
   width: 25px;
   height: 25px;
+}
+
+#footer .Home_mainu .user_icon {
+   width: 100%;
+   /* height: 1%;
 }
 
 
@@ -256,23 +258,19 @@
 
 
    #footer .MenuItems {
-        margin: auto;
-        padding: 1%;
-        width: 15rem;
-        display: inline-table;
-        overflow-x: scroll;
-        grid-template-columns: repeat(auto-fit, 20rem);
-        gap: 11.5rem;
-        justify-content: center;
-        line-height: 100%;
-        margin-right: 12px;
-        text-align: center;
-        padding: 3rem;
-        box-shadow: var(--box-shadow);
-        border: var(--border);
-        border-radius: 1.5rem;
-        align-items: center;
-        align-content: space-between;
+      margin: auto
+      width: 90%;
+      display: inline-table;
+      overflow-x: scroll;
+      justify-content: center;
+      line-height: 100%;
+      text-align: center;
+      height: 100%;
+      box-shadow: var(--box-shadow);
+      border: var(--border);
+      border-radius: 3.5rem;
+      align-items: center;
+      align-content: space-between;
     }
 
    #footer li {
@@ -292,7 +290,7 @@
    #footer .MenuItemBtn {
       position: relative;
       width: 100%;
-      margin-bottom: 10px;
+      height: 10%;
       border: var(--border);
       border-radius: 0.5rem;
       top: 10%;
@@ -313,12 +311,20 @@
    #footer .Home_mainu .Home_text {
       color: palevioletred;
       font-size: 19px;
+      position: absolute;
+      display: block;
    }
 
    #footer .Home_mainu .Home_icon {
       width: 25px;
       height: 25px;
    }
+
+   #footer .Home_mainu .user_icon {
+   width: 25px;
+   height: 25px;
+   }
+
 }
  
 @media (max-width:991px){
@@ -363,23 +369,23 @@
 
 
    #footer .MenuItems {
-        margin: auto;
-        padding: 1%;
-        width: 15rem;
-        display: inline-table;
-        overflow-x: scroll;
-        grid-template-columns: repeat(auto-fit, 20rem);
-        gap: 11.5rem;
-        justify-content: center;
-        line-height: 100%;
-        margin-right: 12px;
-        text-align: center;
-        padding: 3rem;
-        box-shadow: var(--box-shadow);
-        border: var(--border);
-        border-radius: 1.5rem;
-        align-items: center;
-        align-content: space-between;
+      margin: auto;
+      padding: 1%;
+      width: 90%;
+      display: inline-table;
+      overflow-x: scroll;
+      grid-template-columns: repeat(auto-fit, 20rem);
+      gap: 11.5rem;
+      justify-content: center;
+      line-height: 100%;
+      text-align: center;
+      /* padding: 0rem; */
+      height: 100%;
+      box-shadow: var(--box-shadow);
+      border: var(--border);
+      border-radius: 3.5rem;
+      align-items: center;
+      align-content: space-between;
     }
 
    #footer li {
@@ -398,10 +404,11 @@
 
    #footer .MenuItemBtn {
       position: relative;
-      width: 100%;
-      margin-bottom: 10px;
-      border: var(--border);
-      border-radius: 0.5rem;
+    width: 100%;
+    height: 10%;
+    border: var(--border);
+    border-radius: 0.5rem;
+    top: 10%;
       top: 10%;
    }
 
@@ -420,12 +427,19 @@
    #footer .Home_mainu .Home_text {
       color: palevioletred;
       font-size: 19px;
+      position: absolute;
+      display: block;
    }
 
    #footer .Home_mainu .Home_icon {
       width: 25px;
       height: 25px;
    }
+   #footer .Home_mainu .user_icon {
+      width: 100%;
+      /* height: 1%; */
+   }
+
 }
  
 @media (max-width:768px){
@@ -470,24 +484,21 @@
 
 
    #footer .MenuItems {
-        display: inline-flex;
-        margin: auto;
-        padding: 1%;
-        width: 100%;
-        display: flex;
-        overflow-x: scroll;
-        grid-template-columns: repeat(auto-fit, 20rem);
-        gap: 11.5rem;
-        justify-content: center;
-        line-height: 100%;
-        margin-right: 12px;
-        text-align: center;
-        padding: 3rem;
-        box-shadow: var(--box-shadow);
-        border: var(--border);
-        border-radius: 1.5rem;
-        align-items: center;
-        align-content: space-between;
+      margin: auto;
+      height: 100%;
+      width: 1rem;
+      display: inline-table;
+      overflow-x: scroll;
+      grid-template-columns: repeat(auto-fit, 20rem);
+      gap: 11.5rem;
+      justify-content: center;
+      line-height: 100%;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      border: var(--border);
+      border-radius: 1.5rem;
+      align-items: center;
+      align-content: space-between;
     }
 
    #footer li {
@@ -506,10 +517,11 @@
 
    #footer .MenuItemBtn {
       position: relative;
-      width: 100%;
-      margin-bottom: 10px;
-      border: var(--border);
-      border-radius: 0.5rem;
+    width: 100%;
+    height: 10%;
+    border: var(--border);
+    border-radius: 0.5rem;
+    top: 10%;
       top: 10%;
    }
 
@@ -528,76 +540,77 @@
    #footer .Home_mainu .Home_text {
       color: palevioletred;
       font-size: 19px;
+      position: absolute;
+      display: block;
     }
     
     #footer .Home_mainu .Home_icon {
         width: 25px;
         height: 25px;
     }
+    #footer .Home_mainu .user_icon {
+      width: 100%;
+      /* height: 1%; */
+   }
 }
 
 @media (max-width: 600px) {
     #footer{
-       top: 100%;
-        position: relative;
-        clear: both;
-        /* clear: both; */
-        /* background: var(--bg); */
-        display: list-item;
-        align-items: center;
-        justify-content: space-between;
-        /* padding: 1.5rem 7%; */
-        border-bottom: var(--border);
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        position: absolute;
-        width: 15%;
-        height: 100%; /* Adjusted to be 75% of the parent height */
-        background: var(--bg);
-
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      position: absolute;
-      width: 100%;
-      height: 15rem;
-      background: var(--bg);
-      gap: 1.5rem;
-      padding: 1.5rem 7%;
-      border-bottom: var(--border);
-      
-      left: 0;
-      right: 0;
-      z-index: 1000;
+      top: 93rem;
+    position: relative;
+    clear: both;
+    /* clear: both; */
+    /* background: var(--bg); */
+    display: list-item;
+    align-items: center;
+    justify-content: space-between;
+    /* padding: 1.5rem 7%; */
+    border-bottom: var(--border);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    width: 15%;
+    height: 100%;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    width: 100%;
+    height: fit-content;
+    background: var(--bg);
+    /* gap: 1.5rem; */
+    /* padding: 1.5rem 7%; */
+    border-bottom: var(--border);
+    left: 0;
+    right: 0;
+    z-index: 1000;
    }
 
    #footer .MenuItems {
-        display: inline-flex;
-        margin: auto;
-        padding: 1%;
-        width: 100%;
-        display: flex;
-        overflow-x: scroll;
-        grid-template-columns: repeat(auto-fit, 20rem);
-        gap: 11.5rem;
-        justify-content: center;
-        line-height: 100%;
-        margin-right: 12px;
-        text-align: center;
-        padding: 3rem;
-        box-shadow: var(--box-shadow);
-        border: var(--border);
-        border-radius: 1.5rem;
-        align-items: center;
-        align-content: space-between;
+      display: inline-flex;
+    margin: auto;
+    padding: 1%;
+    width: 100%;
+    display: flex;
+    overflow-x: scroll;
+    grid-template-columns: repeat(auto-fit, 20rem);
+    gap: 1%;
+    justify-content: center;
+    line-height: 100%;
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    border: var(--border);
+    border-radius: 1.5rem;
+    align-items: center;
+    align-content: space-between;
     }
 
    #footer li {
@@ -616,10 +629,11 @@
 
    #footer .MenuItemBtn {
       position: relative;
-      width: 100%;
-      margin-bottom: 10px;
-      border: var(--border);
-      border-radius: 0.5rem;
+    width: 100%;
+    height: 10%;
+    border: var(--border);
+    border-radius: 0.5rem;
+    top: 10%;
       top: 10%;
    }
 
@@ -638,75 +652,76 @@
    #footer .Home_mainu .Home_text {
       color: palevioletred;
       font-size: 19px;
+      position: absolute;
+      display: block;
    }
 
    #footer .Home_mainu .Home_icon {
       width: 25px;
       height: 25px;
    }
+   #footer .Home_mainu .user_icon {
+      width: 100%;
+      /* height: 1%; */
+   }
 }
 
 @media (max-width:450px){
    #footer{
+      top: 100rem;
     position: relative;
-        clear: both;
-        /* clear: both; */
-        /* background: var(--bg); */
-        display: list-item;
-        align-items: center;
-        justify-content: space-between;
-        /* padding: 1.5rem 7%; */
-        border-bottom: var(--border);
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        position: absolute;
-        width: 15%;
-        height: 100%; /* Adjusted to be 75% of the parent height */
-        background: var(--bg);
-
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      position: absolute;
-      width: 100%;
-      height: 15rem;
-      background: var(--bg);
-      gap: 1.5rem;
-      padding: 1.5rem 7%;
-      border-bottom: var(--border);
-      left: 0;
-      right: 0;
-      z-index: 1000;
-        
+    clear: both;
+    /* clear: both; */
+    /* background: var(--bg); */
+    display: list-item;
+    align-items: center;
+    justify-content: space-between;
+    /* padding: 1.5rem 7%; */
+    border-bottom: var(--border);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    width: 15%;
+    height: 100%;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    width: 100%;
+    height: fit-content;
+    background: var(--bg);
+    gap: 1.5rem;
+    /* padding: 1.5rem 7%; */
+    border-bottom: var(--border);
+    left: 0;
+    right: 0;
+    z-index: 1000;
    }
 
    #footer .MenuItems {
-        display: inline-flex;
-        margin: auto;
-        padding: 1%;
-        width: 100%;
-        display: flex;
-        overflow-x: scroll;
-        grid-template-columns: repeat(auto-fit, 20rem);
-        gap: 11.5rem;
-        justify-content: center;
-        line-height: 100%;
-        margin-right: 12px;
-        text-align: center;
-        padding: 3rem;
-        box-shadow: var(--box-shadow);
-        border: var(--border);
-        border-radius: 1.5rem;
-        align-items: center;
-        align-content: space-between;
+      display: inline-flex;
+      margin: auto;
+      padding: 1%;
+      width: 100%;
+      display: flex;
+      overflow-x: scroll;
+      grid-template-columns: repeat(auto-fit, 20rem);
+      gap: 1%;
+      justify-content: center;
+      line-height: 100%;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+      border: var(--border);
+      border-radius: 1.5rem;
+      align-items: center;
     }
 
    #footer li {
@@ -725,10 +740,11 @@
 
    #footer .MenuItemBtn{
       position: relative;
-      width: 100%;
-      margin-bottom: 10px;
-      border: var(--border);
-      border-radius: 0.5rem;
+    width: 100%;
+    height: 10%;
+    border: var(--border);
+    border-radius: 0.5rem;
+    top: 10%;
   }
 
    #footer .Home_mainu {
@@ -746,11 +762,17 @@
    #footer .Home_mainu .Home_text {
       color: palevioletred;
       font-size: 19px;
+      position: absolute;
+      display: block;
    }
 
    #footer .Home_mainu .Home_icon {
-      width: 25px;
-      height: 25px;
+      width: 100%;
+      height: 100%;
+   }
+   #footer .Home_mainu .user_icon {
+      width: 100%;
+      /* height: 1%; */
    }
 }
 

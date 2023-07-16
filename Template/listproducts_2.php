@@ -195,7 +195,7 @@ function createItems() {
 		this.style.width = '100%'; // Set width to match original image
 		this.style.height = '100%'; // Set height to match original image
 	};
-    productImage.src = `${path}/${data[i].images[0]}`;
+    // TODO: productImage.src = `${path}/${data[i].images[0]}`;
 
     const Image_Box_Btn = document.createElement('div');
     productImage_Box.appendChild(Image_Box_Btn);

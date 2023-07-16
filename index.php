@@ -64,5 +64,8 @@
    */   
 
    }
+   else {
+      $_SESSION['on_view'] = 0; // this is for page which page to load
+   }
    include('Home.php');
 ?>

@@ -34,7 +34,28 @@ if(isset($_POST['add_to_cart'])){
    <link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list0.css">
    <link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list1.css">
 </head>
+<script src="js/Get/sendajax.js"></script>
+
+<script>
+   var sec_url = 'Template/Get/Get_sections.php'; // The PHP script that fetches items from the database
+   var sec_shop_name = "";
+   var sec_user_name = "";
+   var sec_user_id = "";
+   var sec_datasent = 'by=date()';
+   // Make an AJAX request to your PHP API
+   sendAjaxRequest(sec_url, 'POST', sec_datasent, function(responseText) {
+      console.log(responseText + '<< found sections');
+      var response = JSON.parse(responseText);
+      sec_user_name = "";
+      sec_user_id = ""; 
+      sec_shop_name = response.Shop_name;
+      
+      console.log(response);
+      console.log(response.length + '<< sections.length');
+   }, function(errorStatus) { console.log('Error: ' + errorStatus); });
+</script>
 <body>
+
 <?php
    if(session_id() == "") session_start(); // Start the session
 
@@ -74,14 +95,14 @@ if(isset($_POST['add_to_cart'])){
    include ('footer.php');
     
 ?>
-</section>
 
-</div>
-<!-- !start #footer -->
-<script src="js/script.js"> </script>
-<script src="js/view/view_item.js"></script>
+
 <!-- 
 -->
 <!-- custom js file link  -->
 </body>
+<!-- !start #footer -->
+
+<script src="js/script.js"></script>
+<script src="js/view/view_item.js"></script>
 </html>

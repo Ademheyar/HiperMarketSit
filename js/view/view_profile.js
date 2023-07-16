@@ -788,6 +788,6 @@ var a = document.querySelector('body .Main');
 var ya  = y+ a.scrollTop
 document.getElementById('view-form').style.top = ya + 'px';
     document.querySelector('#shopping-cart-form').style.top = y + 'px';
-    menu.classList.remove('fa-times');
-    navbar.classList.remove('active');
+    //menu.classList.remove('fa-times');
+    //navbar.classList.remove('active');
 };

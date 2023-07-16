@@ -13,12 +13,10 @@
 
       if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
          <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
-         <li><a href="Logout.php" class="cart"><?php echo $_SESSION['loged_user_name']; ?><span>X</span></a></li>
       <?php } else { 
          // If the user is not logged in or has a different user type
          if(session_id() == "") session_start(); ?>      
          <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
-         <li><button class='loginbtn' onclick="log_in_out();">Log in</button></li>
       <?php } ?>   
    </div>
 </div>

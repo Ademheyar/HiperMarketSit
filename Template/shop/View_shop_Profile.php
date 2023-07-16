@@ -11,13 +11,39 @@
     header("Location: /Adot/Home.php");
     exit; // Make sure to include exit after the header redirect
   }
+  $_SESSION['on'] = 0;
+  @include 'config.php';
+  $items = array(); // Create an empty array to hold the items
+  if (isset($_SESSION['Shop_name'])){
+    $shopName = $_SESSION['Shop_name'];
+    $sql = "SELECT * FROM Shops WHERE shop_name=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $shopName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+      $row = $result->fetch_assoc();
+      //echo var_dump($row);
+      // Set values in the $items array using a foreach loop
+      foreach ($row as $key => $value) {
+        $items[$key] = $value;
+      }
+      // Echo the array values
+      /*foreach ($items as $key => $value) {
+        echo $key . ": " . $value . "<br>";
+      }*/
+    }
+  }
 ?>
 <div class="view_profile">
 <?php 
-      include ('Template/profile/profile_banner-area.php');
+    include ('Template/shop/shop_profile_banner-area.php');
 ?>
 <div class="About_disc">
-  <h2>About</h2>
+<?php if (!empty($items)) {?>
+    <h2>About</h2>
+    <?php echo $items["about"]; 
+    }?>
 </div>
 <main>
     <div class="tab">
