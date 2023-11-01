@@ -1,3 +1,3 @@
 <?php
-$conn = mysqli_connect('localhost','root','root','Shop') or die('connection failed');
+$conn = mysqli_connect('localhost','root','rootd','Shop') or die('connection failed');
 ?>
