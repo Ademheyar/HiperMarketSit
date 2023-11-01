@@ -1,0 +1,75 @@
+<?php 
+   if(session_id() == "") session_start();
+   if ($_SESSION['on'] != 1){
+      $_SESSION['on'] = 1;
+      header("Location: Home.php");
+      exit; // Make sure to include exit after the header redirect
+   }
+?>
+<div class="view_profile">
+   
+<main>
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'shopStockTab')">Shop Stock</button>
+      <button class="tablinks" onclick="openTab(event, 'customerInfoTab')">Customer Information</button>
+      <button class="tablinks" onclick="openTab(event, 'productInfoTab')">Product Information</button>
+    </div>
+
+    <div id="shopStockTab" class="tabcontent">
+      <h2>Shop Stock</h2>
+      <table id="shopStockTable">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Availability</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populate table rows dynamically using JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="customerInfoTab" class="tabcontent">
+      <h2>Customer Information</h2>
+      <table id="customerInfoTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Populate table rows dynamically using JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="productInfoTab" class="tabcontent">
+      <h2>Product Information</h2>
+      <div id="productDetails">
+        <!-- Populate product details dynamically using JavaScript -->
+      </div>
+    </div>
+  </main>
+</div>
+<?php include 'login.php'; ?>
+<?php include 'cart.php'; ?>
+
+<script>
+    // Sample data for demonstration
+   const shopStock = [
+   { name: "Product 1", price: "$10", availability: "In Stock" },
+   { name: "Product 2", price: "$20", availability: "Out of Stock" },
+   { name: "Product 3", price: "$15", availability: "In Stock" },
+   ];
+
+   const customerInfo = [
+   { name: "John Doe", email: "john@example.com", phone: "123-456-7890" },
+   { name: "Jane Smith", email: "jane@example.com", phone: "987-654-3210" },
+   ];
+
+   const productInfo = [
+   { name: "Product 1", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.", image: "product1.jpg"

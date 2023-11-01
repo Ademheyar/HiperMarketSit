@@ -184,7 +184,7 @@ function createItems() {
 		(function(shop_n) {
 			// Create a form element
 			var form = document.createElement('form');
-			form.action = '/Adot/Template/shop/View_shop_Profile.php';
+			form.action = 'Template/shop/View_shop_Profile.php';
 			form.method = 'post';
 	
 			// Create an input field for var1

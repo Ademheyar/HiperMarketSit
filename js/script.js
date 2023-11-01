@@ -44,38 +44,29 @@ function set_img_pos(num) {
    list.value = String(num);
 }
    
-let menu = document.querySelector('#menu-btn');
+
 //let navbar = document.querySelector('body .flex .navbar');
 var a_u_list = [];
 
-/*menu.onclick = () => {
-   menu.classList.toggle('fa-times');
-   //navbar.classList.toggle('active');
-};*/
-
-var a = document.querySelector('body .Main');
+var js_a = document.querySelector('body .Main');
 window.onscroll = () => {
    var mainy = 200;
    var sy = scrollY; 
    var y = mainy + sy;
-	var ya  = y/2 + a.scrollTop -10;
+	var ya  = y/2 + js_a.scrollTop -10;
 	document.getElementById('view-form').style.top = ya + 'px';
    if(document.querySelector('#login-form')) document.querySelector('#login-form').style.top = y + 'px';
    document.querySelector('#shopping-cart-form').style.top = y + 'px';
-   //menu.classList.remove('fa-times');
-   //navbar.classList.remove('active');
 };
 
-a.onscroll = () => {
+js_a.onscroll = () => {
    var mainy = 200;
    var sy = scrollY; 
    var y = mainy + sy;
-	var ya  = y/2+ a.scrollTop -10;
+	var ya  = y/2+ js_a.scrollTop -10;
 	document.getElementById('view-form').style.top = ya + 'px';
    if(document.querySelector('#login-form')) document.querySelector('#login-form').style.top = y + 'px';
    document.querySelector('#shopping-cart-form').style.top = y + 'px';
-   //menu.classList.remove('fa-times');
-   //navbar.classList.remove('active');
 };
 
 

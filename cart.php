@@ -47,7 +47,7 @@
    // Function to initialize the cart data and display it
    function initializeCartData() {
       var cartData = getCartData();
-      console.log("got cart list :");
+      console.log("got cart list in chart.php :");
       updateCartDisplay(cartData);
    }
 
@@ -298,11 +298,10 @@
    }
    window.onscroll = () => {
         var mainy = 200;
-        
    var sy = scrollY; 
    var y = mainy + sy;
-   var a = document.querySelector('body .Main');
-	var ya  = y+ a.scrollTop
+   var chart_main = document.querySelector('body .Main');
+	var ya  = y+ chart_main.scrollTop
 	document.getElementById('view-form').style.top = ya + 'px';
         if(document.querySelector('#login-form')) document.querySelector('#login-form').style.top = y + 'px';
         document.querySelector('#shopping-cart-form').style.top = y + 'px';
@@ -429,12 +428,12 @@
   margin-top: 1rem;
 }
 
-.shopping-cart .checkout-btn a {
+.shopping-cart .checkout-btn ba {
   display: inline-block;
 width: 100%;
 }
 
-.shopping-cart .checkout-btn a.disabled {
+.shopping-cart .checkout-btn ba.disabled {
   pointer-events: none;
   opacity: 0.5;
   user-select: none;

@@ -1,12 +1,10 @@
 <!-- Top Sale -->
-
 <section id="top-sale">
     <div class="top_container py-5">
         <h1 class="heading">Sale</h1>
         <hr>
         <!-- owl carousel -->
         <div class="owl-carousel owl-theme">
-            
         <?php
       
         $select_products = mysqli_query($conn, "SELECT * FROM `products`");
@@ -141,7 +139,6 @@
    margin-bottom: 5px;
 }
 
-
 #top-sale .owl-carousel .item .item_name {
    transition: transform 0.5s ease;
    margin-top: 5px;
@@ -206,4 +203,3 @@
         });
     });*/
 </script>
-

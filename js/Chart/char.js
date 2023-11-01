@@ -8,14 +8,13 @@ function calculateTotalSales(data) {
     return totalSales;
 }
 
-function drawBarChart(parentElement_, salesData) {
+function drawBarChart(parentElement, salesData) {
     let xLabels_ = [];
     let data = [];
     console.log(salesData.length + '<< iuii.length');
     console.log(salesData);
   
     // Check if child elements already exist in the parent
-    const parentElement = document.getElementById(parentElement_);
     const canvasparent = "-canvas";
     const canvas_ = "canvas-chart";
 
@@ -107,13 +106,13 @@ function drawBarChart(parentElement_, salesData) {
     
     // Function to handle chart type change
     function handleChartTypeChange() {
-        drawBarChart(parentElement_, salesData);
+        drawBarChart(parentElement, salesData);
     }
 
 
     // Function to handle chart selection change
     function handleChartSelection() {
-        drawBarChart(parentElement_, salesData);
+        drawBarChart(parentElement, salesData);
     }
 
     // Event listeners

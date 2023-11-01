@@ -1,580 +1,224 @@
-
-
 <div class="header">
-   <?php if(session_id() == "") session_start();  ?>
-   <a href="#" class="logo">
-      <img src="img/logo.jpg" alt="">
-   </a>
-   <input type='text' class='search_box' placeholder='Search' name="search_box">
-   <div class="header_btns">
-      <?php 
-      $select_rows = mysqli_query($conn, "SELECT * FROM `cart`") or die('query failed');
-      $row_count = mysqli_num_rows($select_rows);
-
-      if(isset($_SESSION['loged_user_type']) && $_SESSION['loged_user_type'] == 2) { ?>
-         <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
-      <?php } else { 
-         // If the user is not logged in or has a different user type
-         if(session_id() == "") session_start(); ?>      
-         <li><a onclick="chart_start();" class="cart">Cart<span><?php echo $_SESSION['car_length']; ?></span></a></li>
-      <?php } ?>   
-   </div>
+    <?php if (session_id() == "") session_start(); ?>
+    <a href="#" class="logo">
+        <img src="img/logo/logo.jpg" alt="">
+    </a>
+    <input type='text' class='search_box' placeholder='Search' name="search_box">
+    <div class="header_btns">
+        <li><a onclick="chart_start();" class="cart_icon">
+            <img src="img/icons/cart.svg" class="cart_img" alt="">
+            <span><?php echo isset($_SESSION['car_length']) ? $_SESSION['car_length'] : "0"; ?></span>
+        </a></li>
+    </div>
 </div>
 
 <style>
+    /* Header Styles */
+    /* about header */
+    .header {
+        /**/
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        
+
+        background: var(--sbg);
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        border-bottom: var(--border);
+
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    /* about logo on header*/
+
+    .header .logo {
+        margin-right: auto;
+        left: 0;
+        margin-top: none;
+        position: relative;
+        font-size: 2.5rem;
+        width: 40%;
+    }
+
+    /* about logo image */
+    .header .logo img {
+        width: 100%;
+        height: 10rem;
+    }
 
 
-/* Header Styles */
-
-/* about header */
- 
-.header{
-   background: var(--bg);
-   display: flex;
-   gap: 1.5rem;
-   align-items: center;
-   justify-content: space-between;
-   /*padding: 1.5rem 7%;*/
-   border-bottom: var(--border);
-   position: sticky;
-   top: 0; left: 0; right: 0;
-   padding: 6rem;
- }
-
- /* about logo on header*/
-  
- .header .logo {
-   margin-right: auto;
-   position: fixed;
-   font-size: 2.5rem;
- }
-
- /* about logo image */
- .header .logo img{
-   height: 10rem;
- }
- 
-
- /* 
+    /*
    this will make search look good
 */
 
-.search-container {
-  display: flex;
-}
-
-.search_box {
-   width: 100%;
-  height: 40px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-  padding: 10px 20px;
-  font-size: 16px;
-  outline: none;
-   margin-right: auto;
-   /*font-size: 2.5rem;*/
-
-}
-.search-box {
-   /*width: 60%;
-  height: 40px;
-  border-radius: 20px;
-  border: 1px solid gray;
-  padding: 10px 20px;*/
-}
-
-.search-btn {
-  width: 40px;
-  height: 40px;
-  background-color: blue;
-  color: white;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-}
-
-
-.search_box::placeholder {
-  color: #999;
-}
-.header .search-form{
-   position: absolute;
-   top: 115%; right: 7%;
-   background: #fff;
-   width: 50rem;
-   height: 5rem;
-   display: flex;
-   align-items: center;
-   transform: scaleY(0);
-   transform-origin: top;
- }
- 
- .header .search-form input{
-   height: 100%;
-   width: 100%;
-   font-size: 1.6rem;
-   color: var(--black);
-   padding: 1rem;
-   text-transform: none;
- }
- 
- .header .search-form label{
-   cursor: pointer;
-   font-size: 2.2rem;
-   margin-right: 1.5rem;
-   color: var(--black);
- }
- 
- 
- .header .search-form label:hover{
-   color: var(--main-color);
- }
-
-
-/* media queries  */
- 
-@media (max-width:1500px){
-   /* Header Styles */
-   .header{
-      background: var(--bg);
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-      justify-content: space-between;
-      /*padding: 1.5rem 7%;*/
-      border-bottom: var(--border);
-      position: sticky;
-      top: 0; left: 0; right: 0;
-      z-index: 1000; 
-      padding: 4%;
-   }
-
-   /* about logo on header*/
-  
-   .header .logo {
-      
-    position: initial;
-    right: 85%;
-    padding: 4px;
-    padding-right: 7px;
-   }
-
-   /* about logo image */
-   .header .logo img{
-      height: 10rem;
-   }
-   
-
-   .header .search_box{
-      margin-right: auto;
-      width: 100%;
-      font-size: 2.5rem;
-   }
-}
- 
-@media (max-width:991px){
-   /* Header Styles */
-   .header{
-      background: var(--bg);
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-      justify-content: space-between;
-      /*padding: 1.5rem 7%;*/
-      border-bottom: var(--border);
-      position: sticky;
-      top: 0; left: 0; right: 0;
-      z-index: 1000; 
-      padding: 3rem;
-   }
-
-   /* about logo on header*/
-  
-   .header .logo {
-      position: initial;
-      right: 85%;
-      padding: 4px;
-      padding-right: 7px;
-   }
-  
-   /* about logo image */
-   .header .logo img{
-      height: 10rem;
-   }
-   
-   .header .search_box{
-      margin-right: auto;
-      width: 50%;
-      font-size: 2.5rem;
-   }
-}
- 
-@media (max-width:768px){
-   /* Header Styles */
-    .header{
-      background: var(--bg);
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-      justify-content: space-between;
-      /*padding: 1.5rem 7%;*/
-      border-bottom: var(--border);
-      position: sticky;
-      top: 0; left: 0; right: 0;
-      z-index: 1000; 
-      padding: 3rem;
-   }
-
-   /* about logo on header*/
-  
-   .header .logo{
-      left: 10px;
-      top: 50px;
-      bottom: 50%;
-      font-size: 2.5rem;
-   }
-  
-   /* about logo image */
-   .header .logo img{
-      height: 10rem;
-   }
-
-   .header .search_box{
-      margin-right: auto;
-      width: 50%;
-      font-size: 2.5rem;
-   }
-}
- 
-@media (max-width: 600px) {
-   /* Header Styles */
-   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 3rem;
-   }
- 
-   /* about logo on header*/
-  
-   .header .logo {
-      /*position: initial;
-      right: 85%;
-      padding: 4px;
-      padding-right: 7px;*/
-   }
-  
-   /* about logo image */
-   .header .logo img{
-      height: 10rem;
-   }
-
-   /* about search */
-   .search-container {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-   }
-
-   .search-box {
-      width: 80%;
-      margin-bottom: 20px;
-   }
-}
-
-@media (max-width:450px){
-   /* Header Styles */
-    .header{
-      background: var(--bg);
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-      justify-content: space-between;
-      /*padding: 1.5rem 7%;*/
-      border-bottom: var(--border);
-      position: sticky;
-      top: 0; left: 0; right: 0;
-      z-index: 1000; 
-      padding: 3rem;
-   }
- 
-   
-   /* about logo on header*/
-  
-   .header .logo {
-      
-      position: initial;
-      right: 85%;
-      padding: 4px;
-      padding-right: 7px;
-     }
-  
-     /* about logo image */
-     .header .logo img{
-        height: 10rem;
-     }
-}
-
-
-
-
- 
-
-
-
-.logo {
-  font-size: 24px;
-}
-
-
-.links {
-  display: flex;
-}
-
-.link {
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Responsive Styles */
-
-
- 
-nav {
-   flex: 1;
-   text-align: right;
- }
- nav ul 
- {
-   display: contents;
-    list-style: none;
- }
- 
- nav ul li {
-    display: table-row;
-    list-style: 70px;
-    /* this blocks are for styling the list elements */
- }
- 
- nav ul li a {
-    text-decoration: none;
-    list-style: 70px;
-    text-decoration: none;
-    color: palevioletred;
-    font-size: 28px;
-    text-align: center;
-    padding: 2rem;
-    box-shadow: var(--box-shadow);
-    border: var(--border);
-    border-radius: 0.5rem;
-    gap: 50px;
-    margin: auto;
- }
- 
- nav ul li a:hover {
-    color: aqua;
- }
- 
- nav ul li button {
-    font-size: 20px;
-    color: white;
-    outline: none;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-family: sans-serif;
- }
- 
- nav ul li button:hover {
-    color: aqua;
- }
- 
- .navbar {
-    align-items: center;
-    padding: 0px;
-    padding-left: 50px;
-    padding-right: 30px;
-    /* this is for setting the dimensions of navigation bar */
- }
-
-
-
-
-/* 
-   this will make loging nice
-*/
-.loginbtn {
-  font-size: 16px;
-  color: #fff;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.loginbtn:hover {
-  color: aqua;
-}
-
-
- body .flex .navbar a{
-    margin-left: 2rem;
-    font-size: 2rem;
-    color:var(--white);
- }
- 
- body .flex .navbar a:hover{
-    color:yellow;
- }
- 
- body .flex .cart{
-    margin-left: 2rem;
-    font-size: 2rem;
-    color:var(--white);
- }
- 
- body .flex .cart:hover{
-    color:yellow;
- }
- 
- body .flex .cart span{
-    padding:.1rem .5rem;
-    border-radius: .5rem;
-    background-color: var(--white);
-    color:var(--blue);
-    font-size: 2rem;
- }
- 
- #menu-btn{
-    margin-left: 2rem;
-    font-size: 3rem;
-    cursor: pointer;
-    display: inline-block;
-   color:var(--white);
-   display: none;
- }
- 
- 
- .header .navbar a{
-   margin: 0 1rem;
-   font-size: 1.6rem;
-   color: #fff;
- }
- 
- .header .navbar a:hover{
-   color: var(--main-color);
-   border-bottom: .1rem solid var(--main-color);
-   padding-bottom: .5rem;
- }
- 
- .header .icons div{
-   color: #fff;
-   cursor: pointer;
-   font-size: 2.5rem;
-   margin-left: 2rem;
- }
- 
- .header .icons div:hover{
-   color: var(--main-color);
- }
- 
- 
- @media (max-width:991px){
- 
-    #menu-btn{
-      display: none;
-      transition: .2s linear;
-   }
-   
-   
- }
- 
-
-
- 
- @media (max-width:768px){
-   /*body .flex .navbar{
-       top:99%; left:0; right:0;
-       background-color: var(--blue);
-       clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-       transition: .2s linear;
+    .search-container {
+        display: flex;
     }
- 
-    body .flex .navbar.active{
-       clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+
+    .header .search_box {
+        width: 50%;
+        height: 30px;
+        
+        /*position: relative;*/
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        padding: 5px 15px;
+        /*font-size: 16px;
+        /*outline: none;
+        /*margin-right: auto;
+        /*font-size: 2.5rem;*/
+
     }
- 
-    body .flex .navbar a{
-       margin:2rem;
-       display: block;
-       text-align: center;
-       font-size: 2.5rem;
+
+    .header .search_box::placeholder {
+        color: #999;
+    }
+    /*.header .search-form {
+        position: relative;
+        top: 0%;
+        right: 7%;
+        background: #fff;
+        width: 40rem;
+        height: 5rem;
+        display: flex;
+        align-items: center;
+        transform: scaleY(0);
+        transform-origin: top;
+    }
+
+    .header .search-form input {
+        height: 100%;
+        width: 100%;
+        font-size: 1.6rem;
+        color: var(--black);
+        padding: 1rem;
+        text-transform: none;
+    }
+
+    .header .search-form label {
+        cursor: pointer;
+        font-size: 2.2rem;
+        margin-right: 1.5rem;
+        color: var(--black);
+    }
+
+    .header .search-form label:hover {
+        color: var(--main-color);
     }*/
- 
-    #menu-btn{
-       display: inline-block;
-    /*   position: absolute;
-       width: 50px;
-    height: 50px;
-     left: 0%; 
-    bottom: 1%;
-    right: 1%;
-       transition: .2s linear;*/
+
+    .header .header_btns {
+        list-style: none;
+        /*position: relative;*/
+        display: flex;
+        width: auto;
+
+        right: 0px;
+        grid-template-columns: repeat(auto-fit, 5rem);
+        gap: 0.5rem;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        align-items: center;
+        align-content: space-between;
+        flex-wrap: wrap;
+        background: transparent;
     }
-    
-    #menu-btn.fa-times{
-       transform: rotate(180deg);
+
+    .header .header_btns .cart_icon {
+        display: flex;
+        align-items: center;
+        /* Vertical alignment of cart icon and number *
+        margin-left: 10px;/*/
     }
- }
- 
- @media (max-width:450px){
- 
-    .heading{
-       font-size: 3rem;
+    .header .header_btns .cart_icon img {
+        width: 85%;
+        height: 5rem;
     }
- }
 
+    .header .header_btns .cart_icon span {
+        background-color: red;
+        color: white;
+        border-radius: 25%;
+        padding: 0px 3px;
+        font-size: 10px;
+        margin-left: 0.1px;
+        margin-top: 1px;
+        /* Add spacing between cart icon and number */
+    }
+    /* media queries  */
 
+@media (max-width:1500px) {
+        /* Header Styles */
+        .
+    }
 
+@media (max-width:991px) {
+ .
+    }
 
-.logo {
-  font-size: 24px;
-}
+@media (max-width:768px) {
+        /* Header Styles */
+        .header {
+            align-items: baseline;
+            align-items: left;
+            
+            justify-content: space-evenly;
+            border-bottom: var(--border);
+            height: 15%;
+            width: auto;
+        }
 
+        /* about logo on header*/
 
-.links {
-  display: flex;
-}
+        .header .logo {
+            position: fixed;
+            top: 1px;
+            left: 20%;
+            bottom: 25%;
+            width: 50%;
+            height: 25%;
+            font-size: 2.5rem;
+        }
 
-.link {
-  margin-right: 20px;
-  cursor: pointer;
-}
+        /* about logo image */
+        .header .logo img {
+            background: red;
+            left: 0;
+            width: 100%;
+            height: 5rem;
+        }
+
+        .header .search_box {
+            left: 5%;
+            top: 30%;
+            /*position: relative;*/
+            margin-right: auto;
+            margin-top: auto;
+            width: 80%;
+            font-size: 2.5rem;
+        }
+
+        .header .header_btns {
+            right: 2%;
+            top: 3rem;
+            /*position: relative;*/
+            margin-right: auto;
+            height: 7rem;
+            font-size: 2.5rem;
+        }
+    }
 
 @media (max-width: 600px) {
+        /* Header Styles */
+        .header {}
+    }
 
-  .links {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .link {
-    margin-bottom: 20px;
-    margin-right: 0;
-  }
-}
+@media (max-width:450px) {
+        /* Header Styles */
+        .header {}
+    }
 </style>

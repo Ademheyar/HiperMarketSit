@@ -3,7 +3,7 @@ if (session_id() == "") session_start();
 @include 'config.php';
 $items = array(); // Create an empty array to hold the items
 
-if (isset($_SESSION['Shop_name'])){
+/*if (isset($_SESSION['Shop_name'])){
   $shopName = $_SESSION['Shop_name'];
   $sql = "SELECT * FROM Shops WHERE shop_name=?";
   $stmt = $conn->prepare($sql);
@@ -15,7 +15,7 @@ if (isset($_SESSION['Shop_name'])){
     $row = $result->fetch_assoc();
     $items = $row;
   }
-}
+}*/
 
 ?>
 
@@ -87,7 +87,7 @@ if (isset($_SESSION['Shop_name'])){
 
 <style>
   .slide_section {
-    padding: 2rem;
+    /*padding: 2rem;*/
     margin: 0;
     height: 30%;
     display: flex;

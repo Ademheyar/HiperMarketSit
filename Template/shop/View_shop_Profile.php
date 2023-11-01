@@ -8,7 +8,7 @@
 
   if ($_SESSION['on'] != 2){
     $_SESSION['on'] = 2;
-    header("Location: /Adot/Home.php");
+    header("Location: Home.php");
     exit; // Make sure to include exit after the header redirect
   }
   $_SESSION['on'] = 0;
@@ -90,10 +90,8 @@
       </div>
     </div>
   </main>
+  <?php include ('footer.php');?>
 </div>
-<?php include 'login.php'; ?>
-<?php include 'cart.php'; ?>
-
 <script src="js/Prodoct_item/Creat_Items_list1.js"></script>
 
 <script>

@@ -1,8 +1,15 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
 */
 :root {
+    /*white tame*/
+   --wbg: white;
+   
+    
+    
+    
    --main-color: #d3ad7f;
    --bg: #010103;
+   
    --border: .1rem solid rgba(255,255,255,.3);
     --blue:#181818;
     --red:tomato;
@@ -13,6 +20,10 @@
     --dark-bg:rgba(0,0,0,.7);
     --box-shadow:0 .5rem 1rem rgba(0,0,0,.1);
     --border:.1rem solid #999;
+    
+    
+    /*selected */
+    --sbg: white;
  }
  
  /* about body */
@@ -24,7 +35,11 @@
    width : auto;
    height: auto;
    justify-self: center;
-   align-items: center;
+   align-items: center;*/
+   /*display: flex;*/
+   justify-content: center;
+   align-items:center;
+   min-height: 100vh;
 }
 
 *{
@@ -40,14 +55,12 @@
 .container{
    height: 100%;
    width: 100%;
-   /*background-image: linear-gradient(rgba(0,0,0,0,4), rgba(0,0,0,0,4),url(image(src)));*/
    background-position: center;
    background-size: cover;
    position: absolute;
    max-width: 1200px;
    margin:0 auto;
    /* padding-bottom: 5rem; */
-   /* this block of code is for the setting the background imag and position of the image if needed*/
 }
 
 a {
@@ -210,37 +223,7 @@ ul{
     background-color: var(--red);
  }
  
- .message{
-    background-color: var(--blue);
-    position: sticky;
-    top:0; left:0;
-    z-index: 10000;
-    border-radius: .5rem;
-    background-color: var(--black);
-    padding:1.5rem 2rem;
-    margin:0 auto;
-    max-width: 1200px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap:1.5rem;
- }
- 
- .message span{
-    font-size: 2rem;
-    color:var(--black);
- }
- 
- .message i{
-    font-size: 2.5rem;
-    color:var(--black);
-    cursor: pointer;
- }
- 
- .message i:hover{
-    color:var(--red);
- }
- 
+
  .edit-form-container{
     position: fixed;
     top:0; left:0;

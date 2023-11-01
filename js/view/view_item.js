@@ -554,7 +554,7 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     view_Box.classList.add('view');
     view_Box.id = 'view-form';
     view_Box.style.display='none'; 
-    a.appendChild(view_Box);
+    vi_mainu.appendChild(view_Box);
     const view_Boxclose_btn = document.createElement('input');
     view_Box.appendChild(view_Boxclose_btn);
     view_Boxclose_btn.value = "x";
@@ -808,6 +808,9 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
 
 
     /// other info box that will hold all info about item
+    
+    
+    
     const history_Box = document.createElement('div');
     view_Box.appendChild(history_Box);
     history_Box.classList.add('history_Box');
@@ -872,7 +875,7 @@ for(var m = 0; main_info[m]; m++){
     item.innerText = "" + size;
     size_info_id.appendChild(item);
 }*/
-    var ya  = y+ a.scrollTop
+    var ya  = y+ vi_mainu.scrollTop
     view_Box.style.top = ya + 'px';
 }
 
@@ -883,8 +886,8 @@ window.onscroll = () => {
     var sy = scrollY; 
 var sy = scrollY; 
 var y = mainy + sy;
-var a = document.querySelector('body .Main');
-var ya  = y+ a.scrollTop
+var vi_mainu = document.querySelector('body .Main');
+var ya  = y+ vi_mainu.scrollTop
 document.getElementById('view-form').style.top = ya + 'px';
     document.querySelector('#shopping-cart-form').style.top = y + 'px';
     //menu.classList.remove('fa-times');

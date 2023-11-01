@@ -1,10 +1,11 @@
 <?php 
    if(session_id() == "") session_start();
-   if ($_SESSION['on'] != 0){
+   if (!isset($ishome) or $_SESSION['on'] != 0){
       $_SESSION['on'] = 0;
       header("Location: Home.php");
       exit; // Make sure to include exit after the header redirect
    }
+   include ('Template/msg.php');
 ?>
 
 <div class="Main">
@@ -15,13 +16,16 @@
       include ('Template/shopbycolection.php');
       //  //include top sale section 
       //include ('Template/_top-sale.php');
+      //include ('Template/_top-sale.php');
       //  //include top sale section 
-      
-      include ('Template/listproducts_2.php');
-   ?>   
+     
+   ?>  
+   <script>
+   const productGrid_container = document.querySelector('body .Main');
+   create_list(productGrid_container, 'ls', 'bb', 'tit999e', 1,0);
+   create_list(productGrid_container, 'hf', 'ldn', 'ti8899e', 1,1);
+   </script>
 </div>
-<?php include 'login.php'; ?>
-<?php include 'cart.php'; ?>
 
 <?php
     /*  include banner area  */
@@ -61,8 +65,7 @@
 body .Main{
    overflow: auto;
    position: relative;
-   top: 16rem;
-   left: 15%;
+    top: 5%;
    align-items: flex-start;
    position: absolute;
    width: 100%;
@@ -78,11 +81,10 @@ body .Main{
    body .Main{
       overflow: auto;
       position: relative;
-      top: 18rem;
-      left: 15%;
+      top: 5%;
       align-items: flex-start;
       position: absolute;
-      width: 85%;
+      width: 100%;
       height: 100%;
       background: #f8f8ff;
    }
@@ -94,11 +96,9 @@ body .Main{
    body .Main{
       overflow: auto;
       position: relative;
-      top: 18rem;
-      left: 15%;
       align-items: flex-start;
       position: absolute;
-      width: 85%;
+      width: 100%;
       height: 100%;
       background: #f8f8ff;
    }
@@ -110,11 +110,10 @@ body .Main{
    body .Main{
       overflow: auto;
       position: relative;
-      top: 18rem;
-      left: 15%;
+      top: 16%;
       align-items: flex-start;
       position: absolute;
-      width: 85%;
+      width: 100%;
       height: 100%;
       background: #f8f8ff;
    }
@@ -126,8 +125,6 @@ body .Main{
    body .Main{
         overflow: auto;
         position: relative;
-        top: 18rem;
-        left: 0;
         align-items: flex-start;
         position: absolute;
         width: 100%;
@@ -142,8 +139,6 @@ body .Main{
    body .Main{
         overflow: auto;
         position: relative;
-        top: 18rem;
-        left: 0;
         align-items: flex-start;
         position: absolute;
         width: 100%;
