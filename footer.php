@@ -666,6 +666,7 @@
    }
 }
 
+
 @media (max-width:450px){
    #footer{
       top: 100rem;
