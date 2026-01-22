@@ -68,7 +68,7 @@ function sendAjaxRequest(url, method, itemsData, successCallback, errorCallback)
 }
 
 function readhtmtable() {
-	var url = 'get_items.php'; // The PHP script that fetches items from the database
+	var url = 'Get/get_items.php'; // The PHP script that fetches items from the database
 
 	console.log('offset=' + offset + '  &limit=' + limit + '  &firstset=' + firstset + '  &lastset=' + lastset);
 	var datasent = 'offset=' + offset + '&limit=' + limit + '&firstset=' + firstset + '&lastset=' + lastset;
@@ -141,7 +141,7 @@ function createItems() {
 	  
     const shop_name = data[i].at_shop.split(' ')[0];
     const na = data[i].name.replaceAll(' ', '_');
-    const path = `img/${shop_name}/products/${data[i].type}/${na}/${data[i].code}`;
+    const path = `Img/${shop_name}/products/${data[i].type}/${na}/${data[i].code}`;
 
     // Check if the item already exists by searching for a specific attribute/value combination
     const existingItem = productGrid.querySelector(`[data-item="${data[i].id}"]`);
@@ -159,6 +159,7 @@ function createItems() {
     // Create the new item element
     const productItem_Box = document.createElement('div');
     productItem_Box.classList.add('box');
+    
     productItem_Box.setAttribute('data-item', data[i].id); // Set a data attribute to identify the item
 
     const productImage_Box = document.createElement('div');
@@ -211,7 +212,7 @@ function createItems() {
     	this.style.position = "absolute";
     	this.style.top = "0"; // Set height to match original image
 		
-		this.src = 'img/error1.jpg'; // Set the error image path
+		this.src = 'Img/error1.jpg'; // Set the error image path
 	};
 
     product_profile_Img.src = `${path}/${data[i].images[0]}`;
@@ -224,7 +225,7 @@ function createItems() {
     productImage_Btn.appendChild(productImage);
     productImage.style.height = '50px';
 	productImage.onerror = function() {
-		this.src = 'img/error1.jpg'; // Set the error image path
+		this.src = 'Img/error1.jpg'; // Set the error image path
 		this.style.width = '100%'; // Set width to match original image
 		this.style.height = '100%'; // Set height to match original image
 	};

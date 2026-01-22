@@ -26,45 +26,28 @@ function View_color(code, size) {
    }
 }
 
-function set_img_pos(num) {
-   var list = document.querySelector('#view-form .box .img_box');
-   for(var z = 0; z <= list.children.length-1; z++){
-      var n = 100/list.children.length;
-      if(100/3 >= n) n=n;
-      else n = 100/3;
-      if(z == Number(num)){
-         list.children[z].style.width =String(100)+"%";
-         list.children[z].style.height =String(100-100/2)+"%";
-      }
-      else {
-         list.children[z].style.width =String(n)+"%";
-         list.children[z].style.height =String(100/4)+"%";
-      }
-   }
-   list.value = String(num);
-}
    
 
 //let navbar = document.querySelector('body .flex .navbar');
-var a_u_list = [];
+/*var a_u_list = [];
 
 var js_a = document.querySelector('body .Main');
-window.onscroll = () => {
+/*window.onscroll = () => {
    var mainy = 200;
    var sy = scrollY; 
    var y = mainy + sy;
 	var ya  = y/2 + js_a.scrollTop -10;
-	document.getElementById('view-form').style.top = ya + 'px';
+	//document.getElementById('view-form').style.top = ya + 'px';
    if(document.querySelector('#login-form')) document.querySelector('#login-form').style.top = y + 'px';
    document.querySelector('#shopping-cart-form').style.top = y + 'px';
 };
 
-js_a.onscroll = () => {
+/*js_a.onscroll = () => {
    var mainy = 200;
    var sy = scrollY; 
    var y = mainy + sy;
 	var ya  = y/2+ js_a.scrollTop -10;
-	document.getElementById('view-form').style.top = ya + 'px';
+	//document.getElementById('view-form').style.top = ya + 'px';
    if(document.querySelector('#login-form')) document.querySelector('#login-form').style.top = y + 'px';
    document.querySelector('#shopping-cart-form').style.top = y + 'px';
 };

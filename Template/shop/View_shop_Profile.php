@@ -8,11 +8,16 @@
 
   if ($_SESSION['on'] != 2){
     $_SESSION['on'] = 2;
-    header("Location: Home.php");
+    $protocol = isset($_SERVER['HTTPS']);
+    $doman = $_SERVER['HTTP_HOST'];
+    $currontDir = dirname($_SERVER['REQUEST_URI']);
+    $redirectURL = $protocol .$doman .$currontDir;
+    header("Location: ".$redirectURL."/"."Home.php");
     exit; // Make sure to include exit after the header redirect
   }
   $_SESSION['on'] = 0;
-  @include 'config.php';
+    if(file_exists("config.php")) include("config.php");
+  if(file_exists("../../config.php")) include("../../config.php");
   $items = array(); // Create an empty array to hold the items
   if (isset($_SESSION['Shop_name'])){
     $shopName = $_SESSION['Shop_name'];
@@ -95,19 +100,6 @@
 <script src="js/Prodoct_item/Creat_Items_list1.js"></script>
 
 <script>
-    // Sample data for demonstration
-   const shopStock = [
-   { name: "Product 1", price: "$10", availability: "In Stock" },
-   { name: "Product 2", price: "$20", availability: "Out of Stock" },
-   { name: "Product 3", price: "$15", availability: "In Stock" },
-   ];
-
-    // Sample data for demonstration
-   const customerInfo = [
-   { name: "John Doe", email: "john@example.com", phone: "123-456-7890" },
-   { name: "Jane Smith", email: "jane@example.com", phone: "987-654-3210" },
-   ];
-
    // Handle tab switching
    function openTab(evt, tabName) {
       // Get all tab content elements and hide them
@@ -127,7 +119,7 @@
       document.getElementById(tabName).classList.add("active");
    }
    openTab("", 'product_items_list_containers1');
-
+/*
    // Populate shop stock table
    const stockTable = document.getElementById("shopStockTable").getElementsByTagName("tbody")[0];
    shopStock.forEach(product => {
@@ -140,7 +132,7 @@
    customerInfo.forEach(customer => {
    const row = customerTable.insertRow();
    row.innerHTML = `<td>${customer.name}</td><td>${customer.email}</td><td>${customer.phone}</td>`;
-   });
+   });*/
 
   </script>
 <style>
@@ -441,59 +433,5 @@ nav {
    color:var(--white);
    display: none;
  }
- 
- 
- .header .navbar a{
-   margin: 0 1rem;
-   font-size: 1.6rem;
-   color: #fff;
- }
- 
- .header .navbar a:hover{
-   color: var(--main-color);
-   border-bottom: .1rem solid var(--main-color);
-   padding-bottom: .5rem;
- }
- 
- .header .icons div{
-   color: #fff;
-   cursor: pointer;
-   font-size: 2.5rem;
-   margin-left: 2rem;
- }
- 
- .header .icons div:hover{
-   color: var(--main-color);
- }
- 
 
-
-.logo {
-  font-size: 24px;
-}
-
-
-.links {
-  display: flex;
-}
-
-.link {
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-@media (max-width: 600px) {
-
-  .links {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .link {
-    margin-bottom: 20px;
-    margin-right: 0;
-  }
-}
 </style>

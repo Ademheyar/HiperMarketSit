@@ -550,6 +550,20 @@ function disply_item(vs_id, vs_n, vs_At_Shop, vs_type, vs_code, vs_price, vs_img
     
     
     const view_Box = document.createElement('div');
+    view_Box.style.fontSize = "small";
+    view_Box.style.width = "100%";
+    view_Box.style.height = "100vh";
+    view_Box.style.background = "rgba(0,0,0,.3)";
+    view_Box.style.padding = "18px";
+    view_Box.style.overflow = "hidden";
+    view_Box.style.position = "fixed";
+    view_Box.style.top = "0";
+    view_Box.style.left = "0";
+    view_Box.style.display = "flex";
+    view_Box.style.alignItems = "center";
+    view_Box.style.justifyContent = "center";
+    view_Box.style.zIndex = "1000";
+    
     view_Box.classList.add('view');
     view_Box.id = 'view-form';
     view_Box.style.display='none'; 
@@ -786,7 +800,7 @@ var sy = scrollY;
 var y = mainy + sy;
 var vp_mainu = document.querySelector('body .Main');
 var ya  = y+ vp_mainu.scrollTop
-document.getElementById('view-form').style.top = ya + 'px';
+//document.getElementById('view-form').style.top = ya + 'px';
     document.querySelector('#shopping-cart-form').style.top = y + 'px';
     //menu.classList.remove('fa-times');
     //navbar.classList.remove('active');

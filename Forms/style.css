@@ -1,5 +1,5 @@
 /*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap');
-*/
+
 :root {
    --main-color: #d3ad7f;
    --bg: #010103;
@@ -15,8 +15,8 @@
     --border:.1rem solid #999;
  }
  
- /* about body */
- /* ------------------------------- */
+ /* about body 
+ /* ------------------------------- 
  body {
    display: grid; 
    padding: 0;
@@ -28,26 +28,20 @@
 }
 
 *{
-   font-family: 'Roboto', sans-serif;
-   margin:0; padding:0;
-   box-sizing: border-box;
-   outline: none; border:none;
-   text-decoration: none;
-   text-transform: capitalize;
-   transition: .2s linear;
+   
 }
 
 .container{
    height: 100%;
    width: 100%;
-   /*background-image: linear-gradient(rgba(0,0,0,0,4), rgba(0,0,0,0,4),url(image(src)));*/
+   /*background-image: linear-gradient(rgba(0,0,0,0,4), rgba(0,0,0,0,4),url(image(src)));
    background-position: center;
    background-size: cover;
    position: absolute;
    max-width: 1200px;
    margin:0 auto;
-   /* padding-bottom: 5rem; */
-   /* this block of code is for the setting the background imag and position of the image if needed*/
+   /* padding-bottom: 5rem; 
+   /* this block of code is for the setting the background imag and position of the image if needed
 }
 
  .navbar {
@@ -57,7 +51,7 @@
     padding-left: 50px;
     padding-right: 30px;
     padding-top: 50px;
-    /* this is for setting the dimensions of navigation bar */
+    /* this is for setting the dimensions of navigation bar 
  }
  nav {
     flex: 1;
@@ -72,7 +66,7 @@
  nav ul li {
     display: inline-block;
     list-style: 70px;
-    /* this blocks are for styling the list elements */
+    /* this blocks are for styling the list elements 
  }
  
  nav ul li a {
@@ -111,7 +105,7 @@
    scroll-behavior: smooth;
  }
  
- /* about scrollbar */
+ /* about scrollbar 
  html::-webkit-scrollbar{
    width: .8rem;
  }
@@ -128,7 +122,7 @@
  
  
  
- /* Color Template  */
+ /* Color Template  
  .color-primary {
     color: #003859;
   }
@@ -157,7 +151,7 @@
  
  
 #banner_adds{
-   /*background: #24262b;*/
+   /*background: #24262b;
    position: relative;
    clear: both;
  } 
@@ -183,7 +177,7 @@
 }
 
 #blogs{
-   /*background: #24262b;*/
+   /*background: #24262b;
    position: relative;
    clear: both;
  } 
@@ -472,15 +466,15 @@ ul{
  
  
  
- /*  top sale template   */
+ /*  top sale template   
 
-/*  global classes  */
+/*  global classes  
 button, button:focus {
    outline: none !important;
    box-shadow: none !important;
 }
 
-/* typography classes */
+/* typography classes 
 .font-baloo {
    font-family: "Baloo Thambi 2", cursive;
 }
@@ -509,7 +503,7 @@ button, button:focus {
    font-size: 20px;
 }
 
-/* Color Template  */
+/* Color Template  
 .color-primary {
    color: #003859;
 }
@@ -535,13 +529,13 @@ button, button:focus {
 }
 
 
-/*   Special Price Section Template */
+/*   Special Price Section Template 
 #special-price .grid .grid-item {
    margin-right: 1.2rem;
    margin-top: 1rem;
 }
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=style.css.map 
  
  
  
@@ -554,7 +548,7 @@ button, button:focus {
  
  
  
- /* media queries  */
+ /* media queries  
  
  @media (max-width:1200px){
     .shopping-cart{
@@ -618,6 +612,6 @@ button, button:focus {
  
  
  
- 
+ */
  
  

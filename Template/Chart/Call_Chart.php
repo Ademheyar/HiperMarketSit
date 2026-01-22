@@ -39,7 +39,6 @@
             const startDate = '2023-07-01';
             const endDate = '2023-07-05';
 
-            drawBarChart(_parent, salesData);
         },
             function(errorStatus) {
                 // Handle error

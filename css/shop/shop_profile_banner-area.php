@@ -7,14 +7,14 @@
             <input type="radio" name="radio-btn" id="radio3">
             
             <div class="st first">
-                <img src="./img/banner/Banner1.jpg" alt="">
+                <img src="./Img/banner/Banner1.jpg" alt="">
             </div>
             
             <div class="st">
-                <img src="./img/banner/Banner2.jpg" alt="">
+                <img src="./Img/banner/Banner2.jpg" alt="">
             </div>
             <div class="st">
-                <img src="./img/banner/Banner3.jpg" alt="">
+                <img src="./Img/banner/Banner3.jpg" alt="">
             </div>
         </div>
          <div class="nav-m">
@@ -23,7 +23,7 @@
             <label for="radio3" class="m-btn"></label>
          </div>
          <div class="Profile_image">
-            <img src="./img/banner/Banner1.jpg" alt="">
+            <img src="./Img/banner/Banner1.jpg" alt="">
          </div>
    </div>
 </section>

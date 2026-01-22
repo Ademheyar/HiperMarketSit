@@ -1,979 +1,312 @@
 <?php 
+  if(file_exists("config.php")) include("config.php");
+  if(file_exists("../../config.php")) include("../../config.php");
+  
   if(session_id() == "") session_start();
-  if (isset($_POST['Shop_name'])) {
+  $shop_found = 0;
+
+  if (isset($_GET['shop_pag_name'])) {
+    $_SESSION['selected_company_id'] = -1;
     // Update the session variable value
-    $_SESSION['Shop_name'] = $_POST['Shop_name'];
-    echo "The new value of Shop_name is: " . $_SESSION['Shop_name'];
+    $shop_id_info = $_GET['shop_pag_name'].',';
+    $shop_ids = explode(',', $shop_id_info);
+    for ($sid=0; $sid < count($shop_ids); $sid++) { 
+        $Company_Id = $shop_ids[$sid];
+        if($Company_Id == "") continue;
+        $select_shop = $conn->query("SELECT * FROM `shops` WHERE Shop_Id='$Company_Id'");
+        if($select_shop->num_rows > 0){
+         // exit; // Make sure
+         while($row = mysqli_fetch_assoc($select_shop)) {
+            $_SESSION['User_Shops'][] = $row;
+            $shop_found = 1;
+            $_SESSION['selected_company_id'] = count($_SESSION['User_Shops'])-1;
+            break;
+        }
+       }
+        else $_SESSION['msg'][] = "can't Find User Shop In database.";
   }
+}
 
- if ($_SESSION['on'] != 3){
-    $_SESSION['on'] = 3;
-    header("Location: Home.php");
-    exit; // Make sure to include exit after the header redirect
+if ($_SESSION['selected_company_id'] === -1) {
+  $_SESSION['selected_company_id'] = count($_SESSION['User_Shops'])-1;
+  if ($_SESSION['selected_company_id'] === -1) {
+    
   }
-@include 'config.php';
-$items = array(); // Create an empty array to hold the items
-/*if (isset($_SESSION['Shop_name'])){
+}
 
-    $shopName = $_SESSION['Shop_name'];
-
-    $sql = "SELECT * FROM Shops WHERE shop_name=?";
-
-    $stmt = $conn->prepare($sql);
-
-    $stmt->bind_param("s", $shopName);
-
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-
-      $row = $result->fetch_assoc();
-
-      //echo var_dump($row);
-
-      // Set values in the $items array using a foreach loop
-
-      foreach ($row as $key => $value) {
-
-        $items[$key] = $value;
-
-      }
-
-      // Echo the array values
-
-      /*foreach ($items as $key => $value) {
-
-        echo $key . ": " . $value . "<br>";
-
-      }*
-
-    }
-
-  }*/
-
+ if (!isset($ishome) or $_SESSION['on'] != 5){
+    $_SESSION['on'] = 5;
+    $protocol = isset($_SERVER['HTTPS']);
+    $doman = $_SERVER['HTTP_HOST'];
+    $currontDir = dirname($_SERVER['REQUEST_URI']);
+    $redirectURL = $protocol .$doman .$currontDir;
+    header("Location: ../../Home.php");
+     exit; // Make sure to include exit after the header redirect
+  }
 ?>
-
-<div class="view_profile">
-
-<?php 
-include ('Template/shop/shop_profile_banner-area.php');
-
-?>
-
-<div class="About_disc">
-
-<?php if (!empty($items)) {?>
-
-    <h2>About</h2>
-
-    <?php echo $items["about"]; 
-
-    }?>
-
-</div>
-
-<main>
-
-    <div class="tab">
-
-      <button class="tablinks" onclick="openTab(event, 'product_items_list_containers1')">Products</button>
-
-      <button class="tablinks" onclick="openTab(event, 'shopStockTab')">Shop Stock</button>
-
-      <button class="tablinks" onclick="openTab(event, 'customerInfoTab')">Customer Information</button>
-
-    </div>
-
-
-
-    <div id="shopStockTab" class="tabcontent">
-
-      <h2>Shop Stock</h2>
-
-      <table id="shopStockTable">
-
-        <thead>
-
-          <tr>
-
-            <th>Product Name</th>
-
-            <th>Price</th>
-
-            <th>Availability</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          <!-- Populate table rows dynamically using JavaScript -->
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-
-
-    <div id="customerInfoTab" class="tabcontent">
-
-      <h2>Customer Information</h2>
-
-      <table id="customerInfoTable">
-
-        <thead>
-
-          <tr>
-
-            <th>Name</th>
-
-            <th>Email</th>
-
-            <th>Phone</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          <!-- Populate table rows dynamically using JavaScript -->
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-
-
-    <div id="product_items_list_containers1" class="product_items_list_containers1 tabcontent">
-
-      <div class="product_items_list_box1">
-
-          <!-- The product items will be added dynamically using JavaScript -->
-
-      </div>
-
-    </div>
-
+<div class="Main">
+  <main>
+    <script>
+        var shop_id = '<?php echo $_SESSION['User_Shops'][$_SESSION['selected_company_id']]['Shop_Id'];?>';
+        var isset = 0;
+        <?php if (isset($_SESSION['loged_user_info']) && $_SESSION['loged_user_info']['user_name'] != "") {
+            if (isset($_SESSION['User_Shops'][$_SESSION['selected_company_id']])) {
+                $owener_ids = explode(',', $_SESSION['User_Shops'][$_SESSION['selected_company_id']]['Shop_oweners_id']);
+                for ($oid=0; $oid < count($owener_ids); $oid++) { 
+                    $id = $owener_ids[$oid];
+                    if($id == $_SESSION['loged_user_info']['User_id'])?>
+                    isset = 1;
+                <?php   
+                }
+            } 
+        }?>
+        var shop_p = <?php echo json_encode($_SESSION['User_Shops'][$_SESSION['selected_company_id']]['Shop_Page']);?>;
+        var new_list = loadList(shop_p);
+	    console.log(new_list);
+        const shop_list_container = document.querySelector('body .Main');
+        for(let info of new_list){
+            create_list(shop_list_container, info[0], info[1], info[2], info[3], info[4], info[5], info[6], isset);
+        }
+    </script>
   </main>
-
-  <?php include ('footer.php');?>
-
+  <?php //include ('footer.php');?>
 </div>
 
-<script src="js/Prodoct_item/Creat_Items_list1.js"></script>
-
-
-
-<script>
-
-    // Sample data for demonstration
-
-   const shopStock = [
-
-   { name: "Product 1", price: "$10", availability: "In Stock" },
-
-   { name: "Product 2", price: "$20", availability: "Out of Stock" },
-
-   { name: "Product 3", price: "$15", availability: "In Stock" },
-
-   ];
-
-
-
-    // Sample data for demonstration
-
-   const customerInfo = [
-
-   { name: "John Doe", email: "john@example.com", phone: "123-456-7890" },
-
-   { name: "Jane Smith", email: "jane@example.com", phone: "987-654-3210" },
-
-   ];
-
-
-
-   // Handle tab switching
-
-   function openTab(evt, tabName) {
-
-      // Get all tab content elements and hide them
-
-      const tabContent = document.getElementsByClassName("tabcontent");
-
-      for (let i = 0; i < tabContent.length; i++) {
-
-          tabContent[i].style.display = "none";
-
-      }
-
-
-
-      // Remove 'active' class from all tablinks
-
-      const tabLinks = document.getElementsByClassName("tablinks");
-
-      for (let i = 0; i < tabLinks.length; i++) {
-
-          tabLinks[i].classList.remove("active");
-
-      }
-
-
-
-      // Show the selected tab and mark the corresponding tablink as active
-
-      document.getElementById(tabName).style.display = "block";
-
-      document.getElementById(tabName).classList.add("active");
-
-   }
-
-   openTab("", 'product_items_list_containers1');
-
-
-
-   // Populate shop stock table
-
-   const stockTable = document.getElementById("shopStockTable").getElementsByTagName("tbody")[0];
-
-   shopStock.forEach(product => {
-
-   const row = stockTable.insertRow();
-
-   row.innerHTML = `<td>${product.name}</td><td>${product.price}</td><td>${product.availability}</td>`;
-
-   });
-
-
-
-   // Populate customer information table
-
-   const customerTable = document.getElementById("customerInfoTable").getElementsByTagName("tbody")[0];
-
-   customerInfo.forEach(customer => {
-
-   const row = customerTable.insertRow();
-
-   row.innerHTML = `<td>${customer.name}</td><td>${customer.email}</td><td>${customer.phone}</td>`;
-
-   });
-
-
-
-  </script>
 
 <style>
-
-
-
-/* view_profile Styles */
-
-
-
-body .view_profile{
-
-   overflow: auto;
-
-   position: relative;
-
-   top: 18rem;
-
-   left: 15%;
-
-   align-items: flex-start;
-
-   position: absolute;
-
-   width: 100%;
-
-   height: 100%;
-
-   background: #f8f8ff;
-
-}
-
-
-
-body .view_profile .About_disc {
-
-    align-items: flex-start;
-
-    width: 100%;
-
-    height: 14%;
-
-    background: #eee;
-
-}
-
-
-
-h1, h2 {
-
-  margin-top: 0;
-
-}
-
-
-
-.tab {
-
-  overflow: hidden;
-
-  margin-bottom: 20px;
-
-  display: inline-flex;
-
-  gap: 10px;
-
-}
-
-
-
-.tab button {
-
-  background-color: #f2f2f2;
-
-  border: none;
-
-  outline: none;
-
-  cursor: pointer;
-
-  padding: 10px 20px;
-
-  font-size: 16px;
-
-  transition: background-color 0.3s;
-
-}
-
-
-
-.tab button:hover {
-
-  background-color: #ddd;
-
-}
-
-
-
-.tab button.active {
-
-  background-color: #ccc;
-
-}
-
-
-
-table {
-
- /* width: 100%;
-
-  border-collapse: collapse;
-
-  margin-bottom: 20px;*/
-
-}
-
-
-
-table th, table td {
-
-  padding: 10px;
-
-  text-align: left;
-
-  border-bottom: 1px solid #ddd;
-
-}
-
-.productCard {
-
-  width: 200px;
-
-  padding: 10px;
-
-  margin-right: 20px;
-
-  margin-bottom: 20px;
-
-  border: 1px solid #ddd;
-
-  border-radius: 5px;
-
-}
-
-
-
-.productCard img {
-
-  width: 100%;
-
-  height: auto;
-
-  margin-bottom: 10px;
-
-}
-
-
-
-.productCard h3 {
-
-  margin-top: 0;
-
-}
-
-
-
-.productCard p {
-
-  margin: 0;
-
-}
-
-
-
-/* media queries  */
-
- 
-
-@media (max-width:1500px){
-
-   
-
-   /* view_profile Styles */
-
-   body .view_profile{
-
-      overflow: auto;
-
-      position: relative;
-
-      top: 18rem;
-
-      left: 15%;
-
-      align-items: flex-start;
-
-      position: absolute;
-
-      width: 85%;
-
-      height: 100%;
-
-      background: #f8f8ff;
-
-   }
-
-}
-
- 
-
-@media (max-width:991px){
-
-   
-
-   /* view_profile Styles */
-
-   body .view_profile{
-
-      overflow: auto;
-
-      position: relative;
-
-      top: 18rem;
-
-      left: 15%;
-
-      align-items: flex-start;
-
-      position: absolute;
-
-      width: 85%;
-
-      height: 100%;
-
-      background: #f8f8ff;
-
-   }
-
-}
-
- 
-
-@media (max-width:768px){
-
-   
-
-   /* view_profile Styles */
-
-   body .view_profile{
-
-      overflow: auto;
-
-      position: relative;
-
-      top: 18rem;
-
-      left: 15%;
-
-      align-items: flex-start;
-
-      position: absolute;
-
-      width: 85%;
-
-      height: 100%;
-
-      background: #f8f8ff;
-
-   }
-
-}
-
- 
+    /* Main Styles */
+    body .Main {
+        overflow: auto;
+        top: 5%;
+        width: 100%;
+        height: 100%;
+        align-items: flex-start;
+        background: #f8f8ff;
+    }
+
+  body .Main button {
+        background-color: #f2f2f2;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        width: auto;
+        padding: 10px 20px;
+        box-shadow: var(--box-shadow);
+        border: var(--border);
+        border-radius: 1.5rem;
+        font-size: 16px;
+        transition: background-color 0.3s;
+  }
+  
+  body .Main main .DocumentsTab .doc_chart_frame  {
+        background-color: green;
+        height: auto;
+  }
+    
+    body .Main .About_disc {
+        align-items: flex-start;
+        width: 100%;
+        height: 30%;
+        background: #eee;
+    }
+    
+    body .Main .About_disc .Profile_image {
+        position: absolute;
+        width: 20%;
+        text-align: center;
+        top: 5px;
+        border-image: round;
+    }
+
+    body .Main .About_disc .Profile_image img {
+        width: 100%;
+        top: 12rem;
+        border-image: round;
+        box-shadow: var(--box-shadow);
+        border: var(--border);
+        border-radius: 1.5rem;
+    }
+    body .Main .About_disc .user_name {
+        
+        color: black;
+        background: white;
+    }
+    
+    body .Main .About_disc .user_about {
+        text-align: left;
+        color: gray;
+    }
+
+    body .Main h1, {
+        margin-top: 0;
+    }
+
+    body .Main .profile_btn {
+        overflow: auto;
+        width: 100%;
+        margin-bottom: 0px;
+        display: inline-flex;
+        box-shadow: var(--box-shadow);
+        border: var(--border);
+        border-radius: 1.5rem;
+        gap: 10px;
+    }
+    
+    body .Main .profile_btn button {
+        background-color: #f2f2f2;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        width: auto;
+        padding: 10px 20px;
+        box-shadow: var(--box-shadow);
+        border: var(--border);
+        border-radius: 1.5rem;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    body .Main .tab {
+        overflow: auto;
+        width: 100%;
+        margin-bottom: 0px;
+        display: inline-flex;
+        box-shadow: var(--box-shadow);
+        border: var(--border);
+        border-radius: 1.5rem;
+        gap: 10px;
+    }
+
+    body .Main .tab button {
+        background-color: #f2f2f2;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 10px 20px;
+        box-shadow: var(--box-shadow);
+        border: var(--border);
+        border-radius: 1.5rem;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    body .Main .tab button:hover {
+        background-color: #ddd;
+    }
+
+    body .Main .tab button.active {
+        background-color: #ccc;
+    }
+    
+    body .Main .tabcontent {
+        min-height: 60rem;
+        height: auto;
+    }
+    
+    body .Main table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    body .Main table th, table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    
+    
+    
+    .productCard {
+        width: 200px;
+        padding: 10px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .productCard img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .productCard h3 {
+        margin-top: 0;
+    }
+
+    .productCard p {
+        margin: 0;
+    }
+
+    /* media queries  */
+
+@media (max-width:1500px) {
+
+        /* Main Styles */
+        body .Main {
+            overflow: auto;
+            top: 15%;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+            background: #f8f8ff;
+        }
+    }
+
+@media (max-width:991px) {
+
+        /* Main Styles */
+        body .Main {
+            overflow: auto;
+            top: 14%;
+            left: 0%;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+            background: #f8f8ff;
+        }
+    }
+
+@media (max-width:768px) {
+
+        /* Main Styles */
+        body .Main {
+            overflow: auto;
+            top: 16%;
+            left: 0%;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+            background: #f8f8ff;
+       }
+    }
 
 @media (max-width: 600px) {
 
-
-
-   /* view_profile Styles */
-
-   body .view_profile{
-
-        overflow: auto;
-
-        position: relative;
-
-        top: 18rem;
-
-        left: 0;
-
-        align-items: flex-start;
-
-        position: absolute;
-
-        width: 100%;
-
-        height: 100%;
-
-        background: #f8f8ff;
-
-   }
-
-}
-
-
-
-@media (max-width:450px){
-
-
-
-   /* view_profile Styles */
-
-   body .view_profile{
-
-        overflow: auto;
-
-        position: relative;
-
-        top: 18rem;
-
-        left: 0;
-
-        align-items: flex-start;
-
-        position: absolute;
-
-        width: 100%;
-
-        height: 100%;
-
-        background: #f8f8ff;
-
-   }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-.logo {
-
-  font-size: 24px;
-
-}
-
-
-
-.links {
-
-  display: flex;
-
-}
-
-
-
-.link {
-
-  margin-right: 20px;
-
-  cursor: pointer;
-
-}
-
-
-
-/* Responsive Styles */
-
-
-
-nav {
-
-   flex: 1;
-
-   text-align: right;
-
- }
-
- nav ul 
-
- {
-
-   display: contents;
-
-    list-style: none;
-
- }
-
- 
-
- nav ul li {
-
-    display: table-row;
-
-    list-style: 70px;
-
-    /* this blocks are for styling the list elements */
-
- }
-
- 
-
- nav ul li a {
-
-    text-decoration: none;
-
-    list-style: 70px;
-
-    text-decoration: none;
-
-    color: palevioletred;
-
-    font-size: 28px;
-
-    text-align: center;
-
-    padding: 2rem;
-
-    box-shadow: var(--box-shadow);
-
-    border: var(--border);
-
-    border-radius: 0.5rem;
-
-    gap: 50px;
-
-    margin: auto;
-
- }
-
- 
-
- nav ul li a:hover {
-
-    color: aqua;
-
- }
-
- 
-
- nav ul li button {
-
-    font-size: 20px;
-
-    color: white;
-
-    outline: none;
-
-    border: none;
-
-    background: transparent;
-
-    cursor: pointer;
-
-    font-family: sans-serif;
-
- }
-
- 
-
- nav ul li button:hover {
-
-    color: aqua;
-
- }
-
- 
-
- .navbar {
-
-    align-items: center;
-
-    padding: 0px;
-
-    padding-left: 50px;
-
-    padding-right: 30px;
-
-    /* this is for setting the dimensions of navigation bar */
-
- }
-
-
-
-/* 
-
-   this will make loging nice
-
-*/
-
-.loginbtn {
-
-  font-size: 16px;
-
-  color: #fff;
-
-  background-color: transparent;
-
-  border: none;
-
-  cursor: pointer;
-
-  transition: color 0.3s ease;
-
-}
-
-
-
-.loginbtn:hover {
-
-  color: aqua;
-
-}
-
-
-
-
-
- body .flex .navbar a{
-
-    margin-left: 2rem;
-
-    font-size: 2rem;
-
-    color:var(--white);
-
- }
-
- 
-
- body .flex .navbar a:hover{
-
-    color:yellow;
-
- }
-
- 
-
- body .flex .cart{
-
-    margin-left: 2rem;
-
-    font-size: 2rem;
-
-    color:var(--white);
-
- }
-
- 
-
- body .flex .cart:hover{
-
-    color:yellow;
-
- }
-
- 
-
- body .flex .cart span{
-
-    padding:.1rem .5rem;
-
-    border-radius: .5rem;
-
-    background-color: var(--white);
-
-    color:var(--blue);
-
-    font-size: 2rem;
-
- }
-
- 
-
- #menu-btn{
-
-    margin-left: 2rem;
-
-    font-size: 3rem;
-
-    cursor: pointer;
-
-    display: inline-block;
-
-   color:var(--white);
-
-   display: none;
-
- }
-
- 
-
- 
-
- .header .navbar a{
-
-   margin: 0 1rem;
-
-   font-size: 1.6rem;
-
-   color: #fff;
-
- }
-
- 
-
- .header .navbar a:hover{
-
-   color: var(--main-color);
-
-   border-bottom: .1rem solid var(--main-color);
-
-   padding-bottom: .5rem;
-
- }
-
- 
-
- .header .icons div{
-
-   color: #fff;
-
-   cursor: pointer;
-
-   font-size: 2.5rem;
-
-   margin-left: 2rem;
-
- }
-
- 
-
- .header .icons div:hover{
-
-   color: var(--main-color);
-
- }
-
- 
-
-
-
-
-
-.logo {
-
-  font-size: 24px;
-
-}
-
-
-
-
-
-.links {
-
-  display: flex;
-
-}
-
-
-
-.link {
-
-  margin-right: 20px;
-
-  cursor: pointer;
-
-}
-
-
-
-@media (max-width: 600px) {
-
-
-
-  .links {
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-  }
-
-
-
-  .link {
-
-    margin-bottom: 20px;
-
-    margin-right: 0;
-
-  }
-
-}
-
+        /* Main Styles */
+        body .Main {
+            overflow: auto;
+            left: 0;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+            background: #f8f8ff;
+        }
+    }
+
+@media (max-width:450px) {
+
+        /* Main Styles */
+        body .Main {
+            overflow: auto;
+            left: 0;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+            background: #f8f8ff;
+        }
+    }
 </style>

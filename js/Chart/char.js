@@ -8,7 +8,7 @@ function calculateTotalSales(data) {
     return totalSales;
 }
 
-function drawBarChart(parentElement, salesData) {
+function drawBarChart(parentElement, salesData, X_CLUMEN, Y_CLUMEN, GRAP_TYPE) {
     let xLabels_ = [];
     let data = [];
     console.log(salesData.length + '<< iuii.length');
@@ -17,36 +17,12 @@ function drawBarChart(parentElement, salesData) {
     // Check if child elements already exist in the parent
     const canvasparent = "-canvas";
     const canvas_ = "canvas-chart";
-
-
-    // Function to get the selected chart data based on the date range
-    function getSelectedData(startDate0, endDate0) {
-        const filteredData = [];
-
-        for (let i = 0; i < salesData.length; i++) {
-            const date = salesData[i].date;
-
-            if (date >= startDate0 && date <= endDate0) {
-                xLabels_.push(date);
-                filteredData.push(salesData[i].value);
-            }
-        }
-
-        return filteredData;
-    }    
-
-    // Array of element selectors and tag names to check and create
-    var currentDate = new Date();
-    var formattedDate = currentDate.toISOString().split('T')[0];
+   
     const elementsToCheckAndCreate = [
     { selector: '.chart-type-line_label', tag: 'label', textContent: 'Line Chart', type: '' },
     { selector: '.chart-type-line', tag: 'input', textContent: 'line', type: 'radio' },
     { selector: '.chart-type-bar_lable', tag: 'label', textContent: 'Bar Chart', type: '' },
     { selector: '.chart-type-bar', tag: 'input', textContent: 'bar', type: 'radio' },
-    { selector: '.start-date', tag: 'label', textContent: 'Start Date:', type: '' },
-    { selector: '.start-date_btn', tag: 'input', textContent: formattedDate, type: 'date' },
-    { selector: '.end-date', tag: 'label', textContent: 'End Date:', type: '' },
-    { selector: '.end-date_btn', tag: 'input', textContent: formattedDate, type: 'date' },
     { selector: '.-canvas', tag: 'div', textContent: formattedDate, type: 'canvas' }
     ];
 
@@ -77,16 +53,6 @@ function drawBarChart(parentElement, salesData) {
             newElement.setAttribute('value', elementInfo.textContent);
             if(elementInfo.textContent == 'line') newElement.setAttribute('checked', 'checked');
         }
-        
-        else if(elementInfo.type == 'date'){
-            // Set the default value of the date input element
-            // Create the input element for the End Date
-            newElement.setAttribute('type', 'date');
-            newElement.setAttribute('id', elementInfo.selector.substr(1));
-            newElement.setAttribute('value', elementInfo.textContent);
-            // Set the default value of the date input element
-            newElement.value = elementInfo.textContent;
-        }
 
         else if (elementInfo.type == 'canvas') {
         
@@ -104,24 +70,19 @@ function drawBarChart(parentElement, salesData) {
     }
     });
     
+
+
+
     // Function to handle chart type change
     function handleChartTypeChange() {
-        drawBarChart(parentElement, salesData);
+        drawBarChart(parentElement, salesData, X_CLUMEN, Y_CLUMEN, GRAP_TYPE);
     }
 
-
-    // Function to handle chart selection change
-    function handleChartSelection() {
-        drawBarChart(parentElement, salesData);
-    }
 
     // Event listeners
     document.querySelectorAll('input[name="chart-type"]').forEach((input) => {
         input.addEventListener('change', handleChartTypeChange);
     });
-
-    document.getElementById('start-date_btn').addEventListener('change', handleChartSelection);
-    document.getElementById('end-date_btn').addEventListener('change', handleChartSelection);
 
     
 
@@ -135,20 +96,6 @@ function drawBarChart(parentElement, salesData) {
         const reportHeading = document.createElement('h2');
         reportHeading.textContent = 'Sales Report';
     
-        // Create the paragraph for Start Date
-        const reportStartDate = document.createElement('p');
-        reportStartDate.textContent = 'Start Date: ';
-        const spanReportStartDate = document.createElement('h3');
-        spanReportStartDate.setAttribute('id', 'report-start-date');
-        reportStartDate.appendChild(spanReportStartDate);
-    
-        // Create the paragraph for End Date
-        const reportEndDate = document.createElement('p');
-        reportEndDate.textContent = 'End Date: ';
-        const spanReportEndDate = document.createElement('h3');
-        spanReportEndDate.setAttribute('id', 'report-end-date');
-        reportEndDate.appendChild(spanReportEndDate);
-    
         // Create the paragraph for Total Sales
         const reportTotalSales = document.createElement('p');
         reportTotalSales.textContent = 'Total Sales: ';
@@ -159,8 +106,6 @@ function drawBarChart(parentElement, salesData) {
         // Append all elements to the parentElement
         parentElement.appendChild(salesReport);
         salesReport.appendChild(reportHeading);
-        salesReport.appendChild(reportStartDate);
-        salesReport.appendChild(reportEndDate);
         salesReport.appendChild(reportTotalSales);
     }
     
@@ -189,12 +134,13 @@ function drawBarChart(parentElement, salesData) {
     const height = canvas.height;
     const x = 50;
     const y = 20;
-    
-    const startDate = document.getElementById('start-date_btn').value;
-    const endDate = document.getElementById('end-date_btn').value;
 
-    data = getSelectedData(startDate, endDate);
-    
+    data = [];
+    for (let i = 0; i < salesData.length; i++) {
+        xLabels_.push(salesData[i][X_CLUMEN]);
+        data.push(salesData[i][Y_CLUMEN]);
+    }
+
     // Calculate the maximum value in the data
     const maxDataValue = Math.max(...data, 1); // Use Math.max with 1 to ensure a minimum value of 1
 
@@ -202,8 +148,8 @@ function drawBarChart(parentElement, salesData) {
     const scaleFactor = height / maxDataValue;
 
     // Calculate the width of each bar
-        // Calculate the width of each bar
-        const barWidth = width / Math.max(data.length, 1); // Use Math.max with 1 to ensure a minimum bar width of 1
+    // Calculate the width of each bar
+    const barWidth = width / Math.max(data.length, 1); // Use Math.max with 1 to ensure a minimum bar width of 1
 
     // Clear the canvas
     ctx.clearRect(x, y, width, height);
@@ -231,6 +177,7 @@ function drawBarChart(parentElement, salesData) {
         ctx.stroke();
     }
 
+
     // Draw the chart
     ctx.fillStyle = 'blue';
 
@@ -242,7 +189,8 @@ function drawBarChart(parentElement, salesData) {
 
         ctx.fillRect(xx, yy, barWidth, barHeight);
         }
-    } else if (chartType === 'line') {
+    } 
+    else if (chartType === 'LINE') {
         ctx.beginPath();
         ctx.moveTo(x, height - data[0] * scaleFactor);
 
@@ -256,6 +204,7 @@ function drawBarChart(parentElement, salesData) {
         ctx.lineWidth = 2;
         ctx.stroke();
     }
+
 
     // Draw the x and y axis labels
     ctx.fillStyle = 'black';
@@ -278,13 +227,7 @@ function drawBarChart(parentElement, salesData) {
     }
 
     // Update the sales report
-    const reportStartDate = document.getElementById('report-start-date');
-    
-    const reportEndDate = document.getElementById('report-end-date');
     const reportTotalSales = document.getElementById('report-total-sales');
-
-    reportStartDate.textContent = startDate;
-    reportEndDate.textContent = endDate;
     reportTotalSales.textContent = calculateTotalSales(data);
 }
 

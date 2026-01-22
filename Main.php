@@ -5,26 +5,19 @@
       header("Location: Home.php");
       exit; // Make sure to include exit after the header redirect
    }
-   include ('Template/msg.php');
 ?>
 
 <div class="Main">
-   <?php
-      /*  include banner area  */
-      include ('Template/_banner-area.php');
-      /*  //include banner area  */
-      include ('Template/shopbycolection.php');
-      //  //include top sale section 
-      //include ('Template/_top-sale.php');
-      //include ('Template/_top-sale.php');
-      //  //include top sale section 
-     
-   ?>  
    <script>
    const productGrid_container = document.querySelector('body .Main');
-   create_list(productGrid_container, 'ls', 'bb', 'tit999e', 1,0);
-   create_list(productGrid_container, 'hf', 'ldn', 'ti8899e', 1,1);
+   create_list(productGrid_container, 'BANNERS', 0,"", "50%", "H-BOX-LIST", "BANNERS", "", 0);
+   create_list(productGrid_container, 'COLLECTIONS', 0,"", "25%", "H-BOX-LIST", "COLLECTIONS", "", 0);
+   create_list(productGrid_container, 'SHOPS', 1,"", "40%", "H-BOX-LIST", "SHOPS", "", 0);
+   create_list(productGrid_container, 'LIST TO THE LEFT', 1, "", "50%", "H-BOX-LIST", "ITEMS", "", 0);
+   create_list(productGrid_container, 'LIST DOWN', 1, "", "", "V-BOX-LIST", "ITEMS", "", 0);
+   
    </script>
+   <!--<button class="tablinks">Favorite Shops</button>-->
 </div>
 
 <?php
@@ -64,10 +57,8 @@
 
 body .Main{
    overflow: auto;
-   position: relative;
-    top: 5%;
+   top: 16%;
    align-items: flex-start;
-   position: absolute;
    width: 100%;
    height: 100%;
    background: #f8f8ff;
@@ -80,10 +71,8 @@ body .Main{
    /* Main Styles */
    body .Main{
       overflow: auto;
-      position: relative;
-      top: 5%;
+      top: 16%;
       align-items: flex-start;
-      position: absolute;
       width: 100%;
       height: 100%;
       background: #f8f8ff;
@@ -95,9 +84,7 @@ body .Main{
    /* Main Styles */
    body .Main{
       overflow: auto;
-      position: relative;
       align-items: flex-start;
-      position: absolute;
       width: 100%;
       height: 100%;
       background: #f8f8ff;
@@ -109,10 +96,8 @@ body .Main{
    /* Main Styles */
    body .Main{
       overflow: auto;
-      position: relative;
       top: 16%;
       align-items: flex-start;
-      position: absolute;
       width: 100%;
       height: 100%;
       background: #f8f8ff;
@@ -124,9 +109,7 @@ body .Main{
    /* Main Styles */
    body .Main{
         overflow: auto;
-        position: relative;
         align-items: flex-start;
-        position: absolute;
         width: 100%;
         height: 100%;
         background: #f8f8ff;
@@ -138,9 +121,7 @@ body .Main{
    /* Main Styles */
    body .Main{
         overflow: auto;
-        position: relative;
         align-items: flex-start;
-        position: absolute;
         width: 100%;
         height: 100%;
         background: #f8f8ff;
@@ -277,36 +258,7 @@ nav {
    color:var(--white);
    display: none;
  }
- 
- 
- .header .navbar a{
-   margin: 0 1rem;
-   font-size: 1.6rem;
-   color: #fff;
- }
- 
- .header .navbar a:hover{
-   color: var(--main-color);
-   border-bottom: .1rem solid var(--main-color);
-   padding-bottom: .5rem;
- }
- 
- .header .icons div{
-   color: #fff;
-   cursor: pointer;
-   font-size: 2.5rem;
-   margin-left: 2rem;
- }
- 
- .header .icons div:hover{
-   color: var(--main-color);
- }
- 
 
-
-.logo {
-  font-size: 24px;
-}
 
 
 .links {

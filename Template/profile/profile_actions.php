@@ -1,6 +1,7 @@
 <?php
 
-@include 'config.php';
+  if(file_exists("config.php")) include("config.php");
+  if(file_exists("../../config.php")) include("../../config.php");
 
 if(isset($_POST['request_worker'])){
 if (session_id() == "") session_start();

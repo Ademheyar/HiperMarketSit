@@ -4,7 +4,9 @@ if(session_id() == "") session_start();
 
 $user_mini_info = array("", "");
 
-@include 'config.php';
+  if(file_exists("config.php")) include("config.php");
+  if(file_exists("../../config.php")) include("../../config.php");
+
 
 #$_SESSION['previous_page'] = ['Home.php']
 
@@ -30,7 +32,9 @@ if(isset($_POST['add_to_cart'])){
 
 }
 $ishome = 1;
+
 ?>
+
 <html lang="en">
 <head>
    <meta charset="UTF-8">
@@ -39,106 +43,104 @@ $ishome = 1;
 
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-   <title>products</title>
+   <title>Hiper Market</title>
    <!-- font awesome cdn link  
 
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 -->
-
    <!-- custom css file link  -->
 
    <link rel="stylesheet" href="css/style.css">
 
    <link rel="stylesheet" href="css/view.css">
-
-   <!--<link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list0.css">-->
-
-   <!--<link rel="stylesheet" href="css/Prodoct_item/Creat_Items_list1.css">
--->
 </head>
 
 <script src="js/Get/sendajax.js"></script>
+<script src="js/view/View_Slips.js"></script>
 
-<!--<script src="js/Chart/char.js"></script>-->
-<script src="js/Prodoct_item/Creat_Items_list3.js"></script>
-
-
-<script>
-
-/*   var sec_url = 'Template/Get/Get_sections.php'; // The PHP script that fetches items from the database
-
-   var sec_shop_name = "";
-
-   var sec_user_name = "";
-
-   var sec_user_id = "";
-
-   var sec_datasent = 'by=date()';
-
-   // Make an AJAX request to your PHP API
-
-   sendAjaxRequest(sec_url, 'POST', sec_datasent, function(responseText) {
-
-      console.log(responseText + '<< found sections');
-
-      var response = JSON.parse(responseText);
-
-      sec_user_name = "";
-
-      sec_user_id = ""; 
-
-      sec_shop_name = response.Shop_name;
-
-      
-
-      console.log(response);
-
-      console.log(response.length + '<< sections.length');
-
-   }, function(errorStatus) { console.log('Error: ' + errorStatus); });*/
-
-</script>
-<body>
 <?php
-   if(session_id() == "") session_start(); // Start the session
+include ('Template/Actions/Prosess_Payment.php');
+include ('Template/Actions/View_Payment.php');
+include ('js/view/Message_vewer.php');
+?>
+
+
+<script src="js/view/View_Active_Charts.js"></script>
+<script src="js/view/view_item.js"></script>
+<script src="js/view/View_Document.js"></script>
+<script src="js/view/View_Cart.js"></script>
+
+ <script src="js/Prodoct_item/Creat_Items_list3.js"></script>
+<script src="js\Actions\Rateing.js"></script>
+<script src="js\Actions\Contacts.js"></script>
+<script src="js\Actions\List.js"></script>
+
+<!--<script src="js\Shop\Edite_shop_page.js"></script>-->
+<script src="js/Chart/char.js"></script>
+<script src="js\Search\Search.js"></script>
+
+<body>
+<script>
+      chacke_Message();
+    </script>
+
+   
+ <?php   
+/*else{
+      ?>
+      <script>
+      Show_Message(["test 1", "teat2"]);
+    </script>
+ <?php    
+}*/
+?>
+<?php
    if (isset($_POST['Shop_name'])) {
       // Update the session variable value
       $_SESSION['Shop_name'] = $_POST['Shop_name'];
       echo "The new value of Shop_name is: " . $_SESSION['Shop_name'];
    }
+   
    if (isset($_POST['on'])) {
       // Update the session variable value
       $_SESSION['on'] = $_POST['on'];
       echo "The new value of on is: " . $_SESSION['on'];
    }
-    include('header.php');
-    include ('Template/msg.php');
+
+   include('Template/header/header.php');
+
    if ($_SESSION['on'] == 0){
       /*  include banner area  */
       include ('Main.php');
    }
    else if ($_SESSION['on'] == 1){
       /*  include banner area  */
-      include ('Template/profile/View_Profile.php');
+      include ('Template/Sell/Sell.php');
    }
    else if ($_SESSION['on'] == 2){
-      /*  include banner area  */
-      include ('Template/shop/Shop_Profile.php');
    }
     else if ($_SESSION['on'] == 3){
+   }  
+   else if ($_SESSION['on'] == 4){
+      /*  include banner area  */
+      include ('Template/shop/Shop_Profile.php');
+   } 
+   else if ($_SESSION['on'] == 5){
       /*  include banner area  */
       include ('Template/shop/Shop_page.php');
-   }   
+   }  
+   else if ($_SESSION['on'] == 6){
+      /*  include banner area  */
+      include ('Template/profile/View_Profile.php');
+   } 
 
    /*  include banner area  */
-  include 'cart.php';  
-  include 'login.php'; 
-  include ('Template/manue.php');
-  include ('footer.php');
+  include ('Template/message/msg.php');
+  include 'Template/User/login.php'; 
+  include ('Template/manue/manue.php');
+  include ('Template/footer/footer.php');
 ?>
 <!-- custom js file link  -->
 </body>
-<script src="js/script.js"></script>
-<script src="js/view/view_item.js"></script>
+   <script src="js/script.js"></script>
 </html>

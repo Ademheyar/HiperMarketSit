@@ -1,52 +1,25 @@
 /*view-form */
 
 #view-form {
-   width: 100%;
-   height: auto;
-   position: absolute;
-   background: rgba(0,0,0,.3);
-   padding: 18px;
-   overflow: hidden;
-   display: none;
+   
 }
 
 /* info box css */
 #view-form .tabbtn_Box {
-    width: 100%;
-    height: auto;
-    background: rgba(0,0,0,.3);
-    padding: 3px;
-    display: inline-flex;
-    position: relative;
-    color: aliceblue;
+    
 }
 
 #view-form .tabbtn_Box button {
-    width: auto;
-    display: inline-flex;
-    gap: 10px;
-    padding: revert;
-    border: outset;
-    size: auto;
+    
 }
 
 /* info box css */
 #view-form .info_Box {
-    width: 100%;
-    height: auto;
-    background: rgba(0,0,0,.3);
-    padding: 3px;
-    display: inline-flex;
-    position: relative;
-    color: aliceblue;
+    
 }
 
 #view-form .info_Box .img_box {
-    width: 50%;
-    height: 330px;
-    background: rgba(0,0,0,.3);
-    padding: 6px;
-    display: list-item;
+    
 }
 
 #view-form .sub_info_Box .selection_box {
@@ -55,16 +28,11 @@
 }
 
 #view-form .sub_info_Box .selection_box button {
-    width: auto;
-    display: inline-flex;
-    gap: 10px;
-    padding: revert;
-    border: outset;
-    size: auto;
+    
 }
 
 label {
-    font-size: x-small;
+    font-size: large;
 }
 
 #view-form .sub_info_Box .selection_box .selected_items_box {
@@ -94,13 +62,7 @@ label {
 }
 
 #view-form .view_btn_form .btns {
-    width: 33%;
-    text-align: center;
-    background-color: var(--blue);
-    color: var(--white);
-    padding: 1.2rem 3rem;
-    border-radius: 0.5rem;
-    margin-top: 1rem;
+    
 }
 
 

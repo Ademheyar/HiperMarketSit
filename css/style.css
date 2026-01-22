@@ -29,27 +29,48 @@
  /* about body */
  /* ------------------------------- */
  body {
-   display: grid; 
+   display: grid;
    padding: 0;
    margin: 0;
    width : auto;
    height: auto;
    justify-self: center;
-   align-items: center;*/
-   /*display: flex;*/
+   align-items: center;
+   display: block;
    justify-content: center;
    align-items:center;
    min-height: 100vh;
+   overflow-y: auto;
 }
 
 *{
-   font-family: 'Roboto', sans-serif;
-   margin:0; padding:0;
-   box-sizing: border-box;
-   outline: none; border:none;
-   text-decoration: none;
-   text-transform: capitalize;
-   transition: .2s linear;
+  font-family: 'Roboto', sans-serif;
+  margin:0;
+  padding:0;
+  outline: none;
+  border:none;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: .2s linear;
+  font-family: 'Roboto', sans-serif;
+  margin:0;
+  padding:0;
+  outline: none;
+  border:none;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: .2s linear;
+  font-family: 'Roboto', sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  outline: none;
+  e;
+  text-decoration: none;
+  text-transform: capitalize;
+  transition: .2s linear;
+  /* align-items: center; */er; */
+  justify-content: center;
 }
 
 .container{
@@ -57,7 +78,7 @@
    width: 100%;
    background-position: center;
    background-size: cover;
-   position: absolute;
+   /* position: absolute; */
    max-width: 1200px;
    margin:0 auto;
    /* padding-bottom: 5rem; */
@@ -407,11 +428,11 @@ ul{
  
  /*  top sale template   */
 
-/*  global classes  */
+/*  global classes  
 button, button:focus {
-   outline: none !important;
-   box-shadow: none !important;
-}
+   /* outline: none !important; */
+   /* box-shadow: none !important; 
+}*/
 
 /* typography classes */
 .font-baloo {

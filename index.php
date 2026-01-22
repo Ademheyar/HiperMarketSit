@@ -9,8 +9,6 @@
         #if we need to go back to previous pag
         $_SESSION['previous_page'] = array('Home.php');
 
-
-
       $_SESSION['on_view'] = 0; // this is for page which page to load
 
       $_SESSION['Shop_name'] = ""; // this is for page holding selected shop
@@ -107,7 +105,7 @@
 
       $p_path_name = str_replace(' ', '_', $p_name);
 
-      $p_image_folder = $main_p."/img/products/".$p_ptype."/".$p_path_name."/".$p_code;
+      $p_image_folder = $main_p."/Img/products/".$p_ptype."/".$p_path_name."/".$p_code;
 
       $p_image_path = $p_image_folder."/".$p_image; 
 
@@ -121,7 +119,7 @@
 
       $p_path_name = str_replace(' ', '_', $p_name);
 
-      $p_image_folder = $main_p.'/img/products/'.$p_ptype."/".$p_path_name."/".str_replace('#', '', $p_code);
+      $p_image_folder = $main_p.'/Img/products/'.$p_ptype."/".$p_path_name."/".str_replace('#', '', $p_code);
 
       $p_image_path = $p_image_folder."/".$p_image;
 
@@ -140,9 +138,12 @@
    else {
 
       $_SESSION['on_view'] = 0; // this is for page which page to load
-
    }
 
+	$_SESSION['loged_user_name'] = "";
+	$_SESSION['loged_user_password'] = "";
+	$_SESSION['loged_user_type'] = "";
+   $_SESSION['on'] = 0;
    include('Home.php');
 
 ?>

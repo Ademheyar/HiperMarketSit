@@ -1,6 +1,7 @@
 <?php
 if (session_id() == "") session_start();
-include 'config.php';
+  if(file_exists("config.php")) include("config.php");
+  if(file_exists("../../config.php")) include("../../config.php");
 $items = array(); // Create an empty array to hold the items
 
 /*if (isset($_SESSION['Shop_name'])){
@@ -63,7 +64,7 @@ $items = array(); // Create an empty array to hold the items
     } else {
       ?>
       <div class="Profile_image">
-        <img src="./img/no_Profile_image.jpg" alt="">
+        <img src="./Img/no_Profile_image.jpg" alt="">
         <label value="sss"><?php echo $items["shop_name"]; ?></label>
       </div>
       <?php

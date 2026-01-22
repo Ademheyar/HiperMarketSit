@@ -1,74 +1,38 @@
-function createNestedList(textList) {
-  const textListFormatted = textList.replace(/\s/g, '');
-  const main_nestedList = [];
-  let text = '';
-  let i = 0;
-  function createsublist(sub_nestedList){
-    text = '';  
-    let new_nestedList = [];
-    for (; i < textListFormatted.length; i++) {
-      const character = textListFormatted[i];
-      if (character === ' ') {
-        text = text;
-      }
-      else if (character === ':') {
-        new_nestedList = [text, []];
-        i++;
-        new_nestedList = createsublist(new_nestedList);
-        sub_nestedList[1].push(new_nestedList);
-        text = '';
-      }
-      else if (character === ',') {
-        new_nestedList = [text, []];
-        sub_nestedList[1].push(new_nestedList);
-        text = '';
-      }
-      else if (character === ';') {
-        new_nestedList = [text, []];
-        sub_nestedList[1].push(new_nestedList);
-        text = '';
-        return sub_nestedList;
-      }
-      else {
-        text += character;
-      }
-    }
-    return sub_nestedList;
-  }
+const typelistscript_textList = "Tops:Shirts,Tshirts:long;Sweaters,Hoodies,Tank_tops,Tunics,Henley_shirts,Polo_shirts:short;Buttondown_shirts,Flannel_shirts,Thermal_tops,Camisoles;Bottoms:Pants,Jeans,Shorts:long,short;Skirts,Leggings,Sweatpants,Joggers,Culottes,Palazzo_pants,Capris,Gauchos;Outerwear:Jackets,Coats,Raincoats,Trenches;";
 
-  let new_nestedList = [];
-  for (; i < textListFormatted.length; i++) {
-    const character = textListFormatted[i];
-    if (character === ' ') {
-      text = text;
-    }
-    else if (character === ':') {
-      new_nestedList = [text, []];
-      i++;	
-      new_nestedList = createsublist(new_nestedList);
-      main_nestedList.push(new_nestedList);
-      text = '';
-    }
-    else if (character === ',') {
-      new_nestedList = [text, []];
-      main_nestedList.push(new_nestedList);
-      text = '';
-    }
-    else if (character === ';') {
-      new_nestedList = [text, []];
-      main_nestedList.push(new_nestedList);
-      text = '';
-    }
-    else {
-      text += character;
-    }
-  }
-  return main_nestedList;
-}
+const nodes = "[['MANS', [['ACCESSORIES', []], ['TROUSER', []], ['SHOES', []], ['TOP', [['T-SHIRT', []], \
+                ['SHIRT', []], ['BLOUSES', []], ['POLO SHIRT', []], ['TANK', []], ['SWEATER', []], ['HOODIES', []], ['JACKET', \
+                []], ['BLAZER', []]]], ['BOTTOM', [['JEAN', []], ['PANT', []], ['SHORT', []], ['SKIRT', []], ['LEGGING', []], \
+                ['CULOTTE', []]]], ['OUTERWEAR', [['COAT', []], ['TRENCH COAT', []], ['RIN COAT', []], ['PARKA', []], ['WINDBREAKER', \
+                []]]], ['ACTIVEWEAR', [['ATHLETICSHORTS', []], ['JOGGINGPANT', []], ['SPORTJACKET', []], ['YOGAPANT', []], ['PREFORMANCETOP', \
+                []]]]]], ['WOMANS', [['ACCESSORIES', []], ['TROUSER', []], ['SHOES', []], ['TOP', [['T-SHIRT', []], ['SHIRT', []], ['BLOUSES', []], \
+                ['POLO SHIRT', []], ['TANK', []], ['SWEATER', []], ['HOODIES', []], ['JACKET', []], ['BLAZER', []]]], ['BOTTOM', [['JEAN', []], \
+                ['PANT', []], ['SHORT', []], ['SKIRT', []], ['LEGGING', []], ['CULOTTE', []]]], ['DRESS', [['SUNDRESS', []], ['COCKTAIL', []], ['MAXI', []], \
+                ['SHIFT', []], ['BODYCON', []], ['A-LINE', []]]], ['OUTERWEAR', [['COAT', []], ['TRENCH COAT', []], ['RIN COAT', []], \
+                ['PARKA', []], ['WINDBREAKER', []]]], ['ACTIVEWEAR', [['SPORTBRA', []], ['ATHLETICSHORTS', []], ['JOGGINGPANT', []], \
+                ['SPORTJACKET', []], ['YOGAPANT', []], ['PREFORMANCETOP', []]]]]], ['KIDS', [['ACCESSORIES', []], ['GIRLS', [['TROUSER', []], \
+                ['SHOES', []], ['TOP', [['T-SHIRT', []], ['SHIRT', []], ['BLOUSES', []], ['POLO SHIRT', []], ['TANK', []], ['SWEATER', []], \
+                ['HOODIES', []], ['JACKET', []], ['BLAZER', []]]], ['BOTTOM', [['JEAN', []], ['PANT', []], ['SHORT', []], ['SKIRT', []], \
+                ['LEGGING', []], ['CULOTTE', []]]], ['DRESS', [['SUNDRESS', []], ['COCKTAIL', []], ['MAXI', []], ['SHIFT', []], ['BODYCON', []], \
+                ['A-LINE', []]]], ['OUTERWEAR', [['COAT', []], ['TRENCH COAT', []], ['RIN COAT', []], ['PARKA', []], ['WINDBREAKER', []]]], \
+                ['ACTIVEWEAR', [['SPORTBRA', []], ['ATHLETICSHORTS', []], ['JOGGINGPANT', []], ['SPORTJACKET', []], ['YOGAPANT', []], \
+                ['PREFORMANCETOP', []]]]]], ['BOYS', [['TROUSER', []], ['SHOES', []], ['TOP', [['T-SHIRT', []], ['SHIRT', []], ['BLOUSES', []], \
+                ['POLO SHIRT', []], ['TANK', []], ['SWEATER', []], ['HOODIES', []], ['JACKET', []], ['BLAZER', []]]], ['BOTTOM', [['JEAN', []], \
+                ['PANT', []], ['SHORT', []], ['SKIRT', []], ['LEGGING', []], ['CULOTTE', []]]], ['OUTERWEAR', [['COAT', []], ['TRENCH COAT', []],\
+                ['RIN COAT', []], ['PARKA', []], ['WINDBREAKER', []]]], ['ACTIVEWEAR', [['ATHLETICSHORTS', []], ['JOGGINGPANT', []], ['SPORTJACKET', []], \
+                ['YOGAPANT', []], ['PREFORMANCETOP', []]]]]], ['FORKIDS', [['TROUSER', []], ['SHOES', []], ['TOP', [['T-SHIRT', []], ['SHIRT', []], \
+                ['BLOUSES', []], ['POLO SHIRT', []], ['TANK', []], ['SWEATER', []], ['HOODIES', []], ['JACKET', []], ['BLAZER', []]]], ['BOTTOM', \
+                [['JEAN', []], ['PANT', []], ['SHORT', []], ['SKIRT', []], ['LEGGING', []], ['CULOTTE', []]]], ['OUTERWEAR', [['COAT', []], ['TRENCH COAT', \
+                []], ['RIN COAT', []], ['PARKA', []], ['WINDBREAKER', []]]], ['ACTIVEWEAR', [['ATHLETICSHORTS', []], ['JOGGINGPANT', []], ['SPORTJACKET', \
+                []], ['YOGAPANT', []], ['PREFORMANCETOP', []]]]]]]], ['FOREVERYONE', [['ACCESSORIES', []], ['SHOES', []], ['TROUSER', []], ['TOP', \
+                [['T-SHIRT', []], ['SHIRT', []], ['BLOUSES', []], ['POLO SHIRT', []], ['TANK', []], ['SWEATER', []], \
+                ['BLAZER', []]]], ['BOTTOM', [['JEAN', []], ['PANT', []], ['SHORT', []], ['SKIRT', []], ['LEGGING', []], ['CULOTTE', \
+                []]]], ['OUTERWEAR', [['COAT', []], ['RIN COAT', []], ['PARKA', []], ['WINDBREAKER', []], ['TRENCHCOAT', []]]], ['ACTIVEWEAR', \
+                [['ATHLETICSHORTS', []], ['JOGGINGPANT', []], ['SPORTJACKET', []], ['YOGAPANT', []], ['PREFORMANCETOP', []]]]]]]";
 
-const textList = "Tops:Shirts,Tshirts:long;Sweaters,Hoodies,Tank_tops,Tunics,Henley_shirts,Polo_shirts:short;Buttondown_shirts,Flannel_shirts,Thermal_tops,Camisoles;Bottoms:Pants,Jeans,Shorts:long,short;Skirts,Leggings,Sweatpants,Joggers,Culottes,Palazzo_pants,Capris,Gauchos;Outerwear:Jackets,Coats,Raincoats,Trenches;";
 //const textList = "Tops:Shirts,Tshirts:long;,Sweaters,Hoodies,Tank_tops,Tunics,Henley_shirts,Polo_shirts:short;,Buttondown_shirts,Flannel_shirts,Thermal_tops,Camisoles;Bottoms:Pants,Jeans,Shorts:long,short;,Skirts,Leggings,Sweatpants,Joggers,Culottes,Palazzo_pants,Capris,Gauchos;Outerwear:Jackets,Coats,Raincoats,Trenches;";
-const first_list = createNestedList(textList);
+//JSON.parse(window.globallist[id].data[i].more_info);JSON.stringify(dataobject)
+const first_list = loadList(nodes);
 console.log(first_list);
 
 function sortWords(text, nestedListElement) {

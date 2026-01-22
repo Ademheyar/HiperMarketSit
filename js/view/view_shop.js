@@ -786,7 +786,7 @@ var sy = scrollY;
 var y = mainy + sy;
 var vs_mainu = document.querySelector('body .Main');
 var ya  = y+ vs_mainu.scrollTop
-document.getElementById('view-form').style.top = ya + 'px';
+//document.getElementById('view-form').style.top = ya + 'px';
     document.querySelector('#shopping-cart-form').style.top = y + 'px';
     //menu.classList.remove('fa-times');
     //navbar.classList.remove('active');
@@ -1579,7 +1579,7 @@ var sy = scrollY;
 var y = mainy + sy;
 var vs_mainu = document.querySelector('body .Main');
 var ya  = y+ vs_mainu.scrollTop
-document.getElementById('view-form').style.top = ya + 'px';
+//document.getElementById('view-form').style.top = ya + 'px';
     document.querySelector('#shopping-cart-form').style.top = y + 'px';
     //menu.classList.remove('fa-times');
     //navbar.classList.remove('active');

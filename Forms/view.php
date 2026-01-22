@@ -12,7 +12,7 @@
    var y = mainy + sy;
    var vphp_main = document.querySelector('body .Main');
 	var ya  = y+ vphp_main.scrollTop
-	document.getElementById('view-form').style.top = ya + 'px';
+	//document.getElementById('view-form').style.top = ya + 'px';
         document.querySelector('#shopping-cart-form').style.top = y + 'px';
     };
 </script>
