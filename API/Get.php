@@ -106,6 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		
 		else if ($Do === 'GET SHOP'){
 			#$User = $data['User'];
+            
+			$response = ['status' => 'error', 'message' => 'Get Shop Value.', 'Value' => []];
+				echo json_encode($response);
+				exit;
 			$Shop_name = $data['Shop_name'];
 			$Shop_brand_name = $data['Shop_brand_name'];
 			$User_name = $data['User_name'];
