@@ -95,10 +95,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 		// Send Do : GET USER To search user existing
 		else if ($Do === 'GET USER'){
-			$User = $data['User'];
-			$response = ['status' => 'error', 'message' => 'API Connection successfully.', 'Value' => $User];
-				echo json_encode($response);
-				exit;
+            $query = $data['QUERYS'];
+            $queryValues = $data['QUERYVALUES'];
+
+            $select_stmt = $conn->prepare("SELECT * FROM `users` WHERE $query");
+            $select_stmt->bind_param('ss', ...$queryValues);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $userData = $result->fetch_assoc();
+                $response = ['status' => 'success', 'message' => 'User found.', 'Value' => $userData];
+                echo json_encode($response);
+    			exit;
+
+            } else {
+                $response = ['status' => 'error', 'message' => 'User not found.'];
+                echo json_encode($response);
+    			exit;
+            }
+            $select_stmt->close();
 		}	
 		else if ($Do === 'Uploade Data') {
 			
@@ -424,6 +440,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Check if the row exists
         }
         else{
+            /*
             $result = $conn->query("SELECT * FROM product WHERE id = $inserted_id");
     
             if ($result->num_rows > 0) {
@@ -433,6 +450,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error1 = $error1.' Failed to retrieve the newly added row. ';
                 $response = ['status' => 'error', 'message' => $error1];
             }
+            */
         }
     }
 
