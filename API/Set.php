@@ -41,19 +41,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve the JSON data sent by the Python code
     $data = json_decode(file_get_contents('php://input'), true);
 
-    $type = $data['type'];
-
+	
+	// Extract data into individual variables
+	$Do = $data['Do'];
+    $error1 = "";
     $it = "";
     $image_to_get = "";
     $image_to_sand = "";
     
-    $error1 = "";
     $secess = "";
     $doing = "";
-    $error1 .= $type;
+	
+	
+	
 
-    //|| $type === 'Update_Item' || $type === 'Update_item'
-    if ($type == 'Update_Image'){
+
+    //|| $Do === 'Update_Item' || $type === 'Update_item'
+    $error1 .= $Do;
+    if ($Do == 'Update_Image'){
         $error1 .= 'IN Update_Image        ******';
         $image = $_FILES['image'];
         $uploadPath = 'path/to/save/image.jpg';  // Save the image to a desired location
@@ -66,26 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     else{
-        // Extract data into individual variables
-        $id = $data['id'];
-        $doc_barcode = $data['doc_barcode'];
-        $extension_barcode = $data['extension_barcode'];
-        $user_id = $data['user_id'];
-        $customer_id = $data['customer_id'];
-
-        $item = $data['item'];
-        $qty = $data['qty'];
-        $price = $data['price'];
-        $discount = $data['discount'];
-        $tax = $data['tax'];
-        $payments = $data['payments'];
-        $doc_created_date = $data['doc_created_date'];
-        $doc_expire_date = $data['doc_expire_date'];
-        $doc_updated_date = $data['doc_updated_date'];
-
         // Database connection details
         $host = 'localhost';
-        $db_name = 'shop_db';
+        $db_name = 'shop';
         $username = 'root';
         $password = '';
 
@@ -96,39 +84,112 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($conn->connect_error) {
             die('Connection failed: ' . $conn->connect_error);
         }
-        try {
-            // Prepare the query
-            /*$stmt = $conn->prepare("INSERT INTO your_table_name ( id, doc_barcode, extension_barcode, user_id, customer_id, type, item, qty, price, discount, tax, payments, doc_created_date, doc_expire_date, doc_updated_date)
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                                    ON DUPLICATE KEY UPDATE 
-                                        doc_barcode = VALUES(doc_barcode),
-                                        extension_barcode = VALUES(extension_barcode),
-                                        user_id = VALUES(user_id),
-                                        customer_id = VALUES(customer_id),
-                                        type = VALUES(type),
-                                        item = VALUES(item),
-                                        qty = VALUES(qty),
-                                        price = VALUES(price),
-                                        discount = VALUES(discount),
-                                        tax = VALUES(tax),
-                                        payments = VALUES(payments),
-                                        doc_created_date = VALUES(doc_created_date),
-                                        doc_expire_date = VALUES(doc_expire_date),
-                                        doc_updated_date = VALUES(doc_updated_date)");
         
-            // Bind the parameters
-            $stmt->bind_param('isssssdddddssss', $id, $doc_barcode, $extension_barcode, $user_id, $customer_id, $type, $item, $qty, $price, $discount, $tax, $payments, $doc_created_date, $doc_expire_date, $doc_updated_date);
-        
-            // Execute the query
-            $stmt->execute();
-            */
-        } catch (Exception $e) {
-            $error1 = $error1 . ' got error in doc saving '.$e->getMessage(). '/';
-        }
-        
-        // Check the type of operation
-        if ($type === 'Add_Items' || $type === 'Add_item' || $type === 'Update_item' || $type === 'Update_Items') {
+        if ($Do === 'SET USER'){
+            $user_name = $data['queryvalues']['user_name'];
+            $user_password = $data['queryvalues']['user_password'];
+
+            $select_stmt = $conn->prepare("SELECT * FROM `users` WHERE `user_name` = ? AND `user_password` = ?");
+            $select_stmt->bind_param('ss', $user_name, $user_password);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $response = ['status' => 'error', 'message' => 'User already exists.'];
+                echo json_encode($response);
+            } else {
+                # e.g $data['querys'] "INSERT INTO `users` (`user_name`, `user_email`, `user_password`, `user_phone`) VALUES (?, ?, ?, ?)");
+                $insert_stmt = $conn->prepare($data['querys']);
+                $insert_stmt->bind_param('ssss', ...$data['queryvalues']);
+                
+                if ($insert_stmt->execute()) {
+                    $response = ['status' => 'success', 'message' => 'User created successfully.'];
+                    echo json_encode($response);
+                    exit;
+                } else {
+                    $response = ['status' => 'error', 'message' => 'Failed to create user.'];
+                    echo json_encode($response);
+                    exit;
+                }
+                $insert_stmt->close();
+            }
+            $select_stmt->close();
+		}	
+		else if ($Do === 'Uploade Data') {
+			
+		}
+		
+		else if ($Do === 'GET SHOP'){
+			#$User = $data['User'];
+            
+			$response = ['status' => 'error', 'message' => 'Get Shop Value.', 'Value' => []];
+				echo json_encode($response);
+				exit;
+			$Shop_name = $data['Shop_name'];
+			$Shop_brand_name = $data['Shop_brand_name'];
+			$User_name = $data['User_name'];
+			$User_password = $data['User_password'];
+			$Value = [];
+			if (!empty($User_name) && !empty($User_password)) {
+				$select_user = mysqli_query($conn, "SELECT * FROM `users`");
+				if (mysqli_num_rows($select_user) > 0) {
+					while ($u = mysqli_fetch_assoc($select_user)) {
+						if ($u['user_name'] == $User_name or $u['user_email'] == $User_name) {
+							if ($u['user_password'] == $User_password) {
+								$User_work_shops = json_decode($u['User_work_shop']);
+								if($User_work_shops){ 
+									for($i = 0; $i < count($User_work_shops); $i++){
+										$User_work_shop = $User_work_shops[$i];
+										if ($User_work_shop[1] == $Shop_name && $User_work_shop[2] == $Shop_brand_name){
+											$shop_result = $conn->query("SELECT * FROM shops WHERE Shop_name='$Shop_name' AND Shop_brand_name='$Shop_brand_name'");
+											if ($shop_result->num_rows > 0) {
+												while ($shop_row = $shop_result->fetch_assoc()) {
+													$Value[] = $shop_row;
+												}
+											}
+										}
+									}
+								}
+								else{
+									$shop_result = $conn->query("SELECT * FROM shops WHERE Shop_name='$Shop_name' AND Shop_brand_name='$Shop_brand_name'");
+									if ($shop_result->num_rows > 0) {
+										while ($shop_row = $shop_result->fetch_assoc()) {
+											$Value[] = $shop_row;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			$response = ['status' => 'success', 'message' => 'Shop Found successfully.', 'Value' => $Value];
+			echo json_encode($response);
+			exit;
+		}
+    
+        else if ($Do === 'Add_Items' || $Do === 'Add_item' || $Do === 'Update_item' || $Do === 'Update_Items') {
             // Split the item data
+			
+			$type = $data['type'];
+
+			$id = $data['id'];
+			$doc_barcode = $data['doc_barcode'];
+			$extension_barcode = $data['extension_barcode'];
+			$user_id = $data['user_id'];
+			$customer_id = $data['customer_id'];
+
+			$item = $data['item'];
+			$qty = $data['qty'];
+			$price = $data['price'];
+			$discount = $data['discount'];
+			$tax = $data['tax'];
+			$payments = $data['payments'];
+			$doc_created_date = $data['doc_created_date'];
+			$doc_expire_date = $data['doc_expire_date'];
+			$doc_updated_date = $data['doc_updated_date'];
+
             try{
                 //"'(|1|,|APETITO|,|MH/DRUGS/KD-699-217|,|ACSSESRI GANING_WIGHT PILLS|,||,||,|0|,|5.0|,|0.0|,|15.0|,|0|,|0|,|"{FLAG_SQUARE,(<FRUATE,[|2X10, , 23, -1.0, , |]>)},"|,|test.jpg|,|APETITO CYPROHRPTADINE TABLETS 4MG INDICARION|,|0|,|1|,|1|)'"
                 $error1 = $error1 . ' going to '.$type. '\n';
@@ -257,7 +318,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         //"Sale_item" "Update_item"
-        else if ($type === 'Sale_Item' || $type === 'Sale_item') {
+        else if ($Do === 'Sale_Item' || $Do === 'Sale_item') {
             /*
             // Split the item data
             $it = $item.","; // Append a comma to the $item variable
@@ -330,13 +391,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }*/
-            $response = ['status' => 'success', 'message' => 'Data is for too add_item. it is '.$type, 'row' => $error1];
+            $response = ['status' => 'success', 'message' => 'Data is for too add_item. it is '.$Do, 'row' => $error1];
         }
         else{
-            $response = ['status' => 'success', 'message' => 'Data is not for procute. else '.$type, 'row' => $error1];
+            $response = ['status' => 'success', 'message' => 'Data is not for procute. else '.$Do, 'row' => $error1];
             /* print doce table 
             $inserted_id = $id_item;
-            if ($type === 'Add_Items' || $type === 'Add_item') {
+            if ($Do === 'Add_Items' || $Do === 'Add_item') {
                 // Get the last inserted row
                 $inserted_id = $conn->insert_id;
                 // Check if the row exists
@@ -365,19 +426,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $row = $result->fetch_assoc();
             $response = ['status' => 'Get_Items_image', 'message' => 'need images .', 'row' => $image_to_get];
         }
-        else if ($type === 'Add_Items' || $type === 'Add_item') {
+        else if ($Do === 'Add_Items' || $Do === 'Add_item') {
             // Get the last inserted row
             $inserted_id = $conn->insert_id;
             $secess = $secess.'inserted_id. '.$inserted_id;
             // Check if the row exists
         }
-        else if ($type === 'Update_Items' || $type === 'Update_item') {
+        else if ($Do === 'Update_Items' || $Do === 'Update_item') {
             // Get the last inserted row
             $inserted_id = $id_item;
             $error1 = $error1.'updated_id. '.$inserted_id;
             // Check if the row exists
         }
         else{
+            /*
             $result = $conn->query("SELECT * FROM product WHERE id = $inserted_id");
     
             if ($result->num_rows > 0) {
@@ -387,6 +449,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error1 = $error1.' Failed to retrieve the newly added row. ';
                 $response = ['status' => 'error', 'message' => $error1];
             }
+            */
         }
     }
 
@@ -400,5 +463,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     echo json_encode($response);
     exit;
+}
+else{
+	echo "Trying to load API with Website!!!";
 }
 ?>

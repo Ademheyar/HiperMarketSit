@@ -85,16 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die('Connection failed: ' . $conn->connect_error);
         }
         
-        // Check the type of operation
-		// To test if connection reach here 
-		// sand 'DO' : 'Testing Connection' and seve msg and status success 
-		if ($Do === 'Testing Connection'){
-			$response = ['status' => 'success', 'message' => 'API Connection successfully.', 'row' => $error1];
-			echo json_encode($response);
-			exit;
-		}
-		// Send Do : GET USER To search user existing
-		else if ($Do === 'GET USER'){
+        if ($Do === 'GET USER'){
             $query = $data['QUERYS'];
             $queryValues = $data['QUERYVALUES'];
 
