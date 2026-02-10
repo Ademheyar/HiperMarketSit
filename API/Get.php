@@ -1,40 +1,4 @@
 <?php
-function comparePaths($str1, $str2) {
-    // Add ',' at the end if it doesn't exist
-    $path1 = $str1;
-    $path2 = $str2;
-    if (substr($str1, -1) !== ',') {
-        $str1 .= ',';
-    }
-    if (substr($str2, -1) !== ',') {
-        $str2 .= ',';
-    }
-    
-    // Split the strings into arrays of paths
-    $arr1 = explode(',', $str1);
-    $arr2 = explode(',', $str2);
-    
-    // Remove the last empty element
-    array_pop($arr1);
-    array_pop($arr2);
-    
-    // Find the differences
-    $str1Diff = array_diff($arr1, $arr2);
-    $str2Diff = array_diff($arr2, $arr1);
-    
-    if (empty($path1) && empty($str1Diff) && !empty($arr2)) {
-        $str1Diff = $path1;
-    }
-    if (empty($path2) && empty($str2Diff) && !empty($arr1)) {
-        $str2Diff = $path2;
-    }
-
-    // Return the differences
-    return [
-        'str1_diff' => $str1Diff,
-        'str2_diff' => $str2Diff
-    ];
-}
 
 // Update API endpoint for both Website to Window Application and Window Application to Website
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -112,7 +76,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 		
 		else if ($Do === 'GET SHOP'){
-			#$User = $data['User'];
+            $userData = $data['User'];
+            $query = $data['QUERYS'];
+            $queryValues = $data['QUERYVALUES'];
+
+            $select_stmt = $conn->prepare("SELECT * FROM `shops` WHERE $query");
+            $select_stmt->bind_param('ss', ...$queryValues);
+            $select_stmt->execute();
+            $result = $select_stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                
+                $shopData[] = $result->fetch_assoc();
+
+                $response = ['status' => 'success', 'message' => 'Shop found.', 'Value' => $shopData];
+                echo json_encode($response);
+    			exit;
+
+            } else {
+                $response = ['status' => 'error', 'message' => 'Shop not found.'];
+                echo json_encode($response);
+    			exit;
+            }
+            $select_stmt->close();
+        
+        
+        #$User = $data['User'];
             
 			$response = ['status' => 'error', 'message' => 'Get Shop Value.', 'Value' => []];
 				echo json_encode($response);
@@ -444,19 +433,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             */
         }
     }
-
-    // Close the database connection
-    $conn->close();
-    if (!isset($response['status'])) {
-        $response['status'] = 'error';
-    }
-    $response['message'] = $response['message'].$error1;
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
 }
-else{
-	echo "Trying to load API with Website!!!";
-}
+else echo "Trying to load GET API with Website!!!";
 ?>

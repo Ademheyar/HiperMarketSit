@@ -1,40 +1,4 @@
 <?php
-function comparePaths($str1, $str2) {
-    // Add ',' at the end if it doesn't exist
-    $path1 = $str1;
-    $path2 = $str2;
-    if (substr($str1, -1) !== ',') {
-        $str1 .= ',';
-    }
-    if (substr($str2, -1) !== ',') {
-        $str2 .= ',';
-    }
-    
-    // Split the strings into arrays of paths
-    $arr1 = explode(',', $str1);
-    $arr2 = explode(',', $str2);
-    
-    // Remove the last empty element
-    array_pop($arr1);
-    array_pop($arr2);
-    
-    // Find the differences
-    $str1Diff = array_diff($arr1, $arr2);
-    $str2Diff = array_diff($arr2, $arr1);
-    
-    if (empty($path1) && empty($str1Diff) && !empty($arr2)) {
-        $str1Diff = $path1;
-    }
-    if (empty($path2) && empty($str2Diff) && !empty($arr1)) {
-        $str2Diff = $path2;
-    }
-
-    // Return the differences
-    return [
-        'str1_diff' => $str1Diff,
-        'str2_diff' => $str2Diff
-    ];
-}
 
 // Update API endpoint for both Website to Window Application and Window Application to Website
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -84,10 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($conn->connect_error) {
             die('Connection failed: ' . $conn->connect_error);
         }
-        
         if ($Do === 'SET USER'){
-            $user_name = $data['queryvalues']['user_name'];
-            $user_password = $data['queryvalues']['user_password'];
+            $user_name = $data['user_name'];
 
             $select_stmt = $conn->prepare("SELECT * FROM `users` WHERE `user_name` = ? AND `user_password` = ?");
             $select_stmt->bind_param('ss', $user_name, $user_password);
@@ -99,75 +61,153 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode($response);
             } else {
                 # e.g $data['querys'] "INSERT INTO `users` (`user_name`, `user_email`, `user_password`, `user_phone`) VALUES (?, ?, ?, ?)");
-                $insert_stmt = $conn->prepare($data['querys']);
-                $insert_stmt->bind_param('ssss', ...$data['queryvalues']);
-                
+                $insert_stmt = $conn->prepare("INSERT INTO `users` " . $data['QUERYS']);
+                $types = str_repeat('s', count($data['QUERYVALUES']));
+                $insert_stmt->bind_param($types, ...$data['QUERYVALUES']);
+
                 if ($insert_stmt->execute()) {
-                    $response = ['status' => 'success', 'message' => 'User created successfully.'];
+                    $inserted_id = $conn->insert_id;
+                    $insert_stmt->close();
+                    $select_stmt = $conn->prepare("SELECT * FROM `users` WHERE `User_id` = ?");
+                    $select_stmt->bind_param('i', $inserted_id);
+                    $select_stmt->execute();
+                    $result = $select_stmt->get_result();
+                    $user = $result->fetch_assoc();
+                    $select_stmt->close();
+
+                    $response = ['status' => 'success', 'message' => 'User created successfully.', 'Value' => $user];
                     echo json_encode($response);
                     exit;
                 } else {
+                    $insert_stmt->close();
                     $response = ['status' => 'error', 'message' => 'Failed to create user.'];
                     echo json_encode($response);
                     exit;
                 }
-                $insert_stmt->close();
             }
             $select_stmt->close();
 		}	
-		else if ($Do === 'Uploade Data') {
-			
-		}
-		
-		else if ($Do === 'GET SHOP'){
-			#$User = $data['User'];
+		else if ($Do === 'UPDATE USER'){
+            $query = $data['QUERYS'];
+            $queryValues = $data['QUERYVALUES'];
+            $fquery = $data['FIND_ARG'];
+            $fqueryValues = $data['FIND_VALUE'];
+
+            // Ensure $query and $fquery are strings if arrays were provided
+            if (is_array($query)) {
+                $query = implode(", ", $query);
+            }
+            if (is_array($fquery)) {
+                // join multiple conditions with AND if array provided
+                $fquery = implode(" AND ", $fquery);
+            }
+
+            // Ensure value containers are arrays
+            if (!is_array($queryValues)) {
+                $queryValues = [$queryValues];
+            }
+            if (!is_array($fqueryValues)) {
+                $fqueryValues = [$fqueryValues];
+            }
+
+            $update_stmt = $conn->prepare("UPDATE `users` SET ".$query." WHERE ".$fquery);
+            $update_stmt->bind_param(str_repeat('s', count($queryValues) + count($fqueryValues)), ...$queryValues, ...$fqueryValues);
             
-			$response = ['status' => 'error', 'message' => 'Get Shop Value.', 'Value' => []];
-				echo json_encode($response);
-				exit;
-			$Shop_name = $data['Shop_name'];
-			$Shop_brand_name = $data['Shop_brand_name'];
-			$User_name = $data['User_name'];
-			$User_password = $data['User_password'];
-			$Value = [];
-			if (!empty($User_name) && !empty($User_password)) {
-				$select_user = mysqli_query($conn, "SELECT * FROM `users`");
-				if (mysqli_num_rows($select_user) > 0) {
-					while ($u = mysqli_fetch_assoc($select_user)) {
-						if ($u['user_name'] == $User_name or $u['user_email'] == $User_name) {
-							if ($u['user_password'] == $User_password) {
-								$User_work_shops = json_decode($u['User_work_shop']);
-								if($User_work_shops){ 
-									for($i = 0; $i < count($User_work_shops); $i++){
-										$User_work_shop = $User_work_shops[$i];
-										if ($User_work_shop[1] == $Shop_name && $User_work_shop[2] == $Shop_brand_name){
-											$shop_result = $conn->query("SELECT * FROM shops WHERE Shop_name='$Shop_name' AND Shop_brand_name='$Shop_brand_name'");
-											if ($shop_result->num_rows > 0) {
-												while ($shop_row = $shop_result->fetch_assoc()) {
-													$Value[] = $shop_row;
-												}
-											}
-										}
-									}
-								}
-								else{
-									$shop_result = $conn->query("SELECT * FROM shops WHERE Shop_name='$Shop_name' AND Shop_brand_name='$Shop_brand_name'");
-									if ($shop_result->num_rows > 0) {
-										while ($shop_row = $shop_result->fetch_assoc()) {
-											$Value[] = $shop_row;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			$response = ['status' => 'success', 'message' => 'Shop Found successfully.', 'Value' => $Value];
-			echo json_encode($response);
-			exit;
-		}
+            try {
+                $update_stmt->execute();
+                if ($update_stmt->affected_rows > 0) {
+                    $msg = 'User Updated successfully.';
+                    $status = 'success';
+                } else {
+                    $msg = 'No changes made to the user.';
+                    $status = 'error';
+                }
+                $update_stmt->close();
+                $select_stmt = $conn->prepare("SELECT * FROM `users` WHERE $fquery");
+                $select_stmt->bind_param(str_repeat('s', count($fqueryValues)), ...$fqueryValues);
+                $select_stmt->execute();
+                $result = $select_stmt->get_result();
+                $Value = [];
+                if ($result->num_rows > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $Value[] = $row;
+                    }
+                } else {
+                    $msg = 'No user found with the given ID.';
+                    $status = 'error';
+                }
+                $response = ['status' => $status, 'message' => $msg, 'Value' => $Value];
+                echo json_encode($response);
+                exit;
+            } catch (Exception $e) {
+                $update_stmt->close();
+                $response = ['status' => 'error', 'message' => 'Failed to update user: ' . $e->getMessage()];
+                echo json_encode($response);
+                exit;
+            }
+            $update_stmt->close();
+        }
+		
+		else if ($Do === 'UPDATE SHOP'){
+            $query = $data['QUERYS'];
+            $queryValues = $data['QUERYVALUES'];
+            $fquery = $data['FIND_ARG'];
+            $fqueryValues = $data['FIND_VALUE'];
+
+            // Ensure $query and $fquery are strings if arrays were provided
+            if (is_array($query)) {
+                $query = implode(", ", $query);
+            }
+            if (is_array($fquery)) {
+                // join multiple conditions with AND if array provided
+                $fquery = implode(" AND ", $fquery);
+            }
+
+            // Ensure value containers are arrays
+            if (!is_array($queryValues)) {
+                $queryValues = [$queryValues];
+            }
+            if (!is_array($fqueryValues)) {
+                $fqueryValues = [$fqueryValues];
+            }
+
+            $update_stmt = $conn->prepare("UPDATE `shops` SET ".$query." WHERE ".$fquery);
+            $update_stmt->bind_param(str_repeat('s', count($queryValues) + count($fqueryValues)), ...$queryValues, ...$fqueryValues);
+            
+            try {
+                $update_stmt->execute();
+                if ($update_stmt->affected_rows > 0) {
+                    $msg = 'Shop Updated successfully.';
+                    $status = 'success';
+                } else {
+                    $msg = 'No changes made to the shop.';
+                    $status = 'error';
+                }
+                $update_stmt->close();
+                $select_stmt = $conn->prepare("SELECT * FROM `shops` WHERE $fquery");
+                $select_stmt->bind_param(str_repeat('s', count($fqueryValues)), ...$fqueryValues);
+                $select_stmt->execute();
+                $result = $select_stmt->get_result();
+                $Value = [];
+                if ($result->num_rows > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $Value[] = $row;
+                    }
+                } else {
+                    $msg = 'No shop found with the given ID.';
+                    $status = 'error';
+                }
+                $response = ['status' => $status, 'message' => $msg, 'Value' => $Value];
+                echo json_encode($response);
+                exit;
+            } catch (Exception $e) {
+                $update_stmt->close();
+                $response = ['status' => 'error', 'message' => 'Failed to update shop: ' . $e->getMessage()];
+                echo json_encode($response);
+                exit;
+            }
+            $update_stmt->close();
+        }
     
         else if ($Do === 'Add_Items' || $Do === 'Add_item' || $Do === 'Update_item' || $Do === 'Update_Items') {
             // Split the item data
@@ -452,19 +492,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             */
         }
     }
-
-    // Close the database connection
-    $conn->close();
-    if (!isset($response['status'])) {
-        $response['status'] = 'error';
-    }
-    $response['message'] = $response['message'].$error1;
-
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
 }
-else{
-	echo "Trying to load API with Website!!!";
-}
+else echo "Trying to load SET API with Website!!!";
 ?>
